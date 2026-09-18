@@ -1,0 +1,454 @@
+using System.Text.Json;
+using KlondaikTweaker.Core.Engine;
+using KlondaikTweaker.Core.Model;
+using KlondaikTweaker.Core.Modules;
+using KlondaikTweaker.Core.Win;
+
+namespace KlondaikTweaker.Host;
+
+public static class Api
+{
+    public delegate void Push(string channel, object data);
+
+    private static string Lang => Settings.Data.Lang;
+
+    private static string S(JsonElement? p, string name, string fallback = "")
+    {
+        if (p is null || p.Value.ValueKind != JsonValueKind.Object) return fallback;
+        return p.Value.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? fallback : fallback;
+    }
+
+    private static bool B(JsonElement? p, string name, bool fallback = false)
+    {
+        if (p is null || p.Value.ValueKind != JsonValueKind.Object) return fallback;
+        if (!p.Value.TryGetProperty(name, out var v)) return fallback;
+        return v.ValueKind switch
+        {
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            _ => fallback
+        };
+    }
+
+    private static string[] Arr(JsonElement? p, string name)
+    {
+        if (p is null || p.Value.ValueKind != JsonValueKind.Object) return [];
+        if (!p.Value.TryGetProperty(name, out var v) || v.ValueKind != JsonValueKind.Array) return [];
+        return v.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.String).Select(x => x.GetString() ?? "").ToArray();
+    }
+
+    public static object? Handle(string method, JsonElement? p, Push push)
+    {
+        switch (method)
+        {
+            case "app.info": return AppInfo();
+            case "app.settings": return Settings.Data;
+            case "app.setSetting": return SetSetting(p);
+            case "app.strings": return new { lang = Lang };
+
+            case "tweaks.list": return TweakList(p);
+            case "tweaks.detect": return Detect(Arr(p, "ids"));
+            case "tweaks.apply": return ApplyMany(Arr(p, "ids"), true, push);
+            case "tweaks.revert": return ApplyMany(Arr(p, "ids"), false, push);
+            case "tweaks.presets": return Presets();
+
+            case "wizard.questions": return WizardQuestions();
+            case "wizard.resolve": return WizardResolve(p);
+
+            case "journal.list": return JournalList();
+            case "journal.revert": return JournalRevert(S(p, "id"));
+            case "journal.revertAll": return JournalRevertAll(push);
+            case "journal.clear": Journal.Clear(); return new { ok = true };
+
+            case "restore.status": return new { enabled = RestorePoint.Enabled(), points = RestorePoint.List().Take(12).Select(x => new { seq = x.Seq, desc = x.Desc, time = x.Time }).ToList() };
+            case "restore.enable": return new { result = RestorePoint.Enable() };
+            case "restore.create": { var r = RestorePoint.Create(S(p, "desc", "Klondaik Tweaker")); return new { ok = r.Ok, message = r.Message }; }
+            case "restore.open": RestorePoint.OpenUi(); return new { ok = true };
+
+            case "clean.scan": return new { targets = Cleaner.Scan(), disks = Cleaner.DiskInfo() };
+            case "clean.run": return CleanRun(Arr(p, "ids"), push);
+            case "clean.deep": return new { result = Cleaner.DeepComponentCleanup() };
+            case "clean.eventlogs": return new { result = Cleaner.ClearEventLogs() };
+
+            case "startup.list": return Startup.List();
+            case "startup.toggle": return new { ok = Startup.SetEnabled(S(p, "id"), B(p, "enabled")) };
+            case "startup.delete": return new { ok = Startup.Delete(S(p, "id")) };
+
+            case "services.list": return ServiceList();
+            case "services.set": return ServiceSet(p);
+            case "services.control": return ServiceControl(p);
+
+            case "appx.list": return Appx.List(B(p, "refresh")).Select(x => new { x.Name, x.Display, x.Group, x.Framework, x.System });
+            case "appx.remove": return AppxRemove(Arr(p, "names"), push);
+
+            case "net.adapters": return new { adapters = NetworkTools.Adapters(), telemetry = NetworkTools.TelemetryBlocked(), hosts = HostsFile.Current().Count };
+            case "net.tcp": return NetworkTools.TcpState();
+            case "net.dns": return NetworkTools.DnsPresets();
+            case "net.testDns": return NetworkTools.TestDns();
+            case "net.setDns": return new { result = NetworkTools.SetDns(S(p, "adapter"), S(p, "primary"), S(p, "secondary")) };
+            case "net.nagle": NetworkTools.SetNagle(B(p, "disabled", true)); return new { ok = true };
+            case "net.reset": return new { result = NetworkTools.ResetStack() };
+            case "net.ping": return NetworkTools.PingTargets();
+            case "net.telemetry": return NetTelemetry(B(p, "block", true));
+
+            case "bench.run": return BenchRun(S(p, "label", "run"), push);
+            case "bench.history": return Benchmark.History();
+            case "bench.clear": Benchmark.ClearHistory(); return new { ok = true };
+
+            case "monitor.read": return HwMonitor.Read();
+            case "monitor.top": return HwMonitor.TopProcesses(14);
+            case "monitor.trim": { var t = HwMonitor.TrimMemory(); return new { processes = t.Trimmed, freed = t.Freed }; }
+
+            case "boost.state": return GameBoost.State;
+            case "boost.start": return GameBoost.Start();
+            case "boost.stop": return GameBoost.Stop();
+
+            case "soft.list": return new { winget = SoftCatalog.HasWinget(), items = SoftCatalog.List(B(p, "refresh")) };
+            case "soft.install": return new { result = SoftCatalog.Install(S(p, "id")) };
+            case "soft.uninstall": return new { result = SoftCatalog.Uninstall(S(p, "id")) };
+            case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
+
+            case "sys.open": Sh.Run(S(p, "target"), S(p, "args"), 5000); return new { ok = true };
+            case "sys.link": Sh.OpenExternal(S(p, "url")); return new { ok = true };
+            case "sys.folder": Sh.OpenExternal(Paths.Root); return new { ok = true };
+            case "sys.power": return Power(S(p, "action"));
+            case "sys.refresh": Env.Invalidate(); Appx.Invalidate(); return AppInfo();
+
+            default: throw new InvalidOperationException("unknown method: " + method);
+        }
+    }
+
+    private static object AppInfo()
+    {
+        var f = Env.Facts;
+        return new
+        {
+            version = typeof(Api).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
+            settings = Settings.Data,
+            facts = f,
+            restore = RestorePoint.Enabled(),
+            tweakCount = Catalog.Db.Tweaks.Count,
+            journal = Journal.Entries.Count(x => !x.Reverted),
+            boost = GameBoost.State.Active,
+            dataDir = Paths.Root
+        };
+    }
+
+    private static object SetSetting(JsonElement? p)
+    {
+        var key = S(p, "key");
+        Settings.Update(s =>
+        {
+            switch (key)
+            {
+                case "lang": s.Lang = S(p, "value", "ru") == "en" ? "en" : "ru"; break;
+                case "showExtreme": s.ShowExtreme = B(p, "value"); break;
+                case "autoRestorePoint": s.AutoRestorePoint = B(p, "value"); break;
+                case "monitor3d": s.Monitor3d = B(p, "value"); break;
+                case "liveMonitor": s.LiveMonitor = B(p, "value"); break;
+                case "reduced": s.Reduced = B(p, "value"); break;
+                case "wizardDone": s.WizardDone = B(p, "value"); break;
+                case "acceptedRisk": s.AcceptedRisk = B(p, "value"); break;
+                case "favorite":
+                    {
+                        var id = S(p, "value");
+                        if (s.Favorites.Contains(id)) s.Favorites.Remove(id);
+                        else s.Favorites.Add(id);
+                        break;
+                    }
+            }
+        });
+        return Settings.Data;
+    }
+
+    private static object TweakList(JsonElement? p)
+    {
+        var lang = Lang;
+        var cat = S(p, "cat");
+        var risk = S(p, "risk");
+        var query = S(p, "q").Trim();
+
+        var items = new List<TweakView>();
+        foreach (var t in Catalog.Db.Tweaks)
+        {
+            if (cat.Length > 0 && cat != "all" && t.Cat != cat) continue;
+            if (risk.Length > 0 && risk != "all" && t.Risk != risk) continue;
+            var v = TweakEngine.ToView(t, lang);
+            if (query.Length > 0 &&
+                !v.Title.Contains(query, StringComparison.CurrentCultureIgnoreCase) &&
+                !v.Desc.Contains(query, StringComparison.CurrentCultureIgnoreCase) &&
+                !v.Id.Contains(query, StringComparison.OrdinalIgnoreCase)) continue;
+            items.Add(v);
+        }
+
+        var cats = Catalog.Db.Tweaks.GroupBy(x => x.Cat).ToDictionary(g => g.Key, g => g.Count());
+        var risks = Catalog.Db.Tweaks.GroupBy(x => x.Risk).ToDictionary(g => g.Key, g => g.Count());
+        return new { items, cats, risks, total = Catalog.Db.Tweaks.Count };
+    }
+
+    private static object Detect(string[] ids)
+    {
+        var res = new Dictionary<string, string>();
+        foreach (var id in ids)
+        {
+            var t = Catalog.Find(id);
+            if (t is null) continue;
+            res[id] = TweakEngine.Detect(t).ToString().ToLowerInvariant();
+        }
+        return res;
+    }
+
+    private static object ApplyMany(string[] ids, bool apply, Push push)
+    {
+        var defs = ids.Select(Catalog.Find).Where(x => x is not null).Cast<TweakDef>().ToList();
+        var results = new List<object>();
+        bool restart = false;
+        string? restorePoint = null;
+
+        if (apply && Settings.Data.AutoRestorePoint && defs.Any(x => x.Risk != "safe"))
+        {
+            push("progress", new { stage = "restore", percent = 0, total = defs.Count, done = 0 });
+            var rp = RestorePoint.Create("Klondaik Tweaker: " + DateTime.Now.ToString("dd.MM HH:mm"));
+            restorePoint = rp.Ok ? "ok" : rp.Message;
+        }
+
+        int done = 0;
+        foreach (var t in defs)
+        {
+            var r = apply ? TweakEngine.Apply(t) : TweakEngine.Revert(t);
+            done++;
+            push("progress", new { stage = t.Id, percent = done * 100 / Math.Max(1, defs.Count), total = defs.Count, done });
+            restart |= r.NeedsRestart;
+            results.Add(new { id = t.Id, ok = r.Ok, error = r.Error, state = TweakEngine.Detect(t).ToString().ToLowerInvariant() });
+        }
+
+        return new { results, restart, restorePoint, applied = results.Count };
+    }
+
+    private static object Presets()
+    {
+        var lang = Lang;
+        var groups = new (string Id, string Ru, string En, string DescRu, string DescEn, Func<TweakDef, bool> Match)[]
+        {
+            ("balanced", "Сбалансированный", "Balanced", "Только безопасные твики: телеметрия, мусор в интерфейсе, отзывчивость", "Safe tweaks only: telemetry, interface clutter, responsiveness", t => t.Risk == "safe"),
+            ("gaming", "Игровой", "Gaming", "Всё безопасное плюс твики под FPS, задержки ввода и сеть", "Everything safe plus FPS, input latency and network tweaks", t => t.Risk != "extreme" && (t.Tags.Contains("fps") || t.Tags.Contains("latency") || t.Tags.Contains("gpu") || t.Risk == "safe")),
+            ("privacy", "Приватность", "Privacy", "Телеметрия, реклама, Copilot, Recall, сбор данных", "Telemetry, ads, Copilot, Recall, data collection", t => t.Cat == "privacy" && t.Risk != "extreme"),
+            ("max", "Максимум", "Maximum", "Всё, включая агрессивные твики. Только для опытных", "Everything including aggressive tweaks. Experts only", t => true)
+        };
+
+        return groups.Select(g =>
+        {
+            var ids = Catalog.Db.Tweaks.Where(t => Env.Meets(t.Req) && g.Match(t)).Select(t => t.Id).ToArray();
+            return new
+            {
+                id = g.Id,
+                title = lang == "en" ? g.En : g.Ru,
+                desc = lang == "en" ? g.DescEn : g.DescRu,
+                count = ids.Length,
+                ids
+            };
+        });
+    }
+
+    private static object WizardQuestions()
+    {
+        var lang = Lang;
+        return Wizard.Questions().Select(q => new
+        {
+            id = q.Id,
+            multi = q.Multi,
+            title = lang == "en" ? q.En : q.Ru,
+            sub = lang == "en" ? q.SubEn : q.SubRu,
+            when = q.When,
+            options = q.Options.Select(o => new
+            {
+                id = o.Id,
+                title = lang == "en" ? o.En : o.Ru,
+                hint = lang == "en" ? o.HintEn : o.HintRu
+            })
+        });
+    }
+
+    private static object WizardResolve(JsonElement? p)
+    {
+        var answers = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        if (p is not null && p.Value.TryGetProperty("answers", out var a) && a.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var prop in a.EnumerateObject())
+            {
+                var vals = new List<string>();
+                if (prop.Value.ValueKind == JsonValueKind.Array)
+                    vals.AddRange(prop.Value.EnumerateArray().Where(x => x.ValueKind == JsonValueKind.String).Select(x => x.GetString() ?? ""));
+                else if (prop.Value.ValueKind == JsonValueKind.String)
+                    vals.Add(prop.Value.GetString() ?? "");
+                answers[prop.Name] = vals;
+            }
+        }
+        var ids = Wizard.Resolve(answers);
+        var lang = Lang;
+        var items = ids.Select(id => Catalog.Find(id)).Where(x => x is not null).Cast<TweakDef>()
+            .Select(t => TweakEngine.ToView(t, lang)).ToList();
+        return new
+        {
+            items,
+            counts = new
+            {
+                safe = items.Count(x => x.Risk == "safe"),
+                advanced = items.Count(x => x.Risk == "advanced"),
+                extreme = items.Count(x => x.Risk == "extreme"),
+                already = items.Count(x => x.State == "applied")
+            }
+        };
+    }
+
+    private static object JournalList()
+    {
+        var lang = Lang;
+        return Journal.Entries.OrderByDescending(x => x.Utc).Take(400).Select(e =>
+        {
+            var def = Catalog.Find(e.TweakId);
+            return new
+            {
+                id = e.Id,
+                tweakId = e.TweakId,
+                title = def is null ? e.Title : (lang == "en" ? def.En.T : def.Ru.T),
+                group = e.Group,
+                time = e.Utc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"),
+                reverted = e.Reverted,
+                items = e.Items.Count,
+                risk = def?.Risk ?? "safe"
+            };
+        });
+    }
+
+    private static object JournalRevert(string id)
+    {
+        var e = Journal.ById(id);
+        if (e is null) return new { ok = false, error = "not found" };
+        if (e.Reverted) return new { ok = true };
+        var errors = new List<string>();
+        for (int i = e.Items.Count - 1; i >= 0; i--)
+        {
+            try { TweakEngine.RevertItem(e.Items[i]); }
+            catch (Exception ex) { errors.Add(ex.Message); }
+        }
+        Journal.MarkReverted(e.Id);
+        return new { ok = errors.Count == 0, error = errors.Count > 0 ? string.Join("; ", errors.Take(2)) : null };
+    }
+
+    private static object JournalRevertAll(Push push)
+    {
+        var entries = Journal.Entries.Where(x => !x.Reverted).OrderByDescending(x => x.Utc).ToList();
+        int done = 0;
+        var failed = 0;
+        foreach (var e in entries)
+        {
+            for (int i = e.Items.Count - 1; i >= 0; i--)
+            {
+                try { TweakEngine.RevertItem(e.Items[i]); }
+                catch { failed++; }
+            }
+            Journal.MarkReverted(e.Id);
+            done++;
+            push("progress", new { stage = e.TweakId, percent = done * 100 / Math.Max(1, entries.Count), total = entries.Count, done });
+        }
+        return new { reverted = done, failed };
+    }
+
+    private static object CleanRun(string[] ids, Push push)
+    {
+        push("progress", new { stage = "clean", percent = 10, total = ids.Length, done = 0 });
+        var r = Cleaner.Clean(ids);
+        push("progress", new { stage = "clean", percent = 100, total = ids.Length, done = ids.Length });
+        return new { freed = r.Freed, files = r.Files, errors = r.Errors };
+    }
+
+    private static readonly string[] SafeToDisable =
+    [
+        "DiagTrack", "dmwappushservice", "RetailDemo", "MapsBroker", "WalletService", "PhoneSvc",
+        "WpcMonSvc", "Fax", "RemoteRegistry", "WMPNetworkSvc", "lfsvc", "SharedAccess", "TrkWks",
+        "diagnosticshub.standardcollector.service", "wisvc", "SCardSvr", "ScDeviceEnum", "SEMgrSvc"
+    ];
+
+    private static object ServiceList()
+    {
+        var all = Svc.All();
+        var journalDisabled = Journal.Entries.Where(x => !x.Reverted).SelectMany(x => x.Items).Where(x => x.Kind == "svc").Select(x => x.Target).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return all.Select(s => new
+        {
+            s.Name,
+            s.Display,
+            s.Desc,
+            s.Start,
+            s.Status,
+            recommended = SafeToDisable.Contains(s.Name, StringComparer.OrdinalIgnoreCase),
+            touched = journalDisabled.Contains(s.Name)
+        });
+    }
+
+    private static object ServiceSet(JsonElement? p)
+    {
+        var name = S(p, "name");
+        var mode = S(p, "mode", "manual");
+        try
+        {
+            var entry = new JournalEntry { TweakId = "svc:" + name, Title = name, Group = "service" };
+            entry.Items.Add(new JournalItem { Kind = "svc", Target = name, PrevValue = Svc.GetStart(name) });
+            Svc.SetStart(name, mode);
+            if (mode == "disabled") Svc.Stop(name);
+            Journal.Add(entry);
+            return new { ok = true, start = Svc.GetStart(name), status = Svc.GetStatus(name) };
+        }
+        catch (Exception ex) { return new { ok = false, error = ex.Message }; }
+    }
+
+    private static object ServiceControl(JsonElement? p)
+    {
+        var name = S(p, "name");
+        var action = S(p, "action");
+        var ok = action == "start" ? Svc.Start(name) : Svc.Stop(name);
+        return new { ok, status = Svc.GetStatus(name) };
+    }
+
+    private static object AppxRemove(string[] names, Push push)
+    {
+        var results = new List<object>();
+        int done = 0;
+        foreach (var n in names)
+        {
+            var r = Appx.Remove(n);
+            done++;
+            push("progress", new { stage = n, percent = done * 100 / Math.Max(1, names.Length), total = names.Length, done });
+            results.Add(new { name = n, result = r });
+        }
+        Appx.Invalidate();
+        return results;
+    }
+
+    private static object NetTelemetry(bool block)
+    {
+        if (block) HostsFile.Block(NetworkTools.TelemetryHosts);
+        else HostsFile.Unblock(NetworkTools.TelemetryHosts);
+        return new { blocked = NetworkTools.TelemetryBlocked(), count = HostsFile.Current().Count };
+    }
+
+    private static object BenchRun(string label, Push push)
+    {
+        void Handler(string stage, int percent) => push("progress", new { stage, percent, total = 100, done = percent });
+        Benchmark.Progress += Handler;
+        try { return Benchmark.Run(label); }
+        finally { Benchmark.Progress -= Handler; }
+    }
+
+    private static object Power(string action)
+    {
+        switch (action)
+        {
+            case "restart": Sh.Run("shutdown.exe", "/r /t 5 /c \"Klondaik Tweaker\"", 5000); break;
+            case "logoff": Sh.Run("shutdown.exe", "/l", 5000); break;
+            case "explorer": Sh.Ps("Stop-Process -Name explorer -Force", 20000); break;
+            case "cancel": Sh.Run("shutdown.exe", "/a", 5000); break;
+        }
+        return new { ok = true };
+    }
+}
