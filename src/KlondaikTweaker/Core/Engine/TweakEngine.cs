@@ -132,8 +132,19 @@ public static class TweakEngine
                     }
                     case "cmd":
                     {
+                        var target = a.Exe!;
+                        var revert = a.RArgs;
+                        if (a.Cap == "powerplan")
+                        {
+                            var scheme = Win.Power.ActiveScheme();
+                            if (scheme is not null)
+                            {
+                                target = "powercfg.exe";
+                                revert = "/setactive " + scheme;
+                            }
+                        }
                         var r = Sh.Run(a.Exe!, a.Args ?? "", 180000);
-                        entry.Items.Add(new JournalItem { Kind = "cmd", Target = a.Exe!, PrevValue = a.Args, Revert = a.RArgs });
+                        entry.Items.Add(new JournalItem { Kind = "cmd", Target = target, PrevValue = a.Args, Revert = revert });
                         if (!r.Ok) errors.Add(Path.GetFileName(a.Exe) + ": " + Trim(r.All));
                         break;
                     }

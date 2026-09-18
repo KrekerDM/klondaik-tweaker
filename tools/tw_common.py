@@ -37,10 +37,12 @@ def TK(p, v="off"):
     return {"k": "task", "p": p, "v": v}
 
 
-def CM(exe, args, rargs=None):
+def CM(exe, args, rargs=None, cap=None):
     a = {"k": "cmd", "exe": exe, "args": args}
     if rargs is not None:
         a["rargs"] = rargs
+    if cap is not None:
+        a["cap"] = cap
     return a
 
 

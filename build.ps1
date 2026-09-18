@@ -23,5 +23,11 @@ $exe = Join-Path $dist "KlondaikTweaker.exe"
 if (-not (Test-Path $exe)) { throw "publish produced no exe" }
 
 Get-ChildItem $dist -Filter *.pdb | Remove-Item -Force -ErrorAction SilentlyContinue
+$vmTest = Join-Path $dist "VM-test"
+New-Item -ItemType Directory -Path $vmTest -Force | Out-Null
+Copy-Item $exe $vmTest -Force
+Copy-Item (Join-Path $root "tools\RUN-TEST.bat") $vmTest -Force
+
 $size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
 Write-Host "Done: $exe ($size MB)" -ForegroundColor Green
+Write-Host "VM test package: $vmTest" -ForegroundColor Green

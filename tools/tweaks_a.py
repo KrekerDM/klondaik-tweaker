@@ -382,7 +382,7 @@ ITEMS = [
        "Stops the CPU from dropping frequency at idle and disks from spinning down. The simplest fix for stutter in the first seconds of load.",
        None),
       [CM("powercfg.exe", "/setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c",
-          "/setactive 381b4222-f694-41f0-9685-ff5bb260df2e")],
+          "/setactive 381b4222-f694-41f0-9685-ff5bb260df2e", cap="powerplan")],
       tags=["power", "fps"]),
 
     T("pwr.ultimate", "power", "advanced",
@@ -393,7 +393,7 @@ ITEMS = [
        "The hidden Ultimate Performance scheme disables every power saving mechanism including core parking. It is created and activated automatically.",
        "Power draw and heat go up. Not suitable for laptops."),
       [CM("cmd.exe", "/c powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 && powercfg /setactive e9a42b02-d5df-448d-aa00-03f14749eb61",
-          "/c powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e")],
+          "/c powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e", cap="powerplan")],
       tags=["power", "fps"], req="desktop"),
 
     T("pwr.core-parking-off", "power", "advanced",

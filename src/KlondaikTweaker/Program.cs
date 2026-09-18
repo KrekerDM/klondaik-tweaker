@@ -24,11 +24,28 @@ internal static class Program
         TaskScheduler.UnobservedTaskException += (_, e) => { Log(e.Exception); e.SetObserved(); };
 
         var args = Environment.GetCommandLineArgs();
+
         var selfTest = Array.FindIndex(args, a => a.Equals("--selftest", StringComparison.OrdinalIgnoreCase));
         if (selfTest >= 0)
         {
             var target = selfTest + 1 < args.Length ? args[selfTest + 1] : Path.Combine(Paths.Root, "selftest.txt");
             Host.SelfTest.Run(target);
+            return;
+        }
+
+        var applyTest = Array.FindIndex(args, a => a.Equals("--selftest-apply", StringComparison.OrdinalIgnoreCase));
+        if (applyTest >= 0)
+        {
+            var canaryOnly = args.Any(a => a.Equals("--canary-only", StringComparison.OrdinalIgnoreCase));
+            if (!canaryOnly && !IsAdmin())
+            {
+                MessageBox.Show("Тесту применения нужны права администратора.", "Klondaik Tweaker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var target = applyTest + 1 < args.Length && !args[applyTest + 1].StartsWith("--")
+                ? args[applyTest + 1]
+                : Path.Combine(Paths.Root, "selftest-apply.txt");
+            Host.SelfTest.RunApply(target, canaryOnly);
             return;
         }
 
