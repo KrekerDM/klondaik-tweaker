@@ -91,26 +91,131 @@ public static class Reg
         catch { return new(false, "sz", ""); }
     }
 
-    public static void Write(string hive, string path, string? name, string? type, string value)
+    public static int Escalations { get; private set; }
+
+    private static void WriteDirect(string hive, string path, string? name, string? type, string value)
     {
         using var root = Root(hive) ?? throw new InvalidOperationException("hive " + hive);
         using var key = root.CreateSubKey(path, true) ?? throw new InvalidOperationException("key " + path);
         key.SetValue(name ?? "", Materialize(type, value), KindFrom(type));
     }
 
+    public static void Write(string hive, string path, string? name, string? type, string value)
+    {
+        try
+        {
+            WriteDirect(hive, path, name, type, value);
+            return;
+        }
+        catch (Exception first) when (first is UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            if (Elevate.UnlockKey(hive, path))
+            {
+                try
+                {
+                    WriteDirect(hive, path, name, type, value);
+                    Escalations++;
+                    return;
+                }
+                catch { }
+            }
+
+            var r = Ti.Run(RegAdd(hive, path, name, type, value));
+            if (!r.Ok) throw new UnauthorizedAccessException($"{hive}\\{path}\\{name}: {Brief(r.All, first.Message)}");
+            Escalations++;
+        }
+    }
+
     public static void DeleteValue(string hive, string path, string? name)
     {
-        using var root = Root(hive);
-        using var key = root?.OpenSubKey(path, true);
-        if (key is null) return;
-        try { key.DeleteValue(name ?? "", false); } catch { }
+        try
+        {
+            using var root = Root(hive);
+            using var key = root?.OpenSubKey(path, true);
+            if (key is null) return;
+            key.DeleteValue(name ?? "", false);
+            return;
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            if (Elevate.UnlockKey(hive, path))
+            {
+                try
+                {
+                    using var root = Root(hive);
+                    using var key = root?.OpenSubKey(path, true);
+                    key?.DeleteValue(name ?? "", false);
+                    Escalations++;
+                    return;
+                }
+                catch { }
+            }
+            Ti.Run($"reg delete \"{FullPath(hive, path)}\" /v \"{name}\" /f");
+            Escalations++;
+        }
+        catch { }
     }
 
     public static void DeleteTree(string hive, string path)
     {
-        using var root = Root(hive);
-        if (root is null) return;
-        try { root.DeleteSubKeyTree(path, false); } catch { }
+        try
+        {
+            using var root = Root(hive);
+            if (root is null) return;
+            root.DeleteSubKeyTree(path, false);
+            return;
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            if (Elevate.UnlockTree(hive, path))
+            {
+                try
+                {
+                    using var root = Root(hive);
+                    root?.DeleteSubKeyTree(path, false);
+                    Escalations++;
+                    return;
+                }
+                catch { }
+            }
+            Ti.Run($"reg delete \"{FullPath(hive, path)}\" /f");
+            Escalations++;
+        }
+        catch { }
+    }
+
+    private static string FullPath(string hive, string path) => hive.ToUpperInvariant() switch
+    {
+        "HKLM" => "HKLM\\" + path,
+        "HKCU" => "HKCU\\" + path,
+        "HKCR" => "HKCR\\" + path,
+        "HKU" => "HKU\\" + path,
+        _ => hive + "\\" + path
+    };
+
+    private static string RegType(string? type) => (type ?? "sz").ToLowerInvariant() switch
+    {
+        "dword" => "REG_DWORD",
+        "qword" => "REG_QWORD",
+        "expand" => "REG_EXPAND_SZ",
+        "multi" => "REG_MULTI_SZ",
+        "binary" => "REG_BINARY",
+        _ => "REG_SZ"
+    };
+
+    private static string RegAdd(string hive, string path, string? name, string? type, string value)
+    {
+        var data = value.Replace("\"", "\\\"");
+        if (KindFrom(type) == RegistryValueKind.MultiString) data = data.Replace("|", "\\0");
+        var nameArg = string.IsNullOrEmpty(name) ? "/ve" : $"/v \"{name}\"";
+        return $"reg add \"{FullPath(hive, path)}\" {nameArg} /t {RegType(type)} /d \"{data}\" /f";
+    }
+
+    private static string Brief(string a, string b)
+    {
+        var text = string.IsNullOrWhiteSpace(a) ? b : a;
+        text = text.Replace("\r", " ").Replace("\n", " ").Trim();
+        return text.Length > 140 ? text[..140] : text;
     }
 
     public static bool KeyExists(string hive, string path)

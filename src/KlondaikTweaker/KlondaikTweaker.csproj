@@ -27,6 +27,7 @@
     <DebugType>none</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <CetCompat>false</CetCompat>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>

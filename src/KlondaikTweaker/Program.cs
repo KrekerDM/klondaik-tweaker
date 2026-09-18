@@ -23,6 +23,8 @@ internal static class Program
         Application.ThreadException += (_, e) => Crash(e.Exception);
         TaskScheduler.UnobservedTaskException += (_, e) => { Log(e.Exception); e.SetObserved(); };
 
+        Core.Win.Elevate.EnableAll();
+
         var args = Environment.GetCommandLineArgs();
 
         var selfTest = Array.FindIndex(args, a => a.Equals("--selftest", StringComparison.OrdinalIgnoreCase));

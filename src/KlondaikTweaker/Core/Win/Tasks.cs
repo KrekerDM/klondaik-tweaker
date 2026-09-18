@@ -53,8 +53,22 @@ public static class Tasks
                 t.Enabled = enabled;
                 return true;
             }
-            catch { return false; }
+            catch
+            {
+                return SetEnabledElevated(path, enabled);
+            }
         }
+    }
+
+    private static bool SetEnabledElevated(string path, bool enabled)
+    {
+        try
+        {
+            var flag = enabled ? "/enable" : "/disable";
+            var r = Ti.Run($"schtasks /change /tn \"{path}\" {flag}", 45000);
+            return r.Ok;
+        }
+        catch { return false; }
     }
 
     public static List<TaskInfo> Startup()

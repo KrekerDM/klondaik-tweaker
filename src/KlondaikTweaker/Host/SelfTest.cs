@@ -22,7 +22,8 @@ public static class SelfTest
         "svc.insider-off",
         "perf.wer-off",
         "priv.hosts-telemetry",
-        "pwr.high-performance"
+        "pwr.high-performance",
+        "upd.full-off"
     ];
 
     public static void Run(string outPath)
@@ -86,6 +87,19 @@ public static class SelfTest
         Check("boot.time", () => Benchmark.BootTime());
         Check("winget", () => SoftCatalog.HasWinget());
         Check("tasks", () => Tasks.GetEnabled(@"\Microsoft\Windows\Defrag\ScheduledDefrag"));
+        Check("privileges", () => { Elevate.EnableAll(); return Elevate.Granted; });
+        Check("ti.available", () => Ti.Available());
+        Check("ti.identity", () =>
+        {
+            var r = Ti.Run("whoami", 45000);
+            return new { token = Ti.LastIdentity, code = r.Code, identity = r.Out, error = r.Err };
+        });
+        Check("ti.protected-key", () =>
+        {
+            const string probe = @"SYSTEM\CurrentControlSet\Services\WaaSMedicSvc";
+            var before = Reg.Read("HKLM", probe, "Start");
+            return new { exists = before.Exists, value = before.Value, escalations = Reg.Escalations };
+        });
 
         var failed = results.Count(HasFailed);
         report.AppendLine();
@@ -121,6 +135,12 @@ public static class SelfTest
             {
                 report.AppendLine($"[SKIP] {id}: requires {def.Req}");
                 results.Add(new { name = id, ok = true, skipped = true, note = "requires " + def.Req });
+                continue;
+            }
+            if (TweakEngine.Detect(def) == TweakState.Unavailable)
+            {
+                report.AppendLine($"[SKIP] {id}: targets do not exist on this system");
+                results.Add(new { name = id, ok = true, skipped = true, note = "targets missing" });
                 continue;
             }
 

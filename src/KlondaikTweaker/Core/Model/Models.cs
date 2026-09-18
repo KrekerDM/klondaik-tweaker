@@ -26,6 +26,7 @@ public sealed class TweakAction
     [JsonPropertyName("stop")] public bool Stop { get; set; }
     [JsonPropertyName("dk")] public bool Dk { get; set; }
     [JsonPropertyName("cap")] public string? Cap { get; set; }
+    [JsonPropertyName("ti")] public bool Ti { get; set; }
 }
 
 public sealed class TweakDef

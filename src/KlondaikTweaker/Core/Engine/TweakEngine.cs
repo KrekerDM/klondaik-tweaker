@@ -13,10 +13,11 @@ public static class TweakEngine
     {
         if (!Env.Meets(t.Req)) return TweakState.Unavailable;
 
-        int hits = 0, misses = 0, checkable = 0;
+        int hits = 0, misses = 0, checkable = 0, detectable = 0;
         foreach (var a in t.Actions)
         {
             if (!Detectable.Contains(a.K)) continue;
+            detectable++;
             checkable++;
             bool applied;
             switch (a.K)
@@ -57,6 +58,7 @@ public static class TweakEngine
             if (applied) hits++; else misses++;
         }
 
+        if (checkable == 0 && detectable > 0) return TweakState.Unavailable;
         if (checkable == 0) return Journal.IsApplied(t.Id) ? TweakState.Applied : TweakState.NotApplied;
         if (misses == 0) return TweakState.Applied;
         if (hits == 0) return TweakState.NotApplied;
@@ -143,7 +145,8 @@ public static class TweakEngine
                                 revert = "/setactive " + scheme;
                             }
                         }
-                        var r = Sh.Run(a.Exe!, a.Args ?? "", 180000);
+                        var r = a.Ti ? Ti.RunExe(a.Exe!, a.Args ?? "") : Sh.Run(a.Exe!, a.Args ?? "", 180000);
+                        if (!r.Ok && !a.Ti) r = Ti.RunExe(a.Exe!, a.Args ?? "");
                         entry.Items.Add(new JournalItem { Kind = "cmd", Target = target, PrevValue = a.Args, Revert = revert });
                         if (!r.Ok) errors.Add(Path.GetFileName(a.Exe) + ": " + Trim(r.All));
                         break;

@@ -12,8 +12,10 @@ public sealed class MainForm : Form
 {
     private const string Origin = "https://app.klondaik";
     private const int Border = 6;
-    private const int MinWidth = 1120;
-    private const int MinHeight = 720;
+    private const int MinWidth = 820;
+    private const int MinHeight = 560;
+    private const int PreferredWidth = 1320;
+    private const int PreferredHeight = 860;
 
     private readonly WebView2 _web = new();
     private readonly System.Windows.Forms.Timer _metrics = new();
@@ -29,8 +31,11 @@ public sealed class MainForm : Form
         Text = "Klondaik Tweaker";
         FormBorderStyle = FormBorderStyle.None;
         StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new Size(MinWidth, MinHeight);
-        Size = new Size(1320, 860);
+        var work = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, PreferredWidth, PreferredHeight);
+        MinimumSize = new Size(Math.Min(MinWidth, work.Width), Math.Min(MinHeight, work.Height));
+        Size = new Size(
+            Math.Max(MinimumSize.Width, Math.Min(PreferredWidth, work.Width - 60)),
+            Math.Max(MinimumSize.Height, Math.Min(PreferredHeight, work.Height - 60)));
         BackColor = Color.FromArgb(11, 15, 20);
         DoubleBuffered = true;
         KeyPreview = true;
@@ -265,7 +270,7 @@ public sealed class MainForm : Form
             var info = Marshal.PtrToStructure<MinMaxInfo>(m.LParam);
             info.ptMaxPosition = new Point(screen.WorkingArea.Left - screen.Bounds.Left, screen.WorkingArea.Top - screen.Bounds.Top);
             info.ptMaxSize = new Point(screen.WorkingArea.Width, screen.WorkingArea.Height);
-            info.ptMinTrackSize = new Point(MinWidth, MinHeight);
+            info.ptMinTrackSize = new Point(MinimumSize.Width, MinimumSize.Height);
             Marshal.StructureToPtr(info, m.LParam, true);
             m.Result = IntPtr.Zero;
             return;

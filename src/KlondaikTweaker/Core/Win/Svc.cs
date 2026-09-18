@@ -86,12 +86,25 @@ public static class Svc
         {
             using var sc = new ServiceController(name);
             if (sc.Status == ServiceControllerStatus.Stopped) return true;
-            if (!sc.CanStop) return false;
+            if (!sc.CanStop) return StopElevated(name, waitMs);
             sc.Stop();
             sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMilliseconds(waitMs));
             return true;
         }
-        catch { return false; }
+        catch { return StopElevated(name, waitMs); }
+    }
+
+    private static bool StopElevated(string name, int waitMs)
+    {
+        try
+        {
+            var r = Ti.Run($"sc stop \"{name}\"", Math.Max(waitMs, 20000));
+            if (!r.Ok) return false;
+            using var sc = new ServiceController(name);
+            sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMilliseconds(waitMs));
+            return true;
+        }
+        catch { return GetStatus(name) == "stopped"; }
     }
 
     public static bool Start(string name, int waitMs = 15000)
