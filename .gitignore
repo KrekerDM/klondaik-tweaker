@@ -7,3 +7,5 @@ out/
 .vs/
 __pycache__/
 *.pyc
+otherstweaks/
+frostpane-main.zip
