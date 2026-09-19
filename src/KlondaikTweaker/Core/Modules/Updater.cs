@@ -21,7 +21,7 @@ public sealed class UpdateInfo
 
 public static class Updater
 {
-    public const string Owner = "KrekedDM";
+    public const string Owner = "KrekerDM";
     public const string Repo = "klondaik-tweaker";
 
     private const string AssetName = "KlondaikTweaker.exe";
