@@ -7,6 +7,7 @@ import dash from "./pages/dash.js";
 import wizard from "./pages/wizard.js";
 import tweaks from "./pages/tweaks.js";
 import clean from "./pages/clean.js";
+import tools from "./pages/tools.js";
 import startup from "./pages/startup.js";
 import services from "./pages/services.js";
 import apps from "./pages/apps.js";
@@ -16,7 +17,7 @@ import soft from "./pages/soft.js";
 import journal from "./pages/journal.js";
 import settings from "./pages/settings.js";
 
-const PAGES = [dash, wizard, tweaks, clean, startup, services, apps, network, bench, soft, journal, settings];
+const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, apps, network, bench, soft, journal, settings];
 const GROUPS = ["main", "system", "extra"];
 
 const app = {

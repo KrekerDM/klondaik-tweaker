@@ -5,7 +5,7 @@ import { tweakCard, setCardState } from "../tweakcard.js";
 import { runTweaks } from "../actions.js";
 
 const ORDER = [
-  "performance", "gaming", "privacy", "ai", "interface", "services",
+  "performance", "gaming", "input", "privacy", "ai", "interface", "services",
   "network", "disk", "power", "updates", "security", "debloat"
 ];
 

@@ -108,6 +108,8 @@ public static class Api
             case "soft.uninstall": return new { result = SoftCatalog.Uninstall(S(p, "id")) };
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
+            case "repair.run": return RepairRun(S(p, "id"));
+
             case "sys.open": Sh.Run(S(p, "target"), S(p, "args"), 5000); return new { ok = true };
             case "sys.link": Sh.OpenExternal(S(p, "url")); return new { ok = true };
             case "sys.folder": Sh.OpenExternal(Paths.Root); return new { ok = true };
@@ -438,6 +440,33 @@ public static class Api
         Benchmark.Progress += Handler;
         try { return Benchmark.Run(label); }
         finally { Benchmark.Progress -= Handler; }
+    }
+
+    private static object RepairRun(string id) => id switch
+    {
+        "services" => Repair.RestoreServices(),
+        "defender" => Repair.RestoreDefender(),
+        "updates" => Repair.RestoreUpdates(),
+        "store" => Repair.ResetStore(),
+        "search" => Repair.RebuildSearch(),
+        "network" => Repair.RestoreNetwork(),
+        "godmode" => Repair.OpenGodMode(),
+        "dns" => Repair.FlushDns(),
+        "memory" => MemoryTool(),
+        "explorer" => ExplorerTool(),
+        _ => new RepairResult { Ok = false, Message = "unknown repair: " + id }
+    };
+
+    private static RepairResult MemoryTool()
+    {
+        var t = HwMonitor.TrimMemory();
+        return new RepairResult { Changed = t.Trimmed, Message = "освобождено " + t.Freed / 1024 / 1024 + " МБ" };
+    }
+
+    private static RepairResult ExplorerTool()
+    {
+        Sh.Ps("Stop-Process -Name explorer -Force", 20000);
+        return new RepairResult { Message = "проводник перезапущен" };
     }
 
     private static object Power(string action)

@@ -7,6 +7,7 @@ const dict = {
     "page.wizard": "Подбор",
     "page.tweaks": "Твики",
     "page.clean": "Очистка",
+    "page.tools": "Инструменты",
     "page.startup": "Автозагрузка",
     "page.services": "Службы",
     "page.apps": "Приложения",
@@ -51,6 +52,7 @@ const dict = {
     "cat.all": "Все",
     "cat.performance": "Производительность",
     "cat.gaming": "Игры",
+    "cat.input": "Мышь и клавиатура",
     "cat.privacy": "Приватность",
     "cat.ai": "Copilot и ИИ",
     "cat.interface": "Интерфейс",
@@ -106,6 +108,10 @@ const dict = {
     "tw.needRestart": "нужна перезагрузка",
     "tw.needLogoff": "нужен перезаход",
     "tw.source": "источник",
+
+    "tools.title": "Инструменты",
+    "tools.sub": "Разовые действия в один клик: починить сломанное чужими твикерами, сбросить, очистить. Каждое пишется в журнал и откатывается.",
+    "tools.working": "выполняется...",
 
     "clean.title": "Очистка диска",
     "clean.sub": "Временные файлы, кэши и мусор, который система не убирает сама",
@@ -259,6 +265,7 @@ const dict = {
     "page.wizard": "Setup",
     "page.tweaks": "Tweaks",
     "page.clean": "Cleanup",
+    "page.tools": "Tools",
     "page.startup": "Startup",
     "page.services": "Services",
     "page.apps": "Apps",
@@ -303,6 +310,7 @@ const dict = {
     "cat.all": "All",
     "cat.performance": "Performance",
     "cat.gaming": "Gaming",
+    "cat.input": "Mouse and keyboard",
     "cat.privacy": "Privacy",
     "cat.ai": "Copilot and AI",
     "cat.interface": "Interface",
@@ -358,6 +366,10 @@ const dict = {
     "tw.needRestart": "needs restart",
     "tw.needLogoff": "needs sign-out",
     "tw.source": "source",
+
+    "tools.title": "Tools",
+    "tools.sub": "One-click actions: repair what other tweakers broke, reset, clean up. Each one is journaled and revertible.",
+    "tools.working": "working...",
 
     "clean.title": "Disk cleanup",
     "clean.sub": "Temp files, caches and junk the system never clears on its own",

@@ -87,6 +87,17 @@ public static class SelfTest
         Check("boot.time", () => Benchmark.BootTime());
         Check("winget", () => SoftCatalog.HasWinget());
         Check("tasks", () => Tasks.GetEnabled(@"\Microsoft\Windows\Defrag\ScheduledDefrag"));
+        Check("repair.plan", () =>
+        {
+            var db = Repair.Db;
+            int differs = 0, missing = 0;
+            foreach (var (name, mode) in db.ServiceDefaults)
+            {
+                if (!Svc.Exists(name)) { missing++; continue; }
+                if (!string.Equals(Svc.GetStart(name), mode, StringComparison.OrdinalIgnoreCase)) differs++;
+            }
+            return new { total = db.ServiceDefaults.Count, differs, missing };
+        });
         Check("privileges", () => { Elevate.EnableAll(); return Elevate.Granted; });
         Check("ti.available", () => Ti.Available());
         Check("ti.identity", () =>

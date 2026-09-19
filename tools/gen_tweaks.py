@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tweaks_a
 import tweaks_b
 import tweaks_c
+import tweaks_d
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "KlondaikTweaker", "Assets", "Data", "tweaks.json")
 
@@ -15,7 +16,7 @@ ALLOWED_KIND = {"reg", "regdel", "svc", "task", "appx", "cmd", "hosts"}
 ALLOWED_HIVE = {"HKLM", "HKCU", "HKCR", "HKU"}
 ALLOWED_TYPE = {"dword", "qword", "sz", "expand", "multi", "binary"}
 
-items = tweaks_a.ITEMS + tweaks_b.ITEMS + tweaks_c.ITEMS
+items = tweaks_a.ITEMS + tweaks_b.ITEMS + tweaks_c.ITEMS + tweaks_d.ITEMS
 
 seen = set()
 problems = []

@@ -917,6 +917,123 @@ select option {
   white-space: nowrap;
 }
 
+.toolgrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: var(--s-4);
+}
+
+.toolcanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.toolcard {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.toolcard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 18% 50%, rgba(111, 195, 232, 0.12), transparent 58%);
+  opacity: 0;
+  transition: opacity 0.22s var(--ease);
+}
+
+.toolcard:hover {
+  background: var(--card-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  border-left-color: var(--accent);
+}
+
+.toolcard:hover::after {
+  opacity: 1;
+}
+
+.toolcard.busy {
+  border-left-color: var(--warn);
+  cursor: progress;
+}
+
+.toolcard.failed {
+  border-left-color: var(--danger);
+}
+
+.toolcard-3d {
+  flex: 0 0 96px;
+  width: 96px;
+  align-self: center;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.toolcard-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toolcard-body h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.toolcard-body p {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.toolcard-state {
+  margin-top: auto;
+  padding-top: var(--s-2);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent-text);
+  min-height: 14px;
+}
+
+.toolcard.busy .toolcard-state {
+  color: var(--warn);
+}
+
+.toolcard.failed .toolcard-state {
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  .toolgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .toolcard-3d {
+    flex-basis: 72px;
+    width: 72px;
+  }
+}
+
 .toasts {
   position: fixed;
   right: var(--s-6);
