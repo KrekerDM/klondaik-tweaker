@@ -64,6 +64,15 @@ $env:KLONDAIK_UI_PREVIEW = "1"; .\out\KlondaikTweaker.exe
 .\dist\KlondaikTweaker.exe --selftest-apply report.txt --all
 ```
 
+Прогон модулей: по-настоящему выполняет очистку, бенчмарк, игровой буст,
+все кнопки «Инструментов», точку восстановления и сброс сети. Отчёт пишется
+после каждого шага, поэтому обрыв посередине не теряет результат.
+**Только в виртуалке.**
+
+```powershell
+.\dist\KlondaikTweaker.exe --selftest-modules report.txt
+```
+
 ## Устройство
 
 | Слой | Где | Что делает |

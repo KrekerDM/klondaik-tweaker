@@ -35,6 +35,21 @@ internal static class Program
             return;
         }
 
+        var moduleTest = Array.FindIndex(args, a => a.Equals("--selftest-modules", StringComparison.OrdinalIgnoreCase));
+        if (moduleTest >= 0)
+        {
+            if (!IsAdmin())
+            {
+                MessageBox.Show("Тесту модулей нужны права администратора.", "Klondaik Tweaker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var target = moduleTest + 1 < args.Length && !args[moduleTest + 1].StartsWith("--")
+                ? args[moduleTest + 1]
+                : Path.Combine(Paths.Root, "selftest-modules.txt");
+            Host.ModuleTest.Run(target);
+            return;
+        }
+
         var applyTest = Array.FindIndex(args, a => a.Equals("--selftest-apply", StringComparison.OrdinalIgnoreCase));
         if (applyTest >= 0)
         {

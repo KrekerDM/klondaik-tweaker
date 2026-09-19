@@ -5,6 +5,8 @@ namespace KlondaikTweaker.Core.Engine;
 
 public sealed record RestoreEntry(int Seq, string Desc, string Time);
 
+public sealed record RestoreResult(bool Ok, string Message);
+
 public static class RestorePoint
 {
     private const string SrKey = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore";
@@ -36,20 +38,20 @@ public static class RestorePoint
         return "ok";
     }
 
-    public static (bool Ok, string Message) Create(string description)
+    public static RestoreResult Create(string description)
     {
         try { Reg.Write("HKLM", SrKey, "SystemRestorePointCreationFrequency", "dword", "0"); }
         catch { }
 
         var safe = description.Replace("'", "").Replace("\"", "");
         var r = Sh.Ps($"Checkpoint-Computer -Description '{safe}' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop", 300000);
-        if (r.Ok) return (true, "ok");
+        if (r.Ok) return new RestoreResult(true, "ok");
 
         var text = r.All;
         if (text.Contains("disabled", StringComparison.OrdinalIgnoreCase) ||
             text.Contains("отключ", StringComparison.OrdinalIgnoreCase))
-            return (false, "disabled");
-        return (false, Short(text));
+            return new RestoreResult(false, "disabled");
+        return new RestoreResult(false, Short(text));
     }
 
     public static List<RestoreEntry> List()
