@@ -47,6 +47,13 @@ public sealed class MainForm : Form
 
         Load += OnLoad;
         FormClosing += OnClosing;
+        Api.QuitRequested += OnQuitRequested;
+    }
+
+    private void OnQuitRequested()
+    {
+        if (IsDisposed || !IsHandleCreated) return;
+        try { BeginInvoke(Close); } catch { }
     }
 
     protected override void OnHandleCreated(EventArgs e)

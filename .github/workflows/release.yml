@@ -1,0 +1,67 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate data files
+        working-directory: tools
+        run: |
+          python gen_tweaks.py
+          python gen_wizard.py
+          python gen_software.py
+          python gen_repair.py
+          python gen_credits.py
+
+      - name: Fail if generated data differs from the commit
+        run: |
+          git diff --exit-code -- src/KlondaikTweaker/Assets/Data
+
+      - name: Publish
+        run: dotnet publish src/KlondaikTweaker/KlondaikTweaker.csproj -c Release -o dist --nologo
+
+      - name: Check the artifact
+        shell: pwsh
+        run: |
+          $exe = "dist/KlondaikTweaker.exe"
+          if (-not (Test-Path $exe)) { throw "publish produced no exe" }
+          $size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
+          Write-Host "KlondaikTweaker.exe is $size MB"
+          if ($size -lt 20) { throw "artifact is suspiciously small" }
+          (Get-FileHash $exe -Algorithm SHA256).Hash | Out-File dist/KlondaikTweaker.exe.sha256 -Encoding ascii
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KlondaikTweaker
+          path: |
+            dist/KlondaikTweaker.exe
+            dist/KlondaikTweaker.exe.sha256
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            dist/KlondaikTweaker.exe
+            dist/KlondaikTweaker.exe.sha256

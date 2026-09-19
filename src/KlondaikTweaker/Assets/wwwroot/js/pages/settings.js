@@ -1,6 +1,6 @@
-import { invoke } from "../bridge.js";
+import { invoke, on } from "../bridge.js";
 import { t, getLang } from "../i18n.js";
-import { h, esc, toast, switchEl } from "../ui.js";
+import { h, esc, toast, switchEl, progress, bytes } from "../ui.js";
 import { setEnabled } from "../scene.js";
 import { restartExplorer } from "../actions.js";
 
@@ -69,6 +69,103 @@ export default {
     );
     el.appendChild(tools);
 
+    const upd = h(
+      '<div class="pane stack"><h2>' + esc(t("upd.title")) + "</h2>" +
+        '<div class="item">' +
+        '<div class="grow"><div class="name" data-state>' + esc(t("upd.current")) + " " + esc(app.info.version) + "</div>" +
+        '<div class="sub" data-sub>' + esc(t("upd.hint")) + "</div></div>" +
+        '<div class="row">' +
+        '<button class="btn btn-ghost btn-sm" data-u="check">' + esc(t("upd.check")) + "</button>" +
+        '<button class="btn btn-sm" data-u="install" hidden>' + esc(t("upd.install")) + "</button>" +
+        "</div></div>" +
+        '<div class="small dim" data-notes hidden style="white-space:pre-wrap;max-height:220px;overflow:auto"></div>' +
+        '<div class="row"><button class="btn btn-ghost btn-sm" data-u="releases">' + esc(t("upd.releases")) + "</button></div></div>"
+    );
+    el.appendChild(upd);
+
+    const stateEl = upd.querySelector("[data-state]");
+    const subEl = upd.querySelector("[data-sub]");
+    const notesEl = upd.querySelector("[data-notes]");
+    const checkBtn = upd.querySelector('[data-u="check"]');
+    const installBtn = upd.querySelector('[data-u="install"]');
+    let found = null;
+    let busy = false;
+
+    const off = on("update", (data) => {
+      if (!data) return;
+      if (data.stage === "download") {
+        progress(data.percent || 0);
+        subEl.textContent = t("upd.downloading") + " " + (data.percent || 0) + "%";
+      } else if (data.stage === "install") {
+        progress(100);
+        subEl.textContent = t("upd.installing");
+      }
+    });
+
+    upd.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-u]");
+      if (!btn || busy) return;
+      const action = btn.dataset.u;
+
+      if (action === "releases") {
+        await invoke("sys.link", { url: "https://github.com/Faliseven/klondaik-tweaker/releases" });
+        return;
+      }
+
+      if (action === "check") {
+        busy = true;
+        checkBtn.disabled = true;
+        stateEl.textContent = t("upd.checking");
+        try {
+          const info = await invoke("update.check");
+          if (info.error) {
+            stateEl.textContent = t("upd.failed");
+            subEl.textContent = info.error;
+          } else if (info.available) {
+            found = info;
+            stateEl.textContent = t("upd.found") + " " + info.latest;
+            subEl.textContent = t("upd.current") + " " + info.current + (info.size ? " · " + bytes(info.size) : "");
+            installBtn.hidden = false;
+            if (info.notes) {
+              notesEl.textContent = info.notes;
+              notesEl.hidden = false;
+            }
+          } else {
+            stateEl.textContent = t("upd.latest");
+            subEl.textContent = t("upd.current") + " " + info.current;
+          }
+        } catch (err) {
+          stateEl.textContent = t("upd.failed");
+          subEl.textContent = err.message;
+        }
+        checkBtn.disabled = false;
+        busy = false;
+        return;
+      }
+
+      if (action === "install" && found) {
+        busy = true;
+        installBtn.disabled = true;
+        checkBtn.disabled = true;
+        try {
+          const result = await invoke("update.install", { url: found.url });
+          if (!result.ok) {
+            progress(0);
+            toast(t("upd.error") + ": " + (result.message || ""), "err");
+            installBtn.disabled = false;
+            checkBtn.disabled = false;
+            busy = false;
+          }
+        } catch (err) {
+          progress(0);
+          toast(t("upd.error") + ": " + err.message, "err");
+          installBtn.disabled = false;
+          checkBtn.disabled = false;
+          busy = false;
+        }
+      }
+    });
+
     const about = h(
       '<div class="pane stack"><h2>' + esc(t("set.about")) + "</h2>" +
         '<p class="lead small">' + esc(t("set.aboutText")) + "</p>" +
@@ -122,7 +219,7 @@ export default {
       else if (action === "site") await invoke("sys.link", { url: "https://klondaik.uk" });
     });
 
-    return { el };
+    return { el, dispose: off };
   }
 };
 

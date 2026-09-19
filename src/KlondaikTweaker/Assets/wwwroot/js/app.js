@@ -1,6 +1,6 @@
 import { invoke, send, on } from "./bridge.js";
 import { setLang, getLang, t } from "./i18n.js";
-import { h, esc, toast, icon, progress } from "./ui.js";
+import { h, esc, toast, icon, progress, modal } from "./ui.js";
 import { initScene, setEnabled } from "./scene.js";
 
 import dash from "./pages/dash.js";
@@ -125,6 +125,25 @@ function wireChrome() {
   });
 }
 
+async function askRisk() {
+  const body =
+    '<p class="lead small">' + esc(t("risk.p1")) + "</p>" +
+    '<p class="lead small">' + esc(t("risk.p2")) + "</p>" +
+    '<p class="small dim">' + esc(t("risk.p3")) + "</p>";
+  for (;;) {
+    const answer = await modal({
+      title: t("risk.title"),
+      body,
+      actions: [
+        { id: "ok", label: t("risk.accept"), primary: true },
+        { id: "no", label: t("risk.exit") }
+      ]
+    });
+    if (answer === "ok") return true;
+    if (answer === "no") return false;
+  }
+}
+
 async function boot() {
   try {
     app.info = await invoke("app.info");
@@ -151,6 +170,16 @@ async function boot() {
   on("window", (data) => {
     document.body.classList.toggle("maximized", !!data.max);
   });
+
+  if (!app.info.settings.acceptedRisk) {
+    const accepted = await askRisk();
+    if (!accepted) {
+      await invoke("app.quit");
+      return;
+    }
+    await invoke("app.setSetting", { key: "acceptedRisk", value: true });
+    app.info.settings.acceptedRisk = true;
+  }
 
   await app.go(app.info.settings.wizardDone ? "dash" : "wizard");
 

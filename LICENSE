@@ -1,0 +1,44 @@
+MIT License
+
+Copyright (c) 2026 Klondaik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL DISCLAIMER FOR THIS SOFTWARE
+
+This program modifies Windows system settings: the registry, services,
+scheduled tasks, installed packages and network configuration. Such changes
+can make an operating system unstable or unbootable, can disable security
+features, and can prevent updates from installing.
+
+You run this program entirely at your own risk. The copyright holder is not
+responsible for any damage, data loss, downtime, broken installations,
+disabled protection, lost licences, or any other consequence of using it,
+whether the change was applied by you, by the recommendation wizard, or by a
+preset.
+
+The program keeps a journal of every change and can revert them, and it can
+create a system restore point beforehand. Neither mechanism is a guarantee.
+Back up anything you cannot afford to lose before applying tweaks.
+
+Tweaks marked as high risk deliberately disable protection or updates. By
+applying them you accept full responsibility for the resulting state of the
+system.

@@ -10,6 +10,8 @@ public static class Api
 {
     public delegate void Push(string channel, object data);
 
+    public static event Action? QuitRequested;
+
     private static string Lang => Settings.Data.Lang;
 
     private static string S(JsonElement? p, string name, string fallback = "")
@@ -45,6 +47,7 @@ public static class Api
             case "app.settings": return Settings.Data;
             case "app.setSetting": return SetSetting(p);
             case "app.strings": return new { lang = Lang };
+            case "app.quit": QuitRequested?.Invoke(); return new { ok = true };
 
             case "tweaks.list": return TweakList(p);
             case "tweaks.detect": return Detect(Arr(p, "ids"));
@@ -110,6 +113,9 @@ public static class Api
 
             case "repair.run": return RepairRun(S(p, "id"));
             case "app.credits": return Credits();
+
+            case "update.check": return Updater.Check();
+            case "update.install": return UpdateInstall(S(p, "url"), push);
 
             case "sys.open": Sh.Run(S(p, "target"), S(p, "args"), 5000); return new { ok = true };
             case "sys.link": Sh.OpenExternal(S(p, "url")); return new { ok = true };
@@ -487,6 +493,27 @@ public static class Api
     {
         Sh.Ps("Stop-Process -Name explorer -Force", 20000);
         return new RepairResult { Message = "проводник перезапущен" };
+    }
+
+    private static object UpdateInstall(string url, Push push)
+    {
+        var expected = $"https://github.com/{Updater.Owner}/{Updater.Repo}/releases/download/";
+        if (!url.StartsWith(expected, StringComparison.OrdinalIgnoreCase))
+            return new { ok = false, message = "ссылка не принадлежит релизам Klondaik Tweaker" };
+
+        try
+        {
+            push("update", new { stage = "download", percent = 0 });
+            var file = Updater.Download(url, percent => push("update", new { stage = "download", percent }));
+            push("update", new { stage = "install", percent = 100 });
+            Updater.Install(file);
+            Task.Run(async () => { await Task.Delay(1200); QuitRequested?.Invoke(); });
+            return new { ok = true, restarting = true };
+        }
+        catch (Exception ex)
+        {
+            return new { ok = false, message = ex.Message };
+        }
     }
 
     private static object Power(string action)
