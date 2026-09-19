@@ -119,12 +119,12 @@ public static class SelfTest
         Write(outPath, report, results);
     }
 
-    public static void RunApply(string outPath, bool canaryOnly = false)
+    public static void RunApply(string outPath, bool canaryOnly = false, bool everything = false)
     {
         var report = new StringBuilder();
         var results = new List<object>();
 
-        Header(report, "apply and revert round trip");
+        Header(report, everything ? "full catalog apply and revert round trip" : "apply and revert round trip");
         report.AppendLine("Every tweak below is applied, checked, then reverted.");
         report.AppendLine("The test passes only if the system state afterwards is byte-identical to the state before.");
         report.AppendLine();
@@ -133,9 +133,20 @@ public static class SelfTest
         var canary = Canary();
         SeedCanary();
 
-        foreach (var id in canaryOnly ? [canary.Id] : new[] { canary.Id }.Concat(RoundTrip))
+        IEnumerable<string> plan;
+        if (canaryOnly) plan = [canary.Id];
+        else if (everything) plan = new[] { canary.Id }.Concat(Catalog.Db.Tweaks.Select(x => x.Id));
+        else plan = new[] { canary.Id }.Concat(RoundTrip);
+
+        foreach (var id in plan)
         {
             var def = id == canary.Id ? canary : Catalog.Find(id);
+            if (def is not null && def.Actions.Any(a => a.K == "appx"))
+            {
+                report.AppendLine($"[SKIP] {id}: removing store packages cannot be undone");
+                results.Add(new { name = id, ok = true, skipped = true, note = "appx removal is not reversible" });
+                continue;
+            }
             if (def is null)
             {
                 report.AppendLine($"[SKIP] {id}: not in catalog");

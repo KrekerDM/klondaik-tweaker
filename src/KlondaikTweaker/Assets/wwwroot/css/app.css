@@ -304,6 +304,7 @@ body {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--s-8) var(--s-10) var(--s-10);
 }
 
@@ -396,6 +397,7 @@ h3 {
 
 .grow {
   flex: 1;
+  min-width: 0;
 }
 
 .pane {
@@ -437,11 +439,9 @@ h3 {
   .content {
     padding: var(--s-6);
   }
-  .sticky-actions {
-    margin-left: calc(var(--s-6) * -1);
-    margin-right: calc(var(--s-6) * -1);
-    padding-left: var(--s-6);
-    padding-right: var(--s-6);
+  .sticky-actions::before {
+    left: calc(var(--s-6) * -1);
+    right: calc(var(--s-6) * -1);
   }
 }
 
@@ -490,12 +490,9 @@ h3 {
   .content {
     padding: var(--s-4);
   }
-  .sticky-actions {
-    margin-left: calc(var(--s-4) * -1);
-    margin-right: calc(var(--s-4) * -1);
-    padding-left: var(--s-4);
-    padding-right: var(--s-4);
-    flex-wrap: wrap;
+  .sticky-actions::before {
+    left: calc(var(--s-4) * -1);
+    right: calc(var(--s-4) * -1);
   }
   .pane {
     padding: var(--s-4);
@@ -898,6 +895,15 @@ select option {
   border-bottom: 0;
 }
 
+.list > .item > .btn,
+.list > .item > .tag,
+.list > .item > select,
+.list > .item > .sw,
+.list > .item > [data-ctl],
+.list > .item > [data-sw] {
+  flex: 0 0 auto;
+}
+
 .list > .item:hover {
   background: var(--card-hover);
 }
@@ -1209,12 +1215,24 @@ select option {
   position: sticky;
   bottom: 0;
   z-index: 5;
-  margin: var(--s-4) calc(var(--s-10) * -1) 0;
-  padding: var(--s-4) var(--s-10);
-  background: linear-gradient(rgba(11, 15, 20, 0), rgba(11, 15, 20, 0.92) 40%);
+  margin-top: var(--s-4);
+  padding: var(--s-4) 0;
   display: flex;
   align-items: center;
   gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.sticky-actions::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--s-10) * -1);
+  right: calc(var(--s-10) * -1);
+  z-index: -1;
+  background: linear-gradient(rgba(11, 15, 20, 0), rgba(11, 15, 20, 0.94) 42%);
+  pointer-events: none;
 }
 
 .hide {

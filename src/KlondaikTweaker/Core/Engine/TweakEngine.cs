@@ -147,8 +147,8 @@ public static class TweakEngine
                         }
                         var r = a.Ti ? Ti.RunExe(a.Exe!, a.Args ?? "") : Sh.Run(a.Exe!, a.Args ?? "", 180000);
                         if (!r.Ok && !a.Ti) r = Ti.RunExe(a.Exe!, a.Args ?? "");
-                        entry.Items.Add(new JournalItem { Kind = "cmd", Target = target, PrevValue = a.Args, Revert = revert });
-                        if (!r.Ok) errors.Add(Path.GetFileName(a.Exe) + ": " + Trim(r.All));
+                        if (r.Ok) entry.Items.Add(new JournalItem { Kind = "cmd", Target = target, PrevValue = a.Args, Revert = revert });
+                        else errors.Add(Path.GetFileName(a.Exe) + ": " + Trim(r.All));
                         break;
                     }
                     case "hosts":

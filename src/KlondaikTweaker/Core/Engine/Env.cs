@@ -28,6 +28,7 @@ public sealed class SysFacts
     public bool VbsRunning { get; set; }
     public bool SecureBoot { get; set; }
     public string Arch { get; set; } = "";
+    public string Tier { get; set; } = "normal";
 }
 
 public static class Env
@@ -113,6 +114,16 @@ public static class Env
         var secureBoot = Reg.Read("HKLM", @"SYSTEM\CurrentControlSet\Control\SecureBoot\State", "UEFISecureBootEnabled");
         f.SecureBoot = secureBoot.Exists && secureBoot.Value == "1";
 
+        var weakPoints = 0;
+        if (f.RamGb > 0 && f.RamGb < 8) weakPoints++;
+        if (f.Threads > 0 && f.Threads <= 4) weakPoints++;
+        if (!f.SystemSsd) weakPoints++;
+        var strongPoints = 0;
+        if (f.RamGb >= 16) strongPoints++;
+        if (f.Threads >= 12) strongPoints++;
+        if (f.SystemSsd) strongPoints++;
+        f.Tier = weakPoints >= 2 ? "weak" : strongPoints == 3 ? "strong" : "normal";
+
         return f;
     }
 
@@ -137,6 +148,11 @@ public static class Env
                 "intel" => f.Intel,
                 "b22h2" => f.Build >= 22621,
                 "b24h2" => f.Build >= 26100,
+                "lowram" => f.RamGb > 0 && f.RamGb < 8,
+                "highram" => f.RamGb >= 16,
+                "weakcpu" => f.Threads > 0 && f.Threads <= 4,
+                "weak" => f.Tier == "weak",
+                "strong" => f.Tier == "strong",
                 _ => true
             };
             if (neg) ok = !ok;

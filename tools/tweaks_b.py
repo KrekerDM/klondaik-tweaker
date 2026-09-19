@@ -133,7 +133,6 @@ ITEMS = [
        None),
       [R("HKCU", CVU + r"\UserProfileEngagement", "ScoobeSystemSettingEnabled", "dword", 0, 1),
        R("HKCU", CVU + r"\ContentDeliveryManager", "SubscribedContent-310093Enabled", "dword", 0, 1),
-       R("HKLM", POL + r"\Explorer", "DisableNotificationCenter", "dword", 0, 0),
        R("HKCU", CVU + r"\Notifications\Settings\Windows.SystemToast.Suggested", "Enabled", "dword", 0, 1)],
       tags=["ui"]),
 

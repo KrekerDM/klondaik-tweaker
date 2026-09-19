@@ -46,9 +46,9 @@ def CM(exe, args, rargs=None, cap=None):
     return a
 
 
-def PS(cmd, rcmd=None):
+def PS(cmd, rcmd=None, cap=None):
     return CM("powershell.exe", "-NoProfile -NonInteractive -Command " + cmd,
-              ("-NoProfile -NonInteractive -Command " + rcmd) if rcmd else None)
+              ("-NoProfile -NonInteractive -Command " + rcmd) if rcmd else None, cap=cap)
 
 
 def AX(n):

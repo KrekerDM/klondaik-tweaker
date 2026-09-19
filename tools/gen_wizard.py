@@ -184,6 +184,20 @@ RULES = [
     rule("device=desktop", ["pwr.ultimate", "svc.touch-off"]),
     rule("device=laptop", [], ["perf.power-throttling-off", "pwr.ultimate", "perf.dynamic-tick-off", "pwr.core-parking-off", "svc.touch-off"]),
 
+    rule("tier=weak", [
+        "weak.visual-effects", "weak.icons-only", "weak.peek-off", "weak.fth-off",
+        "weak.defender-scan-limit", "weak.memory-compression-on", "weak.discovery-off",
+        "weak.pagefile-managed", "weak.startup-delay-off",
+        "ui.transparency-off", "ui.animations-off", "ui.snap-suggestions-off",
+        "priv.background-apps-off", "priv.appcompat-off", "perf.svchost-split",
+        "perf.maintenance-off", "perf.wer-off", "perf.kill-timeouts",
+        "app.debloat-bing", "app.debloat-media", "app.debloat-social",
+    ], [
+        "perf.mem-compression-off", "perf.paging-executive", "perf.paging-combining-off",
+        "perf.hibernate-off", "gpu.hags-on", "perf.dynamic-tick-off",
+    ]),
+    rule("tier=strong", ["perf.paging-executive", "perf.svchost-split"]),
+    rule("lowram=yes", [], ["perf.mem-compression-off", "perf.paging-executive"]),
     rule("risk=medium", ["svc.legacy-off", "svc.diagnostics-off", "svc.insider-off", "svc.remote-off", "perf.fast-startup-off", "perf.svchost-split"]),
     rule("risk=max", [
         "svc.legacy-off", "svc.diagnostics-off", "svc.insider-off", "svc.remote-off",

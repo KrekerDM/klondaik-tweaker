@@ -115,6 +115,7 @@ public static class Wizard
         Imply("device", facts.Laptop ? "laptop" : "desktop");
         Imply("disk", facts.SystemSsd ? "ssd" : "hdd");
         Imply("gpu", facts.Nvidia ? "nvidia" : facts.Amd ? "amd" : "intel");
+        Imply("tier", facts.Tier);
 
         foreach (var rule in Db.Rules)
         {

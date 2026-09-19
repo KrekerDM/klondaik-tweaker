@@ -8,6 +8,7 @@ import tweaks_a
 import tweaks_b
 import tweaks_c
 import tweaks_d
+import tweaks_e
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "KlondaikTweaker", "Assets", "Data", "tweaks.json")
 
@@ -16,7 +17,7 @@ ALLOWED_KIND = {"reg", "regdel", "svc", "task", "appx", "cmd", "hosts"}
 ALLOWED_HIVE = {"HKLM", "HKCU", "HKCR", "HKU"}
 ALLOWED_TYPE = {"dword", "qword", "sz", "expand", "multi", "binary"}
 
-items = tweaks_a.ITEMS + tweaks_b.ITEMS + tweaks_c.ITEMS + tweaks_d.ITEMS
+items = tweaks_a.ITEMS + tweaks_b.ITEMS + tweaks_c.ITEMS + tweaks_d.ITEMS + tweaks_e.ITEMS
 
 seen = set()
 problems = []

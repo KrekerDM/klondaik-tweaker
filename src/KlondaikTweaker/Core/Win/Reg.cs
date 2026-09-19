@@ -228,9 +228,15 @@ public static class Reg
     public static bool Same(string? type, string expected, string current)
     {
         var kind = KindFrom(type);
-        if (kind is RegistryValueKind.DWord or RegistryValueKind.QWord)
+        if (kind == RegistryValueKind.DWord)
         {
-            try { return ParseNum(expected) == ParseNum(current); } catch { return false; }
+            try { return unchecked((uint)ParseNum(expected)) == unchecked((uint)ParseNum(current)); }
+            catch { return false; }
+        }
+        if (kind == RegistryValueKind.QWord)
+        {
+            try { return unchecked((ulong)ParseNum(expected)) == unchecked((ulong)ParseNum(current)); }
+            catch { return false; }
         }
         if (kind == RegistryValueKind.Binary)
             return string.Equals(current.Replace(" ", ""), Convert.ToHexString(ParseHex(expected)), StringComparison.OrdinalIgnoreCase);

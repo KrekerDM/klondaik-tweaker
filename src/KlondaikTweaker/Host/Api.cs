@@ -109,6 +109,7 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "app.credits": return Credits();
 
             case "sys.open": Sh.Run(S(p, "target"), S(p, "args"), 5000); return new { ok = true };
             case "sys.link": Sh.OpenExternal(S(p, "url")); return new { ok = true };
@@ -227,6 +228,16 @@ public static class Api
         return new { results, restart, restorePoint, applied = results.Count };
     }
 
+    private static readonly HashSet<string> WeakBlocklist = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "perf.mem-compression-off",
+        "perf.sysmain-off",
+        "perf.prefetch-off",
+        "perf.paging-executive",
+        "perf.paging-combining-off",
+        "perf.hibernate-off"
+    };
+
     private static object Presets()
     {
         var lang = Lang;
@@ -235,6 +246,7 @@ public static class Api
             ("balanced", "Сбалансированный", "Balanced", "Только безопасные твики: телеметрия, мусор в интерфейсе, отзывчивость", "Safe tweaks only: telemetry, interface clutter, responsiveness", t => t.Risk == "safe"),
             ("gaming", "Игровой", "Gaming", "Всё безопасное плюс твики под FPS, задержки ввода и сеть", "Everything safe plus FPS, input latency and network tweaks", t => t.Risk != "extreme" && (t.Tags.Contains("fps") || t.Tags.Contains("latency") || t.Tags.Contains("gpu") || t.Risk == "safe")),
             ("privacy", "Приватность", "Privacy", "Телеметрия, реклама, Copilot, Recall, сбор данных", "Telemetry, ads, Copilot, Recall, data collection", t => t.Cat == "privacy" && t.Risk != "extreme"),
+            ("weak", "Слабый ПК", "Weak PC", "Для старого железа: оформление, эскизы, фоновые службы и сборщики данных", "For old hardware: visual effects, thumbnails, background services and data collectors", t => t.Risk != "extreme" && !WeakBlocklist.Contains(t.Id) && (t.Cat == "weak" || t.Cat == "debloat" || t.Cat == "privacy" || t.Tags.Contains("ram") || t.Tags.Contains("cpu") || t.Tags.Contains("boot"))),
             ("max", "Максимум", "Maximum", "Всё, включая агрессивные твики. Только для опытных", "Everything including aggressive tweaks. Experts only", t => true)
         };
 
@@ -440,6 +452,14 @@ public static class Api
         Benchmark.Progress += Handler;
         try { return Benchmark.Run(label); }
         finally { Benchmark.Progress -= Handler; }
+    }
+
+    private static object Credits()
+    {
+        var json = Res.Text("data/credits.json");
+        if (string.IsNullOrWhiteSpace(json)) return new { note = "", sources = Array.Empty<object>() };
+        using var doc = JsonDocument.Parse(json);
+        return doc.RootElement.Clone();
     }
 
     private static object RepairRun(string id) => id switch

@@ -1,5 +1,5 @@
 import { invoke } from "../bridge.js";
-import { t } from "../i18n.js";
+import { t, getLang } from "../i18n.js";
 import { h, esc, toast, switchEl } from "../ui.js";
 import { setEnabled } from "../scene.js";
 import { restartExplorer } from "../actions.js";
@@ -80,6 +80,37 @@ export default {
         "</div></div>"
     );
     el.appendChild(about);
+
+    const credits = h(
+      '<div class="pane stack"><h2>' + esc(t("set.credits")) + "</h2>" +
+        '<p class="small dim" data-note></p>' +
+        '<div class="list" data-sources></div></div>'
+    );
+    el.appendChild(credits);
+
+    invoke("app.credits")
+      .then((data) => {
+        const lang = getLang();
+        credits.querySelector("[data-note]").textContent = (data.note && data.note[lang]) || "";
+        const box = credits.querySelector("[data-sources]");
+        box.innerHTML = "";
+        (data.sources || []).forEach((s) => {
+          const row = h(
+            '<div class="item"><div class="grow" style="min-width:0">' +
+              '<div class="name">' + esc(s.name) + ' <span class="tag plain">' + esc(s.license) + "</span></div>" +
+              '<div class="sub">' + esc(s.authors) + "</div>" +
+              '<div class="sub">' + esc(s[lang] || s.ru || "") + "</div></div>" +
+              '<button class="btn btn-ghost btn-sm" data-url="' + esc(s.url) + '">' + esc(t("act.open")) + "</button></div>"
+          );
+          box.appendChild(row);
+        });
+      })
+      .catch(() => {});
+
+    credits.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-url]");
+      if (link) invoke("sys.link", { url: link.dataset.url });
+    });
 
     el.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-a]");

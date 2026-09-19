@@ -39,6 +39,7 @@ internal static class Program
         if (applyTest >= 0)
         {
             var canaryOnly = args.Any(a => a.Equals("--canary-only", StringComparison.OrdinalIgnoreCase));
+            var everything = args.Any(a => a.Equals("--all", StringComparison.OrdinalIgnoreCase));
             if (!canaryOnly && !IsAdmin())
             {
                 MessageBox.Show("Тесту применения нужны права администратора.", "Klondaik Tweaker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -47,7 +48,7 @@ internal static class Program
             var target = applyTest + 1 < args.Length && !args[applyTest + 1].StartsWith("--")
                 ? args[applyTest + 1]
                 : Path.Combine(Paths.Root, "selftest-apply.txt");
-            Host.SelfTest.RunApply(target, canaryOnly);
+            Host.SelfTest.RunApply(target, canaryOnly, everything);
             return;
         }
 

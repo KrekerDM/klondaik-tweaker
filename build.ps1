@@ -13,6 +13,8 @@ Push-Location (Join-Path $root "tools")
 python gen_tweaks.py
 python gen_wizard.py
 python gen_software.py
+python gen_repair.py
+python gen_credits.py
 Pop-Location
 
 Write-Host "Publishing $Configuration" -ForegroundColor Cyan

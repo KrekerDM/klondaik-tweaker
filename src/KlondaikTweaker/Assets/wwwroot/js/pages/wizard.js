@@ -30,6 +30,7 @@ export default {
     function intro() {
       const f = app.info.facts;
       const facts = [
+        t("tier." + (f.tier || "normal")),
         f.laptop ? "Laptop" : "Desktop",
         f.systemSsd ? "SSD" : "HDD",
         f.nvidia ? "NVIDIA" : f.amd ? "AMD" : "Intel",

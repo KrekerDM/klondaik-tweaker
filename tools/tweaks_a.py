@@ -195,7 +195,7 @@ ITEMS = [
       ("Group svchost processes",
        "On machines with plenty of RAM Windows runs each service in its own process, which means dozens of extra svchost.exe. Grouping them frees hundreds of megabytes.",
        None),
-      [R("HKLM", CCS + r"\Control", "SvcHostSplitThresholdInKB", "dword", "0x4000000", "0x380000")],
+      [R("HKLM", CCS + r"\Control", "SvcHostSplitThresholdInKB", "dword", "0xFFFFFFFF", "0x380000")],
       tags=["ram"], src="atlas", restart=True),
 
     T("perf.wer-off", "performance", "safe",
@@ -392,8 +392,11 @@ ITEMS = [
       ("Ultimate Performance power plan",
        "The hidden Ultimate Performance scheme disables every power saving mechanism including core parking. It is created and activated automatically.",
        "Power draw and heat go up. Not suitable for laptops."),
-      [CM("cmd.exe", "/c powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 && powercfg /setactive e9a42b02-d5df-448d-aa00-03f14749eb61",
-          "/c powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e", cap="powerplan")],
+      [PS("$g='e9a42b02-d5df-448d-aa00-03f14749eb61'; "
+           "$out = (powercfg -duplicatescheme $g 2>&1 | Out-String); "
+           "$id = [regex]::Match($out, '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}').Value; "
+           "if (-not $id) { $id = $g }; powercfg /setactive $id",
+          "powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e", cap="powerplan")],
       tags=["power", "fps"], req="desktop"),
 
     T("pwr.core-parking-off", "power", "advanced",
