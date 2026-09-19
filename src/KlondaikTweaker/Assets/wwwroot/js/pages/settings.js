@@ -23,6 +23,7 @@ export default {
         row("autoRestorePoint", t("set.restore"), t("set.restoreHint")) +
         row("monitor3d", t("set.3d"), t("set.3dHint")) +
         row("liveMonitor", t("set.live"), t("set.liveHint")) +
+        row("reduced", t("set.reduced"), t("set.reducedHint")) +
         "</div></div>"
     );
     el.appendChild(opts);
@@ -43,7 +44,8 @@ export default {
       ["showExtreme", s.showExtreme],
       ["autoRestorePoint", s.autoRestorePoint],
       ["monitor3d", s.monitor3d],
-      ["liveMonitor", s.liveMonitor]
+      ["liveMonitor", s.liveMonitor],
+      ["reduced", s.reduced]
     ];
     toggles.forEach(([key, value]) => {
       const box = opts.querySelector('[data-row="' + key + '"] [data-ctl]');
@@ -52,6 +54,7 @@ export default {
           const updated = await invoke("app.setSetting", { key, value: next });
           app.info.settings = updated;
           if (key === "monitor3d") setEnabled(next);
+          if (key === "reduced") document.body.classList.toggle("reduced", next);
           return true;
         })
       );
@@ -71,15 +74,15 @@ export default {
 
     const upd = h(
       '<div class="pane stack"><h2>' + esc(t("upd.title")) + "</h2>" +
-        '<div class="item">' +
-        '<div class="grow"><div class="name" data-state>' + esc(t("upd.current")) + " " + esc(app.info.version) + "</div>" +
+        '<div class="stack-sm">' +
+        '<div class="name" data-state>' + esc(t("upd.current")) + " " + esc(app.info.version) + "</div>" +
         '<div class="sub" data-sub>' + esc(t("upd.hint")) + "</div></div>" +
-        '<div class="row">' +
-        '<button class="btn btn-ghost btn-sm" data-u="check">' + esc(t("upd.check")) + "</button>" +
-        '<button class="btn btn-sm" data-u="install" hidden>' + esc(t("upd.install")) + "</button>" +
-        "</div></div>" +
         '<div class="small dim" data-notes hidden style="white-space:pre-wrap;max-height:220px;overflow:auto"></div>' +
-        '<div class="row"><button class="btn btn-ghost btn-sm" data-u="releases">' + esc(t("upd.releases")) + "</button></div></div>"
+        '<div class="row">' +
+        '<button class="btn btn-primary btn-sm" data-u="install" hidden>' + esc(t("upd.install")) + "</button>" +
+        '<button class="btn btn-ghost btn-sm" data-u="check">' + esc(t("upd.check")) + "</button>" +
+        '<button class="btn btn-ghost btn-sm" data-u="releases">' + esc(t("upd.releases")) + "</button>" +
+        "</div></div>"
     );
     el.appendChild(upd);
 

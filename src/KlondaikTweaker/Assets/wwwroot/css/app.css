@@ -111,6 +111,17 @@
   border-radius: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+body.reduced *,
+body.reduced *::before,
+body.reduced *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 html,
 body {
   height: 100%;

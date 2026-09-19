@@ -156,6 +156,7 @@ async function boot() {
   setLang(app.info.settings.lang);
   document.getElementById("langBtn").textContent = getLang().toUpperCase();
   document.getElementById("verTag").textContent = "v" + app.info.version;
+  document.body.classList.toggle("reduced", !!app.info.settings.reduced);
 
   if (app.info.settings.monitor3d) {
     const ok = initScene(document.getElementById("bg"));
