@@ -111,7 +111,7 @@ export default {
       const action = btn.dataset.u;
 
       if (action === "releases") {
-        await invoke("sys.link", { url: "https://github.com/Faliseven/klondaik-tweaker/releases" });
+        await invoke("sys.link", { url: app.info.releasesPage });
         return;
       }
 

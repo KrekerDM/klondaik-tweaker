@@ -212,6 +212,10 @@ Frostpane (MIT, krekerdm), three.js (MIT), IBM Plex (SIL OFL 1.1).
 
 ## Выпуск новой версии
 
+Адрес репозитория задан один раз — константами `Owner` и `Repo` в
+`src/KlondaikTweaker/Core/Modules/Updater.cs`. Из них собираются и запрос к API,
+и ссылка «Все релизы», и проверка домена перед скачиванием.
+
 Версия берётся из `<Version>` в `src/KlondaikTweaker/KlondaikTweaker.csproj`.
 Поднимите её, закоммитьте и поставьте тег — GitHub Actions соберёт single-file exe
 и приложит его к релизу. Автообновление в программе ищет в релизе ровно файл

@@ -23,6 +23,7 @@ public static class Updater
 {
     public const string Owner = "Faliseven";
     public const string Repo = "klondaik-tweaker";
+
     private const string AssetName = "KlondaikTweaker.exe";
 
     public static string CurrentVersion =>

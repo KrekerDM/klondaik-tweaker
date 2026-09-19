@@ -139,7 +139,8 @@ public static class Api
             tweakCount = Catalog.Db.Tweaks.Count,
             journal = Journal.Entries.Count(x => !x.Reverted),
             boost = GameBoost.State.Active,
-            dataDir = Paths.Root
+            dataDir = Paths.Root,
+            releasesPage = Updater.ReleasesPage
         };
     }
 
