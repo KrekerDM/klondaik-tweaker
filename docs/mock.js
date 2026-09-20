@@ -273,6 +273,26 @@
     "app.credits": () => creditsDb,
     "repair.run": (p) => ({ ok: true, changed: 12, skipped: 3, message: "возвращено служб: 12", details: [] }),
     "repair.status": () => ({ ctxti: true, ctxown: false }),
+    "tasks.list": () => [
+      { id: "telemetry", title: "Сбор данных о работе системы", desc: "Задачи программы улучшения качества: раз в сутки собирают, какими программами вы пользовались, и отправляют в Microsoft.", rec: "off", enabled: 2, missing: 1,
+        tasks: [
+          { path: "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator", name: "Consolidator", enabled: true },
+          { path: "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser", name: "Microsoft Compatibility Appraiser", enabled: true },
+          { path: "\\Microsoft\\Windows\\Autochk\\Proxy", name: "Proxy", enabled: false }
+        ] },
+      { id: "maps", title: "Карты и местоположение", desc: "Фоновое обновление офлайн-карт — сотни мегабайт по расписанию.", rec: "off", enabled: 1, missing: 0,
+        tasks: [
+          { path: "\\Microsoft\\Windows\\Maps\\MapsUpdateTask", name: "MapsUpdateTask", enabled: true },
+          { path: "\\Microsoft\\Windows\\Maps\\MapsToastTask", name: "MapsToastTask", enabled: false }
+        ] },
+      { id: "cleanup", title: "Автоматическая уборка", desc: "Плановая очистка диска, дефрагментация и обслуживание.", rec: "keep", enabled: 2, missing: 0,
+        tasks: [
+          { path: "\\Microsoft\\Windows\\DiskCleanup\\SilentCleanup", name: "SilentCleanup", enabled: true },
+          { path: "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag", name: "ScheduledDefrag", enabled: true }
+        ] }
+    ],
+    "tasks.setGroup": () => ({ ok: true, changed: 2, message: "отключено задач: 2", details: [] }),
+    "tasks.setOne": () => ({ ok: true, changed: 1, message: "задача отключена", details: [] }),
     "features.list": () => [
       { name: "MicrosoftWindowsPowerShellV2Root", title: "PowerShell 2.0", desc: "Версия 2007 года, оставленная для совместимости. Её любят вредоносные скрипты именно потому, что она не умеет логировать свои действия.", rec: "insecure", group: "legacy", state: "enabled", known: true },
       { name: "SMB1Protocol", title: "Протокол SMB 1.0", desc: "Старый протокол общих папок, через который распространялись WannaCry и NotPetya.", rec: "insecure", group: "legacy", state: "disabled", known: true },

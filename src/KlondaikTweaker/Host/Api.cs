@@ -112,6 +112,9 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "tasks.list": return TaskGroups.List(Lang);
+            case "tasks.setGroup": return TaskGroups.SetGroup(S(p, "id"), B(p, "enable"), Lang);
+            case "tasks.setOne": return TaskGroups.SetOne(S(p, "path"), B(p, "enable"));
             case "features.list": return Features.List(Lang, B(p, "refresh"));
             case "features.set": return Features.Set(S(p, "name"), B(p, "enable"));
             case "repair.status": return new { ctxti = ShellMenu.TiInstalled, ctxown = ShellMenu.OwnInstalled };

@@ -159,6 +159,7 @@ export function icon(name) {
     clean: "M4 8h16l-1.4 12H5.4zM9 8V4h6v4",
     tools: "M14.7 6.3a4 4 0 01-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 015.4-5.4l-2.8 2.8-2.4-.6-.6-2.4z",
     startup: "M12 3v12M7 8l5-5 5 5M4 18v3h16v-3",
+    tasks: "M4 5h4v4H4zM10 6h10M4 11h4v4H4zM10 12h10M4 17h4v4H4zM10 18h10",
     features: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
     services: "M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1",
     apps: "M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",

@@ -24,6 +24,8 @@ public static class PerfTest
         ("appx.list", "{}"),
         ("net.adapters", "{}"),
         ("net.tcp", "{}"),
+        ("features.list", "{}"),
+        ("tasks.list", "{}"),
         ("clean.scan", "{}"),
         ("soft.list", "{}")
     ];

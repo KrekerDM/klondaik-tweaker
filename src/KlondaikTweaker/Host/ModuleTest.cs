@@ -115,6 +115,32 @@ public static class ModuleTest
         Step("repair.services", () => { var r = Repair.RestoreServices(); return new { r.Changed, r.Skipped, r.Message }; });
         Step("repair.store", () => { var r = Repair.ResetStore(); return new { r.Changed, r.Message, details = r.Details.Count }; });
 
+        Step("features.list", () => { var f = Features.List("ru"); return new { count = f.Count, enabled = f.Count(x => x.State == "enabled") }; });
+        Step("features.toggle", () =>
+        {
+            var target = Features.List("ru").FirstOrDefault(x => x.Name == "Printing-XPSServices-Features" && x.State == "enabled");
+            if (target is null) return new { skipped = true, reason = "XPS writer not enabled on this system" };
+            var off = Features.Set(target.Name, false);
+            var mid = Features.List("ru", true).FirstOrDefault(x => x.Name == target.Name)?.State;
+            var on = Features.Set(target.Name, true);
+            var back = Features.List("ru", true).FirstOrDefault(x => x.Name == target.Name)?.State;
+            return new { offOk = off.Ok, mid, onOk = on.Ok, back, roundTrip = mid == "disabled" && back == "enabled" };
+        }, "XPS writer is switched off and back on");
+
+        Step("tasks.list", () => { var g = TaskGroups.List("ru"); return new { groups = g.Count, tasks = g.Sum(x => x.Tasks.Count), enabled = g.Sum(x => x.Enabled) }; });
+        Step("tasks.roundTrip", () =>
+        {
+            var group = TaskGroups.List("ru").FirstOrDefault(x => x.Id == "insider" && x.Tasks.Count > 0)
+                        ?? TaskGroups.List("ru").FirstOrDefault(x => x.Rec == "off" && x.Tasks.Count > 0);
+            if (group is null) return new { skipped = true, reason = "no removable task group present" };
+            var before = TaskGroups.List("ru").First(x => x.Id == group.Id).Enabled;
+            var off = TaskGroups.SetGroup(group.Id, false, "ru");
+            var mid = TaskGroups.List("ru").First(x => x.Id == group.Id).Enabled;
+            var on = TaskGroups.SetGroup(group.Id, true, "ru");
+            var after = TaskGroups.List("ru").First(x => x.Id == group.Id).Enabled;
+            return new { group = group.Id, before, mid, after, restored = before == after, offOk = off.Ok, onOk = on.Ok };
+        }, "a task group is switched off and back on");
+
         Step("soft.winget", () => SoftCatalog.HasWinget());
         Step("api.router", () =>
         {

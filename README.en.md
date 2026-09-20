@@ -34,6 +34,8 @@ gets the full catalogue of 171 tweaks, each stating what it costs.
   administrator can touch are written under the system service's token.
 - **Repair tools** — one-click fixes for what other tweakers broke: services
   back to stock start values, Defender, updates, Store, search, network stack.
+- **Scheduled tasks** — 12 groups of Windows background tasks, each explaining
+  what it does and what turning it off costs.
 - **Windows features** — 27 optional components through DISM: what each one is,
   what it is for and which are unsafe to leave on.
 - **Cleanup, startup, services, built-in apps, network** — every action is
