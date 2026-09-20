@@ -118,14 +118,14 @@ public static class ModuleTest
         Step("features.list", () => { var f = Features.List("ru"); return new { count = f.Count, enabled = f.Count(x => x.State == "enabled") }; });
         Step("features.toggle", () =>
         {
-            var target = Features.List("ru").FirstOrDefault(x => x.Name == "Printing-XPSServices-Features" && x.State == "enabled");
-            if (target is null) return new { skipped = true, reason = "XPS writer not enabled on this system" };
+            var target = Features.List("ru").FirstOrDefault(x => x.Rec == "off" && x.State == "enabled" && x.Known);
+            if (target is null) return new { skipped = true, reason = "no safe-to-disable feature is enabled here" };
             var off = Features.Set(target.Name, false);
             var mid = Features.List("ru", true).FirstOrDefault(x => x.Name == target.Name)?.State;
             var on = Features.Set(target.Name, true);
             var back = Features.List("ru", true).FirstOrDefault(x => x.Name == target.Name)?.State;
             return new { offOk = off.Ok, mid, onOk = on.Ok, back, roundTrip = mid == "disabled" && back == "enabled" };
-        }, "XPS writer is switched off and back on");
+        }, "a safe-to-disable feature is switched off and back on");
 
         Step("tasks.list", () => { var g = TaskGroups.List("ru"); return new { groups = g.Count, tasks = g.Sum(x => x.Tasks.Count), enabled = g.Sum(x => x.Enabled) }; });
         Step("tasks.roundTrip", () =>

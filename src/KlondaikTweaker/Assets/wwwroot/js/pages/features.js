@@ -20,6 +20,8 @@ export default {
       )
     );
 
+    el.appendChild(h('<div class="warn">' + esc(t("feat.slow")) + '</div>'));
+
     const body = h('<div class="stack"></div>');
     el.appendChild(body);
 
