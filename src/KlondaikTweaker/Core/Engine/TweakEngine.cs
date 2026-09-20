@@ -272,6 +272,9 @@ public static class TweakEngine
             case "cmd":
                 if (!string.IsNullOrEmpty(it.Revert)) Sh.Run(it.Target, it.Revert, 180000);
                 break;
+            case "feature":
+                Modules.Features.Revert(it.Target, it.PrevValue ?? "enabled");
+                break;
             case "hosts":
                 HostsFile.Unblock(it.Target.Split('|', StringSplitOptions.RemoveEmptyEntries));
                 break;

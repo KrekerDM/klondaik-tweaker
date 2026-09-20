@@ -112,6 +112,8 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "features.list": return Features.List(Lang, B(p, "refresh"));
+            case "features.set": return Features.Set(S(p, "name"), B(p, "enable"));
             case "repair.status": return new { ctxti = ShellMenu.TiInstalled, ctxown = ShellMenu.OwnInstalled };
             case "app.credits": return Credits();
 

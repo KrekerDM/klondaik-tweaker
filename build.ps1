@@ -14,6 +14,7 @@ python gen_tweaks.py
 python gen_wizard.py
 python gen_software.py
 python gen_repair.py
+python gen_features.py
 python gen_credits.py
 Pop-Location
 
