@@ -112,6 +112,7 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "repair.status": return new { ctxti = ShellMenu.TiInstalled, ctxown = ShellMenu.OwnInstalled };
             case "app.credits": return Credits();
 
             case "update.check": return Updater.Check();
@@ -481,6 +482,8 @@ public static class Api
         "dns" => Repair.FlushDns(),
         "memory" => MemoryTool(),
         "explorer" => ExplorerTool(),
+        "ctxti" => ShellMenu.ToggleTi(),
+        "ctxown" => ShellMenu.ToggleOwn(),
         _ => new RepairResult { Ok = false, Message = "unknown repair: " + id }
     };
 

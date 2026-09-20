@@ -27,6 +27,22 @@ internal static class Program
 
         var args = Environment.GetCommandLineArgs();
 
+        var runAsTi = Array.FindIndex(args, a => a.Equals("--runas-ti", StringComparison.OrdinalIgnoreCase));
+        if (runAsTi >= 0)
+        {
+            var target = runAsTi + 1 < args.Length ? args[runAsTi + 1] : "";
+            Environment.ExitCode = Core.Modules.ShellMenu.RunAsTi(target);
+            return;
+        }
+
+        var takeOwn = Array.FindIndex(args, a => a.Equals("--take-ownership", StringComparison.OrdinalIgnoreCase));
+        if (takeOwn >= 0)
+        {
+            var target = takeOwn + 1 < args.Length ? args[takeOwn + 1] : "";
+            Environment.ExitCode = Core.Modules.ShellMenu.TakeOwnership(target);
+            return;
+        }
+
         var selfTest = Array.FindIndex(args, a => a.Equals("--selftest", StringComparison.OrdinalIgnoreCase));
         if (selfTest >= 0)
         {

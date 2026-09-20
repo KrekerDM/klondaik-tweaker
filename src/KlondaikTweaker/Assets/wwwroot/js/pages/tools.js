@@ -72,6 +72,22 @@ const TOOLS = [
     confirm: false
   },
   {
+    id: "ctxti",
+    shape: "cone",
+    toggle: true,
+    ru: ["Запуск от имени TrustedInstaller", "Добавляет в контекстное меню файлов и папок пункт запуска с правами системной службы — выше, чем у администратора. Тем же механизмом программа пишет в ключи, которые не поддаются обычной записи."],
+    en: ["Run as TrustedInstaller", "Adds a context menu entry for files and folders that runs them with the system service's rights, which are above an administrator's. The program writes to locked keys through the same mechanism."],
+    confirm: false
+  },
+  {
+    id: "ctxown",
+    shape: "box",
+    toggle: true,
+    ru: ["Стать владельцем", "Добавляет в контекстное меню пункт, который забирает владение файлом или папкой и выдаёт администраторам полный доступ. Нужен, когда система не даёт удалить или изменить свой файл."],
+    en: ["Take ownership", "Adds a context menu entry that takes ownership of a file or folder and grants Administrators full control. Needed when the system refuses to let you delete or change its own file."],
+    confirm: false
+  },
+  {
     id: "explorer",
     shape: "spark",
     ru: ["Перезапустить проводник", "Перезапускает explorer.exe. Применяет твики интерфейса без перезахода в систему."],
@@ -113,6 +129,18 @@ export default {
     });
     el.appendChild(grid);
 
+    invoke("repair.status")
+      .then((st) => {
+        TOOLS.filter((x) => x.toggle).forEach((tool) => {
+          const card = grid.querySelector('[data-tool="' + tool.id + '"]');
+          if (!card) return;
+          const on = !!st[tool.id];
+          card.classList.toggle("on", on);
+          card.querySelector("[data-state]").textContent = on ? t("tools.added") : t("tools.notAdded");
+        });
+      })
+      .catch(() => {});
+
     grid.addEventListener("click", async (e) => {
       const card = e.target.closest("[data-tool]");
       if (!card || card.classList.contains("busy")) return;
@@ -133,6 +161,14 @@ export default {
       try {
         const r = await invoke("repair.run", { id: tool.id }, 1200000);
         state.textContent = r.message || t("act.finish");
+        if (tool.toggle) {
+          const st = await invoke("repair.status").catch(() => null);
+          if (st) {
+            const on = !!st[tool.id];
+            card.classList.toggle("on", on);
+            state.textContent = on ? t("tools.added") : t("tools.notAdded");
+          }
+        }
         card.classList.toggle("failed", r.ok === false);
         toast(text[0] + ": " + (r.message || t("act.finish")), r.ok === false ? "err" : "");
         if (r.ok !== false) pulse(2200);

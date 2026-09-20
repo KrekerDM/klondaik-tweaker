@@ -1021,6 +1021,20 @@ select option {
   border-left-color: var(--danger);
 }
 
+.toolcard.on {
+  border-left-color: var(--accent);
+}
+
+.toolcard.on .toolcard-state::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  background: var(--accent);
+  vertical-align: middle;
+}
+
 .toolcard-3d {
   flex: 0 0 96px;
   width: 96px;

@@ -272,6 +272,7 @@
     "boost.stop": () => ({ active: false, services: {}, freedRam: 0 }),
     "app.credits": () => creditsDb,
     "repair.run": (p) => ({ ok: true, changed: 12, skipped: 3, message: "возвращено служб: 12", details: [] }),
+    "repair.status": () => ({ ctxti: true, ctxown: false }),
     "sys.link": () => ({ ok: true }),
     "sys.folder": () => ({ ok: true }),
     "restore.open": () => ({ ok: true }),

@@ -136,6 +136,8 @@ const dict = {
     "tools.title": "Инструменты",
     "tools.sub": "Разовые действия в один клик: починить сломанное чужими твикерами, сбросить, очистить. Каждое пишется в журнал и откатывается.",
     "tools.working": "выполняется...",
+    "tools.added": "добавлено в контекстное меню",
+    "tools.notAdded": "не добавлено",
 
     "clean.title": "Очистка диска",
     "clean.sub": "Временные файлы, кэши и мусор, который система не убирает сама",
@@ -439,6 +441,8 @@ const dict = {
     "tools.title": "Tools",
     "tools.sub": "One-click actions: repair what other tweakers broke, reset, clean up. Each one is journaled and revertible.",
     "tools.working": "working...",
+    "tools.added": "added to the context menu",
+    "tools.notAdded": "not added",
 
     "clean.title": "Disk cleanup",
     "clean.sub": "Temp files, caches and junk the system never clears on its own",
