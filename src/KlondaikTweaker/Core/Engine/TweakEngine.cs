@@ -9,9 +9,16 @@ public static class TweakEngine
     private static readonly string[] Detectable = ["reg", "regdel", "svc", "task", "appx"];
     private static readonly char[] Sep = ['\\'];
 
-    public static TweakState Detect(TweakDef t)
+    public static TweakState Detect(TweakDef t) => Detect(t, out _);
+
+    public static TweakState Detect(TweakDef t, out string? reason)
     {
-        if (!Env.Meets(t.Req)) return TweakState.Unavailable;
+        reason = null;
+        if (!Env.Meets(t.Req))
+        {
+            reason = "req:" + (t.Req ?? "");
+            return TweakState.Unavailable;
+        }
 
         int hits = 0, misses = 0, checkable = 0, detectable = 0;
         foreach (var a in t.Actions)
@@ -58,7 +65,11 @@ public static class TweakEngine
             if (applied) hits++; else misses++;
         }
 
-        if (checkable == 0 && detectable > 0) return TweakState.Unavailable;
+        if (checkable == 0 && detectable > 0)
+        {
+            reason = "missing";
+            return TweakState.Unavailable;
+        }
         if (checkable == 0) return Journal.IsApplied(t.Id) ? TweakState.Applied : TweakState.NotApplied;
         if (misses == 0) return TweakState.Applied;
         if (hits == 0) return TweakState.NotApplied;
@@ -277,7 +288,8 @@ public static class TweakEngine
     {
         var loc = lang == "en" ? t.En : t.Ru;
         var alt = lang == "en" ? t.Ru : t.En;
-        var st = state ?? Detect(t);
+        string? reason = null;
+        var st = state ?? Detect(t, out reason);
         return new TweakView
         {
             Id = t.Id,
@@ -291,7 +303,8 @@ public static class TweakEngine
             Restart = t.Restart,
             Logoff = t.Logoff,
             State = st.ToString().ToLowerInvariant(),
-            Available = st != TweakState.Unavailable
+            Available = st != TweakState.Unavailable,
+            Note = st == TweakState.Unavailable ? reason : null
         };
     }
 }

@@ -3,7 +3,7 @@
 # Klondaik Tweaker
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)
-![Tweaks](https://img.shields.io/badge/Tweaks-148-2EA043)
+![Tweaks](https://img.shields.io/badge/Tweaks-171-2EA043)
 ![UI](https://img.shields.io/badge/GUI-WebView2%20%2B%20three.js-5C3EE8)
 ![Rights](https://img.shields.io/badge/Rights-TrustedInstaller-B85C38)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?logo=windows&logoColor=white)
@@ -16,13 +16,13 @@ turned on by mistake.
 
 A newcomer does not need to know what `Win32PrioritySeparation` is: they answer
 questions about how they use the machine and get a ready set. Everyone else
-gets the full catalogue of 148 tweaks, each stating what it costs.
+gets the full catalogue of 171 tweaks, each stating what it costs.
 
 ![System overview](docs/screenshot-main-en.png)
 
 ## What it does
 
-- **148 tweaks** across three risk levels, each described in Russian and
+- **171 tweaks** across three risk levels, each described in Russian and
   English: what it does, why, and what you pay for it.
 - **Question-based setup** — up to 16 questions, the irrelevant ones are
   dropped based on your hardware. Nothing is applied until you press the button.
@@ -107,7 +107,7 @@ each tweak can be unticked after reading what it risks.
 
 ## Tweak catalogue
 
-Fifteen categories, three risk levels, search over titles and descriptions, four
+Fourteen categories, three risk levels, search over titles and descriptions, four
 ready presets. The switch applies a tweak at once, the checkbox collects it for
 a batch. High-risk tweaks stay hidden until enabled in the settings and need a
 separate confirmation listing exactly what will be turned off.

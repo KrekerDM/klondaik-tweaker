@@ -1,10 +1,27 @@
 import { t } from "./i18n.js";
 import { esc, h } from "./ui.js";
 
+function whyUnavailable(item) {
+  const note = item.note || "";
+  if (note.startsWith("req:")) {
+    const req = note.slice(4).trim();
+    const named = req
+      .split(/[|,+\s]+/)
+      .filter(Boolean)
+      .map((r) => t("req." + r))
+      .filter((x) => x && !x.startsWith("req."));
+    if (named.length) return t("tw.whyReq") + ". " + t("tw.needs") + ": " + named.join(", ");
+    return t("tw.whyReq");
+  }
+  if (note === "missing") return t("tw.whyMissing");
+  return t("tw.whyMissing");
+}
+
 export function tweakCard(item, options = {}) {
-  const selectable = options.selectable !== false;
+  const selectable = options.selectable !== false && item.available !== false;
   const checked = options.checked ? " on" : "";
   const applied = item.state === "applied";
+  const off = item.available === false;
   const meta = [];
   if (item.restart) meta.push(t("tw.needRestart"));
   if (item.logoff) meta.push(t("tw.needLogoff"));
@@ -14,6 +31,7 @@ export function tweakCard(item, options = {}) {
   const el = h(
     '<div class="tw' +
       (applied ? " applied" : "") +
+      (off ? " unavail" : "") +
       '" data-id="' +
       esc(item.id) +
       '">' +
@@ -28,20 +46,24 @@ export function tweakCard(item, options = {}) {
       "</span>" +
       (applied ? '<span class="tag applied">' + esc(t("state.applied")) + "</span>" : "") +
       (item.state === "partial" ? '<span class="tag advanced">' + esc(t("state.partial")) + "</span>" : "") +
+      (off ? '<span class="tag unavail">' + esc(t("tw.notSupported")) + "</span>" : "") +
       "</h3>" +
       "<p>" +
       esc(item.desc) +
       "</p>" +
-      (item.warn ? '<div class="warn">' + esc(item.warn) + "</div>" : "") +
+      (off ? '<div class="warn plain">' + esc(whyUnavailable(item)) + "</div>" : "") +
+      (item.warn && !off ? '<div class="warn">' + esc(item.warn) + "</div>" : "") +
       '<div class="meta">' +
       meta.map((m) => "<span>" + esc(m) + "</span>").join("") +
       "</div>" +
       "</div>" +
-      '<div class="sw' +
-      (applied ? " on" : "") +
-      '" data-sw title="' +
-      esc(applied ? t("act.revert") : t("act.apply")) +
-      '"></div>' +
+      (off
+        ? ""
+        : '<div class="sw' +
+          (applied ? " on" : "") +
+          '" data-sw title="' +
+          esc(applied ? t("act.revert") : t("act.apply")) +
+          '"></div>') +
       "</div>"
   );
 

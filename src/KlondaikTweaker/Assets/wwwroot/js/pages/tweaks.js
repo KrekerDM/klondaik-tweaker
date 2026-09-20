@@ -99,7 +99,7 @@ export default {
 
       listEl.innerHTML = "";
       const showExtreme = app.info.settings.showExtreme;
-      const visible = data.items.filter((x) => x.available && (showExtreme || x.risk !== "extreme"));
+      const visible = data.items.filter((x) => showExtreme || x.risk !== "extreme");
       if (!visible.length) {
         listEl.appendChild(h('<div class="empty">' + esc(t("msg.empty")) + "</div>"));
         updateCount();

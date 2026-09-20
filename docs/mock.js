@@ -51,8 +51,20 @@
     return r.json();
   }
 
+  const FACT_OK = {
+    win11: true, win10: false, laptop: false, desktop: true, ssd: true, hdd: false,
+    nvidia: true, amd: false, intel: false, b22h2: true, b24h2: true,
+    lowram: false, highram: true, weakcpu: false, weak: false, strong: true
+  };
+
+  function meets(req) {
+    if (!req) return true;
+    return req.split(/[|,+\s]+/).filter(Boolean).every((r) => FACT_OK[r] === true);
+  }
+
   function view(t) {
     const applied = ["ui.file-extensions", "priv.telemetry-off", "game.gamedvr-off"].includes(t.id);
+    const ok = meets(t.req);
     const L = t[settings.lang] || t.ru;
     return {
       id: t.id,
@@ -65,8 +77,9 @@
       src: t.src,
       restart: !!t.restart,
       logoff: !!t.logoff,
-      state: applied ? "applied" : "notapplied",
-      available: true
+      state: ok ? (applied ? "applied" : "notapplied") : "unavailable",
+      available: ok,
+      note: ok ? null : "req:" + t.req
     };
   }
 

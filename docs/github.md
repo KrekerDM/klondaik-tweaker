@@ -11,13 +11,13 @@ klondaik-tweaker
 Русский:
 
 ```
-Твикер Windows 10/11 с журналом изменений и откатом каждого твика по отдельности: 148 твиков, подбор по вопросам, категория «Слабый ПК», починка того, что сломали другие твикеры, права TrustedInstaller. Русский и английский интерфейс, готовый exe.
+Твикер Windows 10/11 с журналом изменений и откатом каждого твика по отдельности: 171 твик, подбор по вопросам, категория «Слабый ПК», починка того, что сломали другие твикеры, права TrustedInstaller. Русский и английский интерфейс, готовый exe.
 ```
 
 Английский:
 
 ```
-A Windows 10/11 tweaker with a change journal and per-tweak rollback: 148 tweaks, a question-based wizard, a "Weak PC" category, repair for what other tweakers broke, TrustedInstaller rights. Russian and English UI, ready-made exe.
+A Windows 10/11 tweaker with a change journal and per-tweak rollback: 171 tweaks, a question-based wizard, a "Weak PC" category, repair for what other tweakers broke, TrustedInstaller rights. Russian and English UI, ready-made exe.
 ```
 
 ## Website
