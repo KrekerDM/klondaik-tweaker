@@ -45,7 +45,11 @@ public static class RestorePoint
 
         var safe = description.Replace("'", "").Replace("\"", "");
         var r = Sh.Ps($"Checkpoint-Computer -Description '{safe}' -RestorePointType MODIFY_SETTINGS -ErrorAction Stop", 300000);
-        if (r.Ok) return new RestoreResult(true, "ok");
+        if (r.Ok)
+        {
+            Cached.Drop("restore.list");
+            return new RestoreResult(true, "ok");
+        }
 
         var text = r.All;
         if (text.Contains("disabled", StringComparison.OrdinalIgnoreCase) ||
@@ -54,7 +58,10 @@ public static class RestorePoint
         return new RestoreResult(false, Short(text));
     }
 
-    public static List<RestoreEntry> List()
+    public static List<RestoreEntry> List() =>
+        Cached.Get("restore.list", TimeSpan.FromSeconds(30), ReadList);
+
+    private static List<RestoreEntry> ReadList()
     {
         var list = new List<RestoreEntry>();
         var r = Sh.Ps("Get-ComputerRestorePoint | Select-Object -Last 15 | ForEach-Object { \"{0}`t{1}`t{2}\" -f $_.SequenceNumber, $_.Description, $_.CreationTime }", 120000);

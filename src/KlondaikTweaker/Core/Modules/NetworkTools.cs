@@ -1,3 +1,4 @@
+using KlondaikTweaker.Core.Engine;
 using System.Net.NetworkInformation;
 using KlondaikTweaker.Core.Win;
 
@@ -138,7 +139,10 @@ public static class NetworkTools
         return list.OrderBy(x => x.Ping < 0 ? long.MaxValue : x.Ping).ToList();
     }
 
-    public static Dictionary<string, object> TcpState()
+    public static Dictionary<string, object> TcpState() =>
+        Cached.Get("net.tcp", TimeSpan.FromSeconds(20), ReadTcpState);
+
+    private static Dictionary<string, object> ReadTcpState()
     {
         var result = new Dictionary<string, object>
         {
@@ -149,31 +153,26 @@ public static class NetworkTools
             ["timestamps"] = ""
         };
 
-        var r = Sh.Ps("$s = Get-NetTCPSetting -SettingName Internet -ErrorAction Stop; " +
-                      "\"{0}`t{1}`t{2}`t{3}\" -f $s.AutoTuningLevelLocal, $s.EcnCapability, $s.Timestamps, $s.ScalingHeuristics", 30000);
-        if (r.Ok)
-        {
-            var parts = r.Out.Trim().Split('\t');
-            if (parts.Length >= 4)
-            {
-                result["autotuning"] = parts[0].Trim();
-                result["ecn"] = parts[1].Trim();
-                result["timestamps"] = parts[2].Trim();
-                result["heuristics"] = parts[3].Trim();
-            }
-        }
+        var r = Sh.Ps("$s = Get-NetTCPSetting -SettingName Internet -ErrorAction SilentlyContinue; " +
+                      "$g = Get-NetOffloadGlobalSetting -ErrorAction SilentlyContinue; " +
+                      "\"{0}`t{1}`t{2}`t{3}`t{4}`t{5}\" -f $s.AutoTuningLevelLocal, $s.EcnCapability, $s.Timestamps, " +
+                      "$s.ScalingHeuristics, $g.ReceiveSideScaling, $g.ReceiveSegmentCoalescing", 30000);
 
-        var offload = Sh.Ps("$g = Get-NetOffloadGlobalSetting -ErrorAction Stop; \"{0}`t{1}\" -f $g.ReceiveSideScaling, $g.ReceiveSegmentCoalescing", 30000);
-        if (offload.Ok)
-        {
-            var parts = offload.Out.Trim().Split('\t');
-            if (parts.Length >= 2)
-            {
-                result["rss"] = parts[0].Trim();
-                result["rsc"] = parts[1].Trim();
-            }
-        }
+        if (!r.Ok) return result;
 
+        var parts = r.Out.Trim().Split('	');
+        if (parts.Length >= 4)
+        {
+            result["autotuning"] = parts[0].Trim();
+            result["ecn"] = parts[1].Trim();
+            result["timestamps"] = parts[2].Trim();
+            result["heuristics"] = parts[3].Trim();
+        }
+        if (parts.Length >= 6)
+        {
+            result["rss"] = parts[4].Trim();
+            result["rsc"] = parts[5].Trim();
+        }
         return result;
     }
 

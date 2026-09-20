@@ -1,4 +1,4 @@
-import { invoke, send, on } from "./bridge.js";
+import { invoke, send, on, onBusy } from "./bridge.js";
 import { setLang, getLang, t } from "./i18n.js";
 import { h, esc, toast, icon, progress, modal } from "./ui.js";
 import { initScene, setEnabled } from "./scene.js";
@@ -171,6 +171,8 @@ async function boot() {
   on("window", (data) => {
     document.body.classList.toggle("maximized", !!data.max);
   });
+
+  onBusy((busy) => document.body.classList.toggle("busy", busy));
 
   if (!app.info.settings.acceptedRisk) {
     const accepted = await askRisk();

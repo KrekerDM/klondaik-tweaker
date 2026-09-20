@@ -24,8 +24,8 @@ gets the full catalogue of 171 tweaks, each stating what it costs.
 
 - **171 tweaks** across three risk levels, each described in Russian and
   English: what it does, why, and what you pay for it.
-- **Question-based setup** — up to 16 questions, the irrelevant ones are
-  dropped based on your hardware. Nothing is applied until you press the button.
+- **Question-based setup** — up to 21 questions, the irrelevant ones are
+  dropped based on your hardware and answers. Nothing is applied until you press the button.
 - **A "Weak PC" category** — things that genuinely speed up old hardware rather
   than placebo: visual effects, thumbnails, memory compression, page file.
 - **Per-tweak rollback** — the journal keeps the previous state, and applying a

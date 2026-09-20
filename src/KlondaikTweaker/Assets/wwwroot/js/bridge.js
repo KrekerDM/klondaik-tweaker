@@ -28,15 +28,65 @@ if (host) {
   });
 }
 
+let inFlight = 0;
+let busyTimer = null;
+const busyWatchers = new Set();
+
+function setBusy(on) {
+  busyWatchers.forEach((fn) => {
+    try {
+      fn(on);
+    } catch {}
+  });
+}
+
+function enter() {
+  inFlight++;
+  if (inFlight === 1 && !busyTimer) {
+    busyTimer = setTimeout(() => {
+      busyTimer = null;
+      if (inFlight > 0) setBusy(true);
+    }, 250);
+  }
+}
+
+function leave() {
+  inFlight = Math.max(0, inFlight - 1);
+  if (inFlight === 0) {
+    if (busyTimer) {
+      clearTimeout(busyTimer);
+      busyTimer = null;
+    }
+    setBusy(false);
+  }
+}
+
+export function onBusy(fn) {
+  busyWatchers.add(fn);
+  return () => busyWatchers.delete(fn);
+}
+
 export function invoke(method, payload, timeout = 600000) {
   if (!host) return Promise.reject(new Error("host bridge unavailable"));
   const id = "r" + ++seq;
+  enter();
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       pending.delete(id);
+      leave();
       reject(new Error("timeout: " + method));
     }, timeout);
-    pending.set(id, { resolve, reject, timer });
+    pending.set(id, {
+      resolve: (v) => {
+        leave();
+        resolve(v);
+      },
+      reject: (e) => {
+        leave();
+        reject(e);
+      },
+      timer
+    });
     host.postMessage(JSON.stringify({ id, method, payload: payload || {} }));
   });
 }

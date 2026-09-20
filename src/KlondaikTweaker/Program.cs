@@ -27,6 +27,16 @@ internal static class Program
 
         var args = Environment.GetCommandLineArgs();
 
+        var perf = Array.FindIndex(args, a => a.Equals("--perf", StringComparison.OrdinalIgnoreCase));
+        if (perf >= 0)
+        {
+            var target = perf + 1 < args.Length && !args[perf + 1].StartsWith("--")
+                ? args[perf + 1]
+                : Path.Combine(Paths.Root, "perf.txt");
+            Host.PerfTest.Run(target);
+            return;
+        }
+
         var runAsTi = Array.FindIndex(args, a => a.Equals("--runas-ti", StringComparison.OrdinalIgnoreCase));
         if (runAsTi >= 0)
         {

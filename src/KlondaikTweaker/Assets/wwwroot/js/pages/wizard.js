@@ -12,6 +12,15 @@ export default {
   async render(app) {
     const el = h('<div class="stack" style="gap:20px;max-width:900px"></div>');
     const answers = {};
+    const facts = app.info.facts;
+
+    function seedFacts() {
+      answers.device = [facts.laptop ? "laptop" : "desktop"];
+      answers.disk = [facts.systemSsd ? "ssd" : "hdd"];
+      answers.gpu = [facts.nvidia ? "nvidia" : facts.amd ? "amd" : "intel"];
+      answers.tier = [facts.tier || "normal"];
+    }
+    seedFacts();
     let questions = [];
     let index = 0;
 
@@ -177,6 +186,7 @@ export default {
         if (go.dataset.go === "again") {
           index = 0;
           for (const k of Object.keys(answers)) delete answers[k];
+          seedFacts();
           question();
           return;
         }
@@ -185,8 +195,68 @@ export default {
         if (r) {
           await invoke("app.setSetting", { key: "wizardDone", value: true });
           await app.refresh();
-          result();
+          done(r, ids, catalog);
         }
+      });
+    }
+
+    function done(r, ids, catalog) {
+      const failed = r.results.filter((x) => !x.ok);
+      const applied = r.results.filter((x) => x.ok);
+      const needRestart = applied.filter((x) => (catalog.get(x.id) || {}).restart).length;
+      const needLogoff = applied.filter((x) => (catalog.get(x.id) || {}).logoff).length;
+
+      const stat = (label, value, tone) =>
+        '<div><dt>' + esc(label) + "</dt><dd" + (tone ? ' class="' + tone + '"' : "") + ">" + value + "</dd></div>";
+
+      let html =
+        '<div class="pane stack">' +
+        "<h2>" + esc(t("wiz.doneTitle")) + "</h2>" +
+        '<p class="lead small">' + esc(t("wiz.doneSub")) + "</p>" +
+        '<div class="spec">' +
+        stat(t("wiz.doneApplied"), applied.length) +
+        (failed.length ? stat(t("wiz.doneFailed"), failed.length, "bad") : "") +
+        (needRestart ? stat(t("tw.needRestart"), needRestart) : "") +
+        (needLogoff ? stat(t("tw.needLogoff"), needLogoff) : "") +
+        "</div>";
+
+      if (failed.length) {
+        html +=
+          '<div class="warn">' + esc(t("wiz.doneFailedHint")) + "</div>" +
+          '<div class="list">' +
+          failed
+            .map(
+              (x) =>
+                '<div class="item"><div class="grow" style="min-width:0">' +
+                '<div class="name">' + esc((catalog.get(x.id) || {}).title || x.id) + "</div>" +
+                '<div class="sub mono">' + esc(x.error || "") + "</div></div></div>"
+            )
+            .join("") +
+          "</div>";
+      }
+
+      html +=
+        '<p class="small dim">' + esc(t("wiz.doneJournalHint")) + "</p>" +
+        '<div class="row" style="margin-top:8px">' +
+        '<button class="btn btn-primary" data-done="dash">' + esc(t("wiz.doneToDash")) + "</button>" +
+        '<button class="btn btn-ghost" data-done="journal">' + esc(t("wiz.doneToJournal")) + "</button>" +
+        '<button class="btn btn-ghost" data-done="bench">' + esc(t("wiz.doneToBench")) + "</button>" +
+        (needRestart ? '<button class="btn btn-ghost" data-done="restart">' + esc(t("act.restart")) + "</button>" : "") +
+        "</div></div>";
+
+      body.innerHTML = "";
+      const pane = h(html);
+      body.appendChild(pane);
+
+      pane.addEventListener("click", async (e) => {
+        const btn = e.target.closest("[data-done]");
+        if (!btn) return;
+        const where = btn.dataset.done;
+        if (where === "restart") {
+          await invoke("sys.power", { action: "restart" });
+          return;
+        }
+        app.go(where === "journal" ? "journal" : where === "bench" ? "bench" : "dash");
       });
     }
 
