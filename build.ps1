@@ -32,6 +32,7 @@ New-Item -ItemType Directory -Path $vmTest -Force | Out-Null
 Copy-Item $exe $vmTest -Force
 Copy-Item (Join-Path $root "tools\RUN-TEST.bat") $vmTest -Force
 Copy-Item (Join-Path $root "tools\RUN-FULL.bat") $vmTest -Force
+Copy-Item (Join-Path $root "tools\ALLOW-GUEST-OPS.bat") $vmTest -Force
 
 $size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
 Write-Host "Done: $exe ($size MB)" -ForegroundColor Green

@@ -324,7 +324,7 @@ RULES = [
     rule("search=no", ["perf.search-index-off"]),
     rule("browser=yes", ["priv.ucpd-off"]),
 
-    rule("ui=taskbar", ["ui.taskbar-clean"]),
+    rule("ui=taskbar", ["ui.taskbar-clean", "ui.taskbar-win11"]),
     rule("ui=left", ["ui.taskbar-left"]),
     rule("ui=classic", ["ui.classic-context"]),
     rule("ui=start", ["ui.start-recommend-off"]),

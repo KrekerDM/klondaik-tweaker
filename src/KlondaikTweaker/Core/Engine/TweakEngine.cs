@@ -225,7 +225,7 @@ public static class TweakEngine
                             Tasks.SetEnabled(a.P!, !string.Equals(a.V, "on", StringComparison.OrdinalIgnoreCase));
                             break;
                         case "cmd":
-                            if (a.RArgs is not null) Sh.Run(a.Exe!, a.RArgs, 180000);
+                            if (a.RArgs is not null && Journal.IsApplied(t.Id)) Sh.Run(a.Exe!, a.RArgs, 180000);
                             break;
                         case "hosts":
                             HostsFile.Unblock((a.V ?? "").Split('|', StringSplitOptions.RemoveEmptyEntries));
