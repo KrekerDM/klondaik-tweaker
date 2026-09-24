@@ -123,6 +123,11 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "nvidia.state": return Nvidia.State();
+            case "nvidia.export": return Nvidia.Export();
+            case "nvidia.import": return Nvidia.Import(S(p, "file"));
+            case "nvidia.open": return Nvidia.Open();
+            case "nvidia.folder": Sh.OpenExternal(Nvidia.Folder); return new { ok = true };
             case "power.state": return new { schemes = PowerPlans.Schemes(), files = PowerPlans.Files(), hidden = PowerPlans.HiddenCount() };
             case "power.activate": return PowerPlans.Activate(S(p, "guid"));
             case "power.delete": return PowerPlans.Delete(S(p, "guid"));

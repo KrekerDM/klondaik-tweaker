@@ -15,6 +15,7 @@ import tasks from "./pages/tasks.js";
 import irq from "./pages/irq.js";
 import nic from "./pages/nic.js";
 import power from "./pages/power.js";
+import nvidia from "./pages/nvidia.js";
 import apps from "./pages/apps.js";
 import network from "./pages/network.js";
 import bench from "./pages/bench.js";
@@ -22,7 +23,7 @@ import soft from "./pages/soft.js";
 import journal from "./pages/journal.js";
 import settings from "./pages/settings.js";
 
-const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, features, tasks, irq, nic, power, apps, network, bench, soft, journal, settings];
+const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, features, tasks, irq, nic, power, nvidia, apps, network, bench, soft, journal, settings];
 const GROUPS = ["main", "system", "extra"];
 
 const app = {

@@ -42,6 +42,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\wwwroot\**\*" LogicalName="web/$([System.String]::Copy('%(RecursiveDir)%(Filename)%(Extension)').Replace('\','/'))" />
     <EmbeddedResource Include="Assets\Data\**\*.json" LogicalName="data/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Assets\vendor\**\*" LogicalName="vendor/%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

@@ -15,6 +15,15 @@ public static class Res
         return name is null ? null : Asm.GetManifestResourceStream(name);
     }
 
+    public static byte[]? Bytes(string logical)
+    {
+        using var stream = Open(logical);
+        if (stream is null) return null;
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        return memory.ToArray();
+    }
+
     public static string Text(string logical)
     {
         using var s = Open(logical);

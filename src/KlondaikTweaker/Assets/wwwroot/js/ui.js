@@ -159,6 +159,7 @@ export function icon(name) {
     clean: "M4 8h16l-1.4 12H5.4zM9 8V4h6v4",
     tools: "M14.7 6.3a4 4 0 01-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 015.4-5.4l-2.8 2.8-2.4-.6-.6-2.4z",
     startup: "M12 3v12M7 8l5-5 5 5M4 18v3h16v-3",
+    nvidia: "M4 6h16v12H4zM8 10h3l2 4h3",
     power: "M12 3v9M7.5 6.5a7 7 0 1 0 9 0",
     nic: "M4 7h16v10H4zM8 17v3M16 17v3M7 11h2M11 11h2M15 11h2",
     irq: "M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3M7 7h10v10H7z",
