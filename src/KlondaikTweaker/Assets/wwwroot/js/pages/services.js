@@ -11,7 +11,7 @@ export default {
 
   async render() {
     const el = h('<div class="stack" style="gap:20px"></div>');
-    const state = { q: "", running: false, recommended: false, changed: false };
+    const state = { q: "", running: false, recommended: false, changed: false, group: "" };
     let all = [];
 
     el.appendChild(
@@ -27,6 +27,7 @@ export default {
         '<button class="chip" data-f="running">' + esc(t("svc.onlyRunning")) + "</button>" +
         '<button class="chip" data-f="recommended">' + esc(t("svc.recommended")) + "</button>" +
         '<button class="chip" data-f="changed">' + esc(t("svc.changedOnly")) + "</button>" +
+        '<select data-group style="max-width:260px"></select>' +
         '<span class="small dim" data-count></span>' +
         "</div>"
     );
@@ -35,12 +36,31 @@ export default {
     const list = h('<div class="list"></div>');
     el.appendChild(list);
 
+    function fillGroups() {
+      const counts = new Map();
+      all.forEach((s) => counts.set(s.group, (counts.get(s.group) || 0) + 1));
+
+      const ids = [...counts.keys()]
+        .filter((id) => id !== "other")
+        .map((id) => ({ id, label: t("svcg." + id), n: counts.get(id) }))
+        .sort((x, y) => x.label.localeCompare(y.label));
+
+      const other = counts.get("other") || 0;
+      if (other) ids.push({ id: "other", label: t("svcg.other"), n: other });
+
+      const sel = filters.querySelector("[data-group]");
+      sel.innerHTML =
+        '<option value="">' + esc(t("svcg.all")) + "</option>" +
+        ids.map((g) => '<option value="' + esc(g.id) + '">' + esc(g.label) + " · " + g.n + "</option>").join("");
+    }
+
     function draw() {
       const q = state.q.toLowerCase();
       const items = all.filter((s) => {
         if (state.running && s.status !== "running") return false;
         if (state.recommended && !s.recommended) return false;
         if (state.changed && !s.changed) return false;
+        if (state.group && s.group !== state.group) return false;
         if (!q) return true;
         return (
           s.name.toLowerCase().includes(q) ||
@@ -63,7 +83,9 @@ export default {
             (s.recommended ? ' <span class="tag safe">' + esc(t("svc.recommended")) + "</span>" : "") +
             (s.touched ? ' <span class="tag applied">' + esc(t("state.applied")) + "</span>" : "") +
             (s.changed ? ' <span class="tag advanced">' + esc(t("svc.changed")) + "</span>" : "") +
-            '</div><div class="sub">' + esc(s.desc || s.name) + "</div></div>" +
+            '</div><div class="sub">' +
+            (s.group !== "other" && !state.group ? '<span class="tag plain">' + esc(t("svcg." + s.group)) + "</span> " : "") +
+            esc(s.desc || s.name) + "</div></div>" +
             '<span class="tag ' + (s.status === "running" ? "safe" : "plain") + '">' +
             esc(s.status === "running" ? t("svc.running") : t("svc.stopped")) + "</span>" +
             '<select data-mode>' +
@@ -118,6 +140,13 @@ export default {
       }
     });
 
+    filters.addEventListener("change", (e) => {
+      const sel = e.target.closest("[data-group]");
+      if (!sel) return;
+      state.group = sel.value;
+      draw();
+    });
+
     filters.addEventListener("click", (e) => {
       const chip = e.target.closest("[data-f]");
       if (!chip) return;
@@ -135,6 +164,8 @@ export default {
 
     list.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
     all = await invoke("services.list");
+    all.forEach((s) => { if (!s.group) s.group = "other"; });
+    fillGroups();
     draw();
     return { el };
   }

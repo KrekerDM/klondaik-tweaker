@@ -205,11 +205,14 @@
     "startup.toggle": () => ({ ok: true }),
     "startup.delete": () => ({ ok: true }),
     "services.list": () => [
-      { name: "DiagTrack", display: "Функциональные возможности для подключенных пользователей и телеметрия", desc: "Служба отправки диагностических данных в Microsoft", start: "auto", status: "running", recommended: true, touched: false },
-      { name: "SysMain", display: "SysMain", desc: "Поддерживает и улучшает производительность системы", start: "auto", status: "running", recommended: false, touched: false },
-      { name: "Spooler", display: "Диспетчер печати", desc: "Загружает файлы в память для последующей печати", start: "auto", status: "running", recommended: false, touched: false },
-      { name: "WSearch", display: "Windows Search", desc: "Индексирование контента и кэширование свойств", start: "delayed", status: "running", recommended: false, touched: false },
-      { name: "Fax", display: "Факс", desc: "Позволяет отправлять и получать факсы", start: "disabled", status: "stopped", recommended: true, touched: true }
+      { name: "DiagTrack", display: "Функциональные возможности для подключенных пользователей и телеметрия", desc: "Служба отправки диагностических данных в Microsoft", start: "auto", status: "running", recommended: true, touched: false, group: "telemetry", stock: "auto", changed: false },
+      { name: "SysMain", display: "SysMain", desc: "Поддерживает и улучшает производительность системы", start: "auto", status: "running", recommended: false, touched: false, group: "disk", stock: "auto", changed: false },
+      { name: "Spooler", display: "Диспетчер печати", desc: "Загружает файлы в память для последующей печати", start: "auto", status: "running", recommended: false, touched: false, group: "print", stock: "auto", changed: false },
+      { name: "WSearch", display: "Windows Search", desc: "Индексирование контента и кэширование свойств", start: "delayed", status: "running", recommended: false, touched: false, group: "index", stock: "auto", changed: true },
+      { name: "bthserv", display: "Служба поддержки Bluetooth", desc: "Поддерживает обнаружение и связывание удалённых устройств Bluetooth", start: "manual", status: "stopped", recommended: false, touched: false, group: "bluetooth", stock: "manual", changed: false },
+      { name: "TermService", display: "Службы удалённых рабочих столов", desc: "Разрешает пользователям подключаться к этому компьютеру", start: "manual", status: "stopped", recommended: false, touched: false, group: "remote", stock: "manual", changed: false },
+      { name: "NvContainerLocalSystem", display: "NVIDIA LocalSystem Container", desc: "Контейнер служб NVIDIA", start: "auto", status: "running", recommended: false, touched: false, group: "thirdparty", stock: null, changed: false },
+      { name: "Fax", display: "Факс", desc: "Позволяет отправлять и получать факсы", start: "disabled", status: "stopped", recommended: true, touched: true, group: "print", stock: "manual", changed: true }
     ],
     "services.set": (p) => ({ ok: true, start: p.mode, status: p.mode === "disabled" ? "stopped" : "running" }),
     "services.control": (p) => ({ ok: true, status: p.action === "start" ? "running" : "stopped" }),

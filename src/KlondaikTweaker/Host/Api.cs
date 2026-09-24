@@ -430,6 +430,12 @@ public static class Api
         "diagnosticshub.standardcollector.service", "wisvc", "SCardSvr", "ScDeviceEnum", "SEMgrSvc"
     ];
 
+    private static string Group(string name, string? stock)
+    {
+        var group = SvcGroups.Of(name);
+        return group == "other" && stock is null ? "thirdparty" : group;
+    }
+
     private static object ServiceList()
     {
         var all = Svc.All();
@@ -449,7 +455,8 @@ public static class Api
                 recommended = SafeToDisable.Contains(s.Name, StringComparer.OrdinalIgnoreCase),
                 touched = journalDisabled.Contains(s.Name),
                 stock = known,
-                changed = known is not null && !string.Equals(known, s.Start, StringComparison.OrdinalIgnoreCase)
+                changed = known is not null && !string.Equals(known, s.Start, StringComparison.OrdinalIgnoreCase),
+                group = Group(s.Name, known)
             };
         });
     }

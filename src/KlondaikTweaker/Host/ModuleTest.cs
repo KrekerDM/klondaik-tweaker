@@ -165,6 +165,20 @@ public static class ModuleTest
             return new { folders = target.Files, megabytes = target.Bytes / 1024 / 1024 };
         });
 
+        Step("services.groups", () =>
+        {
+            var stock = Repair.Db.ServiceDefaults;
+            var all = Svc.All();
+            var named = all.Count(x => SvcGroups.Of(x.Name) != "other");
+            var foreign = all.Count(x => SvcGroups.Of(x.Name) == "other" && !stock.ContainsKey(x.Name));
+            var top = all.GroupBy(x => SvcGroups.Of(x.Name))
+                .Where(g => g.Key != "other")
+                .OrderByDescending(g => g.Count())
+                .Take(5)
+                .Select(g => g.Key + "=" + g.Count());
+            return new { services = all.Count, grouped = named, thirdParty = foreign, biggest = string.Join(" ", top) };
+        });
+
         Step("services.changed", () =>
         {
             var stock = Repair.Db.ServiceDefaults;
