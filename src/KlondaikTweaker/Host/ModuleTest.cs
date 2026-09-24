@@ -158,6 +158,13 @@ public static class ModuleTest
             return new { adapter = first.Name, adapters = adapters.Count, parameters = list.Count, edited = list.Count(x => x.Edited) };
         });
 
+        Step("clean.uwpLeftovers", () =>
+        {
+            var target = Cleaner.Scan().FirstOrDefault(x => x.Id == "uwp.leftover");
+            if (target is null) return new { skipped = true, reason = "target missing" };
+            return new { folders = target.Files, megabytes = target.Bytes / 1024 / 1024 };
+        });
+
         Step("services.changed", () =>
         {
             var stock = Repair.Db.ServiceDefaults;

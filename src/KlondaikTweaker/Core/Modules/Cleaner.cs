@@ -21,9 +21,45 @@ public static class Cleaner
     private static string Roaming => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
     private static string WinDir => Environment.GetFolderPath(Environment.SpecialFolder.Windows);
 
+    private static List<string> OrphanPackages()
+    {
+        var root = Path.Combine(Local, "Packages");
+        if (!Directory.Exists(root)) return [];
+
+        HashSet<string> alive;
+        try
+        {
+            alive = Appx.List()
+                .Select(FamilyName)
+                .Where(x => x.Length > 0)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+        catch { return []; }
+
+        if (alive.Count < 10) return [];
+
+        var orphans = new List<string>();
+        foreach (var dir in Directory.EnumerateDirectories(root))
+        {
+            var name = Path.GetFileName(dir);
+            if (name.Length == 0 || alive.Contains(name)) continue;
+            if (name.IndexOf('_') < 0) continue;
+            orphans.Add(dir);
+        }
+        return orphans;
+    }
+
+    private static string FamilyName(AppxItem item)
+    {
+        if (item.Name.Length > 0 && item.Publisher.Length > 0) return item.Name + "_" + item.Publisher;
+        var parts = item.Full.Split('_');
+        return parts.Length < 5 ? "" : parts[0] + "_" + parts[^1];
+    }
+
     private static List<string> Dirs(string id) => id switch
     {
         "temp.user" => [Path.GetTempPath()],
+        "uwp.leftover" => OrphanPackages(),
         "temp.win" => [Path.Combine(WinDir, "Temp")],
         "prefetch" => [Path.Combine(WinDir, "Prefetch")],
         "wu.cache" => [Path.Combine(WinDir, "SoftwareDistribution", "Download")],
@@ -73,6 +109,7 @@ public static class Cleaner
     private static readonly (string Id, string Ru, string En, string DRu, string DEn, bool Safe, bool Def)[] Defs =
     [
         ("temp.user", "Временные файлы пользователя", "User temp files", "Папка %TEMP% текущего пользователя", "Current user %TEMP% folder", true, true),
+        ("uwp.leftover", "Остатки удалённых приложений", "Leftovers of removed apps", "Папки с данными приложений из магазина, которые уже удалены. Windows их не убирает и они лежат годами.", "Data folders of Store apps that are already uninstalled. Windows never removes them and they sit there for years.", true, false),
         ("temp.win", "Временные файлы Windows", "Windows temp files", "C:\\Windows\\Temp", "C:\\Windows\\Temp", true, true),
         ("wu.cache", "Кэш обновлений Windows", "Windows Update cache", "Скачанные пакеты обновлений, которые уже установлены", "Downloaded update packages already installed", true, true),
         ("do.cache", "Кэш Delivery Optimization", "Delivery Optimization cache", "Файлы раздачи обновлений другим ПК", "Files shared with other PCs for updates", true, true),
@@ -202,7 +239,7 @@ public static class Cleaner
 
             foreach (var dir in Dirs(id))
             {
-                var (b, f, err) = Wipe(dir, id == "thumbs" ? "thumbcache_*.db" : null, keepRoot: true);
+                var (b, f, err) = Wipe(dir, id == "thumbs" ? "thumbcache_*.db" : null, keepRoot: id != "uwp.leftover");
                 freed += b;
                 files += f;
                 if (err is not null) errors.Add(err);
