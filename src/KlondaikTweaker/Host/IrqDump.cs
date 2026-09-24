@@ -40,6 +40,14 @@ public static class IrqDump
         report.AppendLine();
         report.AppendLine($"всего устройств: {devices.Count}");
 
+        report.AppendLine();
+        report.AppendLine("устройства-призраки (отключены, но записи остались):");
+        var ghosts = Ghosts.List();
+        foreach (var g in ghosts.Take(25))
+            report.AppendLine($"  [{(g.Removable ? "можно убрать" : "не трогаем ")}] {g.Class,-14} {g.Name}");
+        report.AppendLine($"всего призраков: {ghosts.Count}, из них можно убрать: {ghosts.Count(x => x.Removable)}");
+        report.AppendLine();
+
         var text = report.ToString();
         try { File.WriteAllText(outPath, text, new UTF8Encoding(false)); }
         catch { }

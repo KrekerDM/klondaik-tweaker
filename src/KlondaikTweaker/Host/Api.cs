@@ -123,6 +123,8 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "ghosts.list": return Ghosts.List();
+            case "ghosts.remove": return Ghosts.Remove(Arr(p, "ids"));
             case "nvidia.state": return Nvidia.State();
             case "nvidia.export": return Nvidia.Export();
             case "nvidia.import": return Nvidia.Import(S(p, "file"));

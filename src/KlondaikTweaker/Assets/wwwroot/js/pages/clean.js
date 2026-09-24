@@ -138,6 +138,70 @@ export default {
     });
 
     await scan();
+    const ghosts = h('<div class="pane stack"><h2>' + esc(t("gh.title")) + "</h2>" +
+      '<p class="small dim">' + esc(t("gh.sub")) + "</p>" +
+      '<div data-ghosts><div class="skel"></div></div></div>');
+    el.appendChild(ghosts);
+
+    async function loadGhosts() {
+      const box = ghosts.querySelector("[data-ghosts]");
+      box.innerHTML = '<div class="skel"></div>';
+      let items;
+      try {
+        items = await invoke("ghosts.list", {}, 180000);
+      } catch {
+        box.innerHTML = '<div class="empty">' + esc(t("gh.failed")) + "</div>";
+        return;
+      }
+
+      const free = items.filter((x) => x.removable);
+      const locked = items.length - free.length;
+
+      if (!items.length) {
+        box.innerHTML = '<div class="empty">' + esc(t("gh.none")) + "</div>";
+        return;
+      }
+
+      box.innerHTML = "";
+      box.appendChild(
+        h('<p class="small">' + esc(t("gh.found")) + ": " + items.length +
+          " · " + esc(t("gh.canRemove")) + ": " + free.length +
+          (locked ? " · " + esc(t("gh.kept")) + ": " + locked : "") + "</p>")
+      );
+
+      const list2 = h('<div class="list"></div>');
+      free.slice(0, 60).forEach((g) => {
+        list2.appendChild(
+          h('<div class="item"><div class="cb on" data-g="' + esc(g.id) + '" style="margin-top:3px"></div>' +
+            '<div class="grow" style="min-width:0">' +
+            '<div class="name">' + esc(g.name) + ' <span class="tag plain">' + esc(g.class) + "</span></div>" +
+            '<div class="sub mono dim">' + esc(g.id) + "</div></div></div>")
+        );
+      });
+      list2.addEventListener("click", (e) => {
+        const cb = e.target.closest("[data-g]");
+        if (cb) cb.classList.toggle("on");
+      });
+      box.appendChild(list2);
+
+      if (free.length) {
+        const act = h('<div class="row" style="margin-top:12px">' +
+          '<button class="btn btn-primary btn-sm" data-gh="remove">' + esc(t("gh.remove")) + "</button></div>");
+        act.addEventListener("click", async () => {
+          const ids = [...list2.querySelectorAll("[data-g].on")].map((x) => x.dataset.g);
+          if (!ids.length) return void toast(t("msg.nothingSelected"), "warn");
+          const ok = await confirmBox(t("gh.title"), t("gh.confirm"), t("gh.remove"), true);
+          if (!ok) return;
+          const r = await invoke("ghosts.remove", { ids }, 300000);
+          toast(r.message || "", r.ok === false ? "err" : "");
+          await loadGhosts();
+        });
+        box.appendChild(act);
+      }
+    }
+
+    loadGhosts();
+
     return { el };
   }
 };

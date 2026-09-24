@@ -158,6 +158,12 @@ public static class ModuleTest
             return new { adapter = first.Name, adapters = adapters.Count, parameters = list.Count, edited = list.Count(x => x.Edited) };
         });
 
+        Step("ghosts.list", () =>
+        {
+            var list = Ghosts.List();
+            return new { found = list.Count, removable = list.Count(x => x.Removable), classes = list.Select(x => x.Class).Distinct().Count() };
+        });
+
         Step("nic.roundTrip", () =>
         {
             var adapter = Nic.Adapters().FirstOrDefault();
