@@ -158,6 +158,68 @@ public static class ModuleTest
             return new { adapter = first.Name, adapters = adapters.Count, parameters = list.Count, edited = list.Count(x => x.Edited) };
         });
 
+        Step("nic.roundTrip", () =>
+        {
+            var adapter = Nic.Adapters().FirstOrDefault();
+            if (adapter is null) return new { skipped = true, reason = "no adapter exposes parameters" };
+
+            var target = Nic.Params(adapter.Id)
+                .FirstOrDefault(x => !x.Risky && x.Type == "enum" && x.Options.Count >= 2);
+            if (target is null) return new { skipped = true, reason = "no safe enumeration parameter to flip" };
+
+            var original = target.Current;
+            var other = target.Options.First(x => !x.Value.Equals(original, StringComparison.OrdinalIgnoreCase)).Value;
+
+            var set = Nic.Set(adapter.Id, target.Name, other);
+            var mid = Nic.Params(adapter.Id).First(x => x.Name == target.Name).Current;
+            var back = Nic.Set(adapter.Id, target.Name, original);
+            var after = Nic.Params(adapter.Id).First(x => x.Name == target.Name).Current;
+
+            return new
+            {
+                adapter = adapter.Name,
+                parameter = target.Desc,
+                original,
+                mid,
+                after,
+                setOk = set.Ok,
+                backOk = back.Ok,
+                restored = after == original && mid == other
+            };
+        }, "one safe adapter parameter is changed and put back");
+
+        Step("power.unhideRoundTrip", () =>
+        {
+            var before = PowerPlans.HiddenCount();
+            if (before == 0) return new { skipped = true, reason = "nothing is hidden on this system" };
+
+            var unhide = PowerPlans.Unhide();
+            var mid = PowerPlans.HiddenCount();
+
+            var entry = Journal.Entries.LastOrDefault(x => x.TweakId == "power.unhide" && !x.Reverted);
+            var reverted = 0;
+            if (entry is not null)
+            {
+                foreach (var item in entry.Items)
+                {
+                    try { TweakEngine.RevertItem(item); reverted++; }
+                    catch { }
+                }
+            }
+            var after = PowerPlans.HiddenCount();
+
+            return new
+            {
+                before,
+                mid,
+                after,
+                unhideOk = unhide.Ok,
+                changed = unhide.Changed,
+                reverted,
+                restored = mid == 0 && after == before
+            };
+        }, "hidden power settings are revealed and hidden again through the journal");
+
         Step("irq.topology", () =>
         {
             var threads = Cpu.Threads();
