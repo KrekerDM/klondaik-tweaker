@@ -23,6 +23,8 @@ SHOTS = [
     ("wizard", "wizard", ['[data-go="start"]']),
     ("tweaks", "tweaks", []),
     ("tools", "tools", []),
+    ("services", "services", []),
+    ("startup", "startup", []),
 ]
 
 BROWSERS = [

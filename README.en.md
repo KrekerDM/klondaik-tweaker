@@ -3,7 +3,7 @@
 # Klondaik Tweaker
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)
-![Tweaks](https://img.shields.io/badge/Tweaks-171-2EA043)
+![Tweaks](https://img.shields.io/badge/Tweaks-172-2EA043)
 ![UI](https://img.shields.io/badge/GUI-WebView2%20%2B%20three.js-5C3EE8)
 ![Rights](https://img.shields.io/badge/Rights-TrustedInstaller-B85C38)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?logo=windows&logoColor=white)
@@ -16,13 +16,13 @@ turned on by mistake.
 
 A newcomer does not need to know what `Win32PrioritySeparation` is: they answer
 questions about how they use the machine and get a ready set. Everyone else
-gets the full catalogue of 171 tweaks, each stating what it costs.
+gets the full catalogue of 172 tweaks, each stating what it costs.
 
 ![System overview](docs/screenshot-main-en.png)
 
 ## What it does
 
-- **171 tweaks** across three risk levels, each described in Russian and
+- **172 tweaks** across three risk levels, each described in Russian and
   English: what it does, why, and what you pay for it.
 - **Question-based setup** — up to 21 questions, the irrelevant ones are
   dropped based on your hardware and answers. Nothing is applied until you press the button.
@@ -42,8 +42,20 @@ gets the full catalogue of 171 tweaks, each stating what it costs.
   what it does and what turning it off costs.
 - **Windows features** — 27 optional components through DISM: what each one is,
   what it is for and which are unsafe to leave on.
+- **Services by group** — 24 groups a person can name (printing, Bluetooth,
+  VPN, Hyper-V, indexing and so on), plus a group for the services your own
+  programs installed rather than Windows. Device drivers are marked and kept
+  out of the way until you ask for them.
+- **Power plans** — switch, export, import, and reveal the settings Windows
+  hides from Control Panel.
+- **Ghost devices** — records of hardware that is no longer in the machine.
+  Disks, volumes and system classes are left alone.
+- **NVIDIA panel** — driver profiles through a bundled Profile Inspector, with
+  export and import.
 - **Cleanup, startup, services, built-in apps, network** — every action is
-  journalled too.
+  journalled too. You can add your own program to startup by dropping it on the
+  page, and cleanup has its own row for the folders of apps you removed long
+  ago.
 - **Benchmark** — CPU, memory, disk and responsiveness, so "before" and "after"
   are numbers rather than impressions.
 - **A single portable exe** — 54 MB, no installation, no .NET on the user's
@@ -129,6 +141,27 @@ many services and sound, networking or the Store stopped working — "restore
 default services" puts 232 services back to their stock start values.
 
 ![Tools](docs/screenshot-tools-en.png)
+
+## Services
+
+The full list with descriptions, sorted into 24 groups a person can name:
+printing, Bluetooth, VPN, remote control, Hyper-V, indexing and so on. One
+group holds the services your own programs installed rather than Windows,
+decided by where the file runs from. Device drivers are marked and hidden by
+default: on an ordinary machine there are 445 of them among 759 rows, and they
+only get in the way. The "changed only" filter shows what differs from the
+stock start mode.
+
+![Services](docs/screenshot-services-en.png)
+
+## Startup
+
+Registry keys, startup folders and scheduled tasks in one list, each saying
+where it comes from. You can add your own program by dropping it on the page or
+picking a file: exe and bat go in as a registry value, a shortcut is copied
+into the startup folder.
+
+![Startup](docs/screenshot-startup-en.png)
 
 ## Updates
 
@@ -261,10 +294,18 @@ after each step, so an interruption halfway does not lose the result.
 .\dist\KlondaikTweaker.exe --selftest-modules report.txt
 ```
 
-On Windows 10 21H1 in a virtual machine: 149 of 149 tweaks applied and reverted
-with the state matching byte for byte, 26 of 26 backend checks, 23 of 23
-modules. Compared against the reference tweakers: 99 registry values match,
-13 differ deliberately.
+Interface timings, read-only: every call is made twice, cold and warm.
+
+```powershell
+.\dist\KlondaikTweaker.exe --perf report.txt
+```
+
+On Windows 10 22H2 in a virtual machine: **172 of 173** tweaks applied and
+reverted with the state matching byte for byte, **26 of 26** backend checks,
+**38 of 38** modules. The one tweak that did not pass is turning reserved
+storage off: Windows itself refuses on that machine (`0x800f0975`, image
+servicing is busy), and that answer is what the report shows. Compared against
+the reference tweakers: 99 registry values match, 13 differ deliberately.
 
 The screenshots in this README are rebuilt from the same `wwwroot` that ships
 inside the exe:
