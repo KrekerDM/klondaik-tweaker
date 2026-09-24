@@ -141,6 +141,23 @@ public static class ModuleTest
             return new { group = group.Id, before, mid, after, restored = before == after, offOk = off.Ok, onOk = on.Ok };
         }, "a task group is switched off and back on");
 
+        Step("power.state", () => new
+        {
+            schemes = PowerPlans.Schemes().Count,
+            active = PowerPlans.Schemes().Count(x => x.Active),
+            hidden = PowerPlans.HiddenCount(),
+            files = PowerPlans.Files().Count
+        });
+
+        Step("nic.params", () =>
+        {
+            var adapters = Nic.Adapters();
+            if (adapters.Count == 0) return new { skipped = true, reason = "no adapter exposes parameters" };
+            var first = adapters[0];
+            var list = Nic.Params(first.Id);
+            return new { adapter = first.Name, adapters = adapters.Count, parameters = list.Count, edited = list.Count(x => x.Edited) };
+        });
+
         Step("irq.topology", () =>
         {
             var threads = Cpu.Threads();

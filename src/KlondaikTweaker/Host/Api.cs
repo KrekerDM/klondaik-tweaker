@@ -123,6 +123,13 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "power.state": return new { schemes = PowerPlans.Schemes(), files = PowerPlans.Files(), hidden = PowerPlans.HiddenCount() };
+            case "power.activate": return PowerPlans.Activate(S(p, "guid"));
+            case "power.delete": return PowerPlans.Delete(S(p, "guid"));
+            case "power.export": return PowerPlans.Export(S(p, "guid"));
+            case "power.import": return PowerPlans.Import(S(p, "file"));
+            case "power.unhide": return PowerPlans.Unhide();
+            case "power.folder": Sh.OpenExternal(PowerPlans.Folder); return new { ok = true };
             case "nic.adapters": return Nic.Adapters();
             case "nic.params": return Nic.Params(S(p, "id"));
             case "nic.set": return Nic.Set(S(p, "id"), S(p, "name"), S(p, "value"));
