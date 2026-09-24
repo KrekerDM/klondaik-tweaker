@@ -27,6 +27,16 @@ internal static class Program
 
         var args = Environment.GetCommandLineArgs();
 
+        var irq = Array.FindIndex(args, a => a.Equals("--irq", StringComparison.OrdinalIgnoreCase));
+        if (irq >= 0)
+        {
+            var target = irq + 1 < args.Length && !args[irq + 1].StartsWith("--")
+                ? args[irq + 1]
+                : Path.Combine(Paths.Root, "irq.txt");
+            Host.IrqDump.Run(target);
+            return;
+        }
+
         var perf = Array.FindIndex(args, a => a.Equals("--perf", StringComparison.OrdinalIgnoreCase));
         if (perf >= 0)
         {

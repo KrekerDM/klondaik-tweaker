@@ -141,6 +141,41 @@ public static class ModuleTest
             return new { group = group.Id, before, mid, after, restored = before == after, offOk = off.Ok, onOk = on.Ok };
         }, "a task group is switched off and back on");
 
+        Step("irq.topology", () =>
+        {
+            var threads = Cpu.Threads();
+            return new
+            {
+                threads = threads.Count,
+                cores = threads.Select(x => x.Core).Distinct().Count(),
+                hybrid = Cpu.Hybrid(),
+                performance = threads.Count(x => x.Performance)
+            };
+        });
+
+        Step("irq.roundTrip", () =>
+        {
+            var free = Irq.Devices().FirstOrDefault(x => !x.Bound && x.Kind != "storage")
+                       ?? Irq.Devices().FirstOrDefault(x => !x.Bound);
+            if (free is null) return new { skipped = true, reason = "every device already has an affinity set" };
+
+            var bind = Irq.Bind(free.Id, [0], false);
+            var afterBind = Irq.Devices().First(x => x.Id == free.Id);
+            var reset = Irq.Reset(free.Id);
+            var afterReset = Irq.Devices().First(x => x.Id == free.Id);
+
+            return new
+            {
+                device = free.Name,
+                bindOk = bind.Ok,
+                boundMask = afterBind.MaskHex,
+                boundPolicy = afterBind.Policy,
+                resetOk = reset.Ok,
+                policyAfter = afterReset.Policy,
+                restored = !afterReset.Bound && afterReset.Policy == free.Policy
+            };
+        }, "a device is pinned to thread 0 and unpinned again");
+
         Step("soft.winget", () => SoftCatalog.HasWinget());
         Step("api.router", () =>
         {

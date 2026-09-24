@@ -273,6 +273,20 @@
     "app.credits": () => creditsDb,
     "repair.run": (p) => ({ ok: true, changed: 12, skipped: 3, message: "возвращено служб: 12", details: [] }),
     "repair.status": () => ({ ctxti: true, ctxown: false }),
+    "irq.list": () => ({
+      hybrid: true,
+      threads: Array.from({ length: 28 }, (_, i) => (i < 16
+        ? { index: i, core: Math.floor(i / 2), efficiency: 1, performance: true }
+        : { index: i, core: 8 + (i - 16), efficiency: 0, performance: false })),
+      devices: [
+        { id: 'PCI-GPU', name: 'NVIDIA GeForce RTX 5060 Ti', kind: 'gpu', service: 'nvlddmkm', policy: 4, maskHex: '0x4', threads: [2], priority: 3, bound: true },
+        { id: 'PCI-USB', name: 'Intel(R) USB 3.20 xHCI', kind: 'usb', service: 'USBXHCI', policy: 4, maskHex: '0x10', threads: [4], priority: 0, bound: true },
+        { id: 'PCI-NET', name: 'Realtek Gaming 2.5GbE Family Controller', kind: 'net', service: 'rt25cx21', policy: 0, maskHex: '', threads: [], priority: 3, bound: false },
+        { id: 'PCI-NVME', name: 'Standard NVM Express Controller', kind: 'storage', service: 'stornvme', policy: 5, maskHex: '', threads: [], priority: 3, bound: false }
+      ]
+    }),
+    "irq.bind": () => ({ ok: true, changed: 1, message: 'прерывания привязаны, изменение вступит в силу после перезагрузки', details: [] }),
+    "irq.reset": () => ({ ok: true, changed: 1, message: 'привязка снята, изменение вступит в силу после перезагрузки', details: [] }),
     "tasks.list": () => [
       { id: "telemetry", title: "Сбор данных о работе системы", desc: "Задачи программы улучшения качества: раз в сутки собирают, какими программами вы пользовались, и отправляют в Microsoft.", rec: "off", enabled: 2, missing: 1,
         tasks: [

@@ -32,6 +32,17 @@ public static class Api
         };
     }
 
+    private static int[] Nums(JsonElement? p, string name)
+    {
+        if (p is null || p.Value.ValueKind != JsonValueKind.Object) return [];
+        if (!p.Value.TryGetProperty(name, out var v) || v.ValueKind != JsonValueKind.Array) return [];
+        return v.EnumerateArray()
+            .Where(x => x.ValueKind == JsonValueKind.Number)
+            .Select(x => x.TryGetInt32(out var n) ? n : -1)
+            .Where(x => x >= 0)
+            .ToArray();
+    }
+
     private static string[] Arr(JsonElement? p, string name)
     {
         if (p is null || p.Value.ValueKind != JsonValueKind.Object) return [];
@@ -112,6 +123,9 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "irq.list": return new { threads = Cpu.Threads(), hybrid = Cpu.Hybrid(), devices = Irq.Devices() };
+            case "irq.bind": return Irq.Bind(S(p, "id"), Nums(p, "threads"), B(p, "priority"));
+            case "irq.reset": return Irq.Reset(S(p, "id"));
             case "tasks.list": return TaskGroups.List(Lang);
             case "tasks.setGroup": return TaskGroups.SetGroup(S(p, "id"), B(p, "enable"), Lang);
             case "tasks.setOne": return TaskGroups.SetOne(S(p, "path"), B(p, "enable"));

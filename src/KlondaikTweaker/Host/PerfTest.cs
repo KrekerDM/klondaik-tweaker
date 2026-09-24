@@ -26,6 +26,7 @@ public static class PerfTest
         ("net.tcp", "{}"),
         ("features.list", "{}"),
         ("tasks.list", "{}"),
+        ("irq.list", "{}"),
         ("clean.scan", "{}"),
         ("soft.list", "{}")
     ];

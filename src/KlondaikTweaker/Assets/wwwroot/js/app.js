@@ -12,6 +12,7 @@ import startup from "./pages/startup.js";
 import services from "./pages/services.js";
 import features from "./pages/features.js";
 import tasks from "./pages/tasks.js";
+import irq from "./pages/irq.js";
 import apps from "./pages/apps.js";
 import network from "./pages/network.js";
 import bench from "./pages/bench.js";
@@ -19,7 +20,7 @@ import soft from "./pages/soft.js";
 import journal from "./pages/journal.js";
 import settings from "./pages/settings.js";
 
-const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, features, tasks, apps, network, bench, soft, journal, settings];
+const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, features, tasks, irq, apps, network, bench, soft, journal, settings];
 const GROUPS = ["main", "system", "extra"];
 
 const app = {
