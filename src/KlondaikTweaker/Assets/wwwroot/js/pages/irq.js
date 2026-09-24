@@ -13,7 +13,8 @@ export default {
     el.appendChild(
       h(
         '<div class="page-head"><div><h1>' + esc(t("irq.title")) + "</h1>" +
-          '<p class="lead">' + esc(t("irq.sub")) + "</p></div></div>"
+          '<p class="lead">' + esc(t("irq.sub")) + "</p></div>" +
+          '<div class="row">' + '<button class="btn btn-ghost btn-sm" data-a="refresh">' + esc(t("act.refresh")) + "</button>" + "</div></div>"
       )
     );
     el.appendChild(h('<div class="warn">' + esc(t("irq.warn")) + "</div>"));
@@ -24,6 +25,10 @@ export default {
     let data = null;
     let selected = null;
     let picked = new Set();
+
+    el.addEventListener("click", (e) => {
+      if (e.target.closest('[data-a="refresh"]')) load();
+    });
 
     async function load() {
       body.innerHTML = '<div class="stack"><div class="skel"></div><div class="skel"></div></div>';

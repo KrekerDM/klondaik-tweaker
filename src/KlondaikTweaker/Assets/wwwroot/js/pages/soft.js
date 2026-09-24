@@ -121,11 +121,23 @@ export default {
 
     async function load(refresh) {
       grid.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
-      const data = await invoke("soft.list", { refresh: !!refresh }, 300000);
+      const data = await invoke("soft.list", {}, 60000);
       items = data.items;
       winget = data.winget;
       notice.classList.toggle("hide", winget);
       if (!winget) notice.textContent = t("soft.noWinget");
+
+      if (!data.ready || refresh) {
+        invoke("soft.state", { refresh: !!refresh }, 300000)
+          .then((state) => {
+            items = state.items;
+            winget = state.winget;
+            notice.classList.toggle("hide", winget);
+            if (!winget) notice.textContent = t("soft.noWinget");
+            draw();
+          })
+          .catch(() => {});
+      }
 
       if (!cats.childElementCount) {
         const keys = [...new Set(items.map((x) => x.cat))].sort();

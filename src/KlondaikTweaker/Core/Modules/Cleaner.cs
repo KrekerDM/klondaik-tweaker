@@ -127,9 +127,11 @@ public static class Cleaner
 
     public static List<CleanTarget> Scan()
     {
-        var res = new List<CleanTarget>();
-        foreach (var d in Defs)
+        var res = new CleanTarget[Defs.Length];
+
+        Parallel.For(0, Defs.Length, i =>
         {
+            var d = Defs[i];
             var t = new CleanTarget
             {
                 Id = d.Id,
@@ -143,16 +145,22 @@ public static class Cleaner
             if (d.Id == "recycle") (t.Bytes, t.Files) = RecycleSize();
             else
             {
-                foreach (var dir in Dirs(d.Id))
+                var mask = d.Id == "thumbs" ? "thumbcache_*.db" : null;
+                long bytes = 0;
+                var files = 0;
+                Parallel.ForEach(Dirs(d.Id), dir =>
                 {
-                    var (b, f) = Measure(dir, d.Id == "thumbs" ? "thumbcache_*.db" : null);
-                    t.Bytes += b;
-                    t.Files += f;
-                }
+                    var (b, f) = Measure(dir, mask);
+                    Interlocked.Add(ref bytes, b);
+                    Interlocked.Add(ref files, f);
+                });
+                t.Bytes = bytes;
+                t.Files = files;
             }
-            res.Add(t);
-        }
-        return res;
+            res[i] = t;
+        });
+
+        return [.. res];
     }
 
     private static (long, int) Measure(string dir, string? pattern)
@@ -163,11 +171,10 @@ public static class Cleaner
         {
             if (!Directory.Exists(dir)) return (0, 0);
             var opts = new EnumerationOptions { RecurseSubdirectories = pattern is null, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
-            foreach (var f in Directory.EnumerateFiles(dir, pattern ?? "*", opts))
+            foreach (var fi in new DirectoryInfo(dir).EnumerateFiles(pattern ?? "*", opts))
             {
                 try
                 {
-                    var fi = new FileInfo(f);
                     bytes += fi.Length;
                     count++;
                     if (count > 400000) break;

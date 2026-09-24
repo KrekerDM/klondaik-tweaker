@@ -18,7 +18,8 @@ export default {
       h(
         '<div class="page-head"><div><h1>' + esc(t("svc.title")) + '</h1>' +
           '<p class="lead">' + esc(t("svc.sub")) + "</p></div>" +
-          '<input type="search" id="svcq" placeholder="' + esc(t("svc.search")) + '" style="min-width:260px"></div>'
+          '<div class="row"><input type="search" id="svcq" placeholder="' + esc(t("svc.search")) + '" style="min-width:260px">' +
+          '<button class="btn btn-ghost btn-sm" data-a="refresh">' + esc(t("act.refresh")) + "</button>" + "</div></div>"
       )
     );
 
@@ -164,11 +165,19 @@ export default {
       debounce = setTimeout(draw, 180);
     });
 
-    list.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
-    all = await invoke("services.list");
-    all.forEach((s) => { if (!s.group) s.group = "other"; });
-    fillGroups();
-    draw();
+    async function load() {
+      list.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+      all = await invoke("services.list");
+      all.forEach((s) => { if (!s.group) s.group = "other"; });
+      fillGroups();
+      draw();
+    }
+
+    el.addEventListener("click", (e) => {
+      if (e.target.closest('[data-a="refresh"]')) load();
+    });
+
+    await load();
     return { el };
   }
 };

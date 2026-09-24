@@ -260,6 +260,12 @@
     "bench.clear": () => ({ ok: true }),
     "soft.list": () => ({
       winget: true,
+      ready: true,
+      items: software.items.map((s, i) => Object.assign({}, s, { installed: i % 5 === 0 }))
+    }),
+    "soft.state": () => ({
+      winget: true,
+      ready: true,
       items: software.items.map((s, i) => Object.assign({}, s, { installed: i % 5 === 0 }))
     }),
     "soft.install": () => ({ result: "ok" }),

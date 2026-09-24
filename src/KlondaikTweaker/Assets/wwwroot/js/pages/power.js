@@ -14,12 +14,17 @@ export default {
       h(
         '<div class="page-head"><div><h1>' + esc(t("pwr.title")) + "</h1>" +
           '<p class="lead">' + esc(t("pwr.sub")) + "</p></div>" +
-          '<div class="row"><button class="btn btn-ghost btn-sm" data-a="folder">' + esc(t("pwr.folder")) + "</button></div></div>"
+          '<div class="row"><button class="btn btn-ghost btn-sm" data-a="folder">' + esc(t("pwr.folder")) + "</button>" +
+          '<button class="btn btn-ghost btn-sm" data-a="refresh">' + esc(t("act.refresh")) + "</button>" + "</div></div>"
       )
     );
 
     const body = h('<div class="stack"></div>');
     el.appendChild(body);
+
+    el.addEventListener("click", (e) => {
+      if (e.target.closest('[data-a="refresh"]')) load();
+    });
 
     async function load() {
       body.innerHTML = '<div class="stack"><div class="skel"></div><div class="skel"></div></div>';

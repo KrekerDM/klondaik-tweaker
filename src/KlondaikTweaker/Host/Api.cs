@@ -125,7 +125,12 @@ public static class Api
             case "boost.start": return GameBoost.Start();
             case "boost.stop": return GameBoost.Stop();
 
-            case "soft.list": return new { winget = SoftCatalog.HasWinget(), items = SoftCatalog.List(B(p, "refresh")) };
+            case "soft.list": return new { winget = SoftCatalog.WingetKnown ?? true, items = SoftCatalog.Quick(), ready = SoftCatalog.Peek() is not null };
+            case "soft.state":
+            {
+                var fresh = B(p, "refresh");
+                return new { winget = SoftCatalog.HasWinget(fresh), items = SoftCatalog.List(fresh), ready = true };
+            }
             case "soft.install": return new { result = SoftCatalog.Install(S(p, "id")) };
             case "soft.uninstall": return new { result = SoftCatalog.Uninstall(S(p, "id")) };
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };

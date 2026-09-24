@@ -43,10 +43,29 @@ public static class SoftCatalog
         }
     }
 
-    public static bool HasWinget()
+    private static bool? _hasWinget;
+
+    public static bool HasWinget(bool refresh = false)
     {
+        if (!refresh && _hasWinget is not null) return _hasWinget.Value;
         var r = Sh.Run("winget.exe", "--version", 15000);
+        _hasWinget = r.Ok;
         return r.Ok;
+    }
+
+    public static bool? WingetKnown => _hasWinget;
+
+    public static HashSet<string>? Peek()
+    {
+        lock (Gate) return _installed;
+    }
+
+    public static List<SoftItem> Quick()
+    {
+        var known = Peek();
+        foreach (var i in Db.Items)
+            i.Installed = known is not null && i.Winget is not null && known.Contains(i.Winget);
+        return Db.Items;
     }
 
     public static HashSet<string> Installed(bool refresh = false)

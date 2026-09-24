@@ -157,10 +157,17 @@ public static class Ti
 
     public static ShResult Run(string commandLine, int timeoutMs = 180000)
     {
+        var result = RunOnce(commandLine, timeoutMs, false);
+        if (result.Code is -11 or -12 or -13) result = RunOnce(commandLine, timeoutMs, true);
+        return result;
+    }
+
+    private static ShResult RunOnce(string commandLine, int timeoutMs, bool systemOnly)
+    {
         Elevate.EnableAll();
         LastError = null;
 
-        var pid = TrustedInstallerPid();
+        var pid = systemOnly ? 0 : TrustedInstallerPid();
         LastIdentity = "TrustedInstaller";
         if (pid == 0)
         {

@@ -13,7 +13,8 @@ export default {
     el.appendChild(
       h(
         '<div class="page-head"><div><h1>' + esc(t("nic.title")) + "</h1>" +
-          '<p class="lead">' + esc(t("nic.sub")) + "</p></div></div>"
+          '<p class="lead">' + esc(t("nic.sub")) + "</p></div>" +
+          '<div class="row">' + '<button class="btn btn-ghost btn-sm" data-a="refresh">' + esc(t("act.refresh")) + "</button>" + "</div></div>"
       )
     );
     el.appendChild(h('<div class="warn">' + esc(t("nic.warn")) + "</div>"));
@@ -23,6 +24,10 @@ export default {
 
     let adapters = [];
     let selected = null;
+
+    el.addEventListener("click", (e) => {
+      if (e.target.closest('[data-a="refresh"]')) loadAdapters();
+    });
 
     async function loadAdapters() {
       adapters = await invoke("nic.adapters", {}, 120000);
