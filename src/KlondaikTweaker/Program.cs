@@ -27,6 +27,16 @@ internal static class Program
 
         var args = Environment.GetCommandLineArgs();
 
+        var nic = Array.FindIndex(args, a => a.Equals("--nic", StringComparison.OrdinalIgnoreCase));
+        if (nic >= 0)
+        {
+            var target = nic + 1 < args.Length && !args[nic + 1].StartsWith("--")
+                ? args[nic + 1]
+                : Path.Combine(Paths.Root, "nic.txt");
+            Host.NicDump.Run(target);
+            return;
+        }
+
         var irq = Array.FindIndex(args, a => a.Equals("--irq", StringComparison.OrdinalIgnoreCase));
         if (irq >= 0)
         {

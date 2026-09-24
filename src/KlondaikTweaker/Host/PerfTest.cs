@@ -27,6 +27,7 @@ public static class PerfTest
         ("features.list", "{}"),
         ("tasks.list", "{}"),
         ("irq.list", "{}"),
+        ("nic.adapters", "{}"),
         ("clean.scan", "{}"),
         ("soft.list", "{}")
     ];

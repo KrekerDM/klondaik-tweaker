@@ -34,6 +34,10 @@ gets the full catalogue of 171 tweaks, each stating what it costs.
   administrator can touch are written under the system service's token.
 - **Repair tools** — one-click fixes for what other tweakers broke: services
   back to stock start values, Defender, updates, Store, search, network stack.
+- **Interrupts and cores** — pin the interrupts of the GPU, mouse and network
+  to chosen CPU threads, with performance and efficiency cores told apart.
+- **Network adapter parameters** — everything the driver exposes, with a low
+  latency preset.
 - **Scheduled tasks** — 12 groups of Windows background tasks, each explaining
   what it does and what turning it off costs.
 - **Windows features** — 27 optional components through DISM: what each one is,

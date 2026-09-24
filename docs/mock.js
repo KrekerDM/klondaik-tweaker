@@ -273,6 +273,24 @@
     "app.credits": () => creditsDb,
     "repair.run": (p) => ({ ok: true, changed: 12, skipped: 3, message: "возвращено служб: 12", details: [] }),
     "repair.status": () => ({ ctxti: true, ctxown: false }),
+    "nic.adapters": () => [
+      { id: '0001', name: 'Realtek Gaming 2.5GbE Family Controller', service: '{A1B2}' },
+      { id: '0003', name: 'Intel(R) Wi-Fi 6E AX211 160MHz', service: '{C3D4}' }
+    ],
+    "nic.params": () => [
+      { name: '*InterruptModeration', desc: 'Модерация прерывания', type: 'enum', current: '0', default: '1', edited: true, risky: false, min: null, max: null,
+        options: [{ value: '0', text: 'Disabled' }, { value: '1', text: 'Enabled' }] },
+      { name: '*FlowControl', desc: 'Управление потоком', type: 'enum', current: '0', default: '3', edited: true, risky: false, min: null, max: null,
+        options: [{ value: '0', text: 'Выкл' }, { value: '3', text: 'Rx & Tx вкл' }] },
+      { name: '*PriorityVLANTag', desc: 'Приоритет & VLAN', type: 'enum', current: '3', default: '3', edited: false, risky: true, min: null, max: null,
+        options: [{ value: '0', text: 'Выкл' }, { value: '3', text: 'Приоритет & VLAN' }] },
+      { name: '*ReceiveBuffers', desc: 'Буферы приема', type: 'int', current: '1024', default: '512', edited: true, risky: false, min: '128', max: '4096', options: [] },
+      { name: '*EEE', desc: 'Энергосберегающий Ethernet', type: 'enum', current: '0', default: '0', edited: false, risky: false, min: null, max: null,
+        options: [{ value: '0', text: 'Выкл' }, { value: '1', text: 'Вкл' }] }
+    ],
+    "nic.set": () => ({ ok: true, changed: 1, message: 'параметр записан, нужен перезапуск адаптера', details: [] }),
+    "nic.preset": () => ({ ok: true, changed: 3, message: 'изменено параметров: 3, нужен перезапуск адаптера', details: [] }),
+    "nic.restart": () => ({ ok: true, changed: 1, message: 'адаптер перезапущен, параметры вступили в силу', details: [] }),
     "irq.list": () => ({
       hybrid: true,
       threads: Array.from({ length: 28 }, (_, i) => (i < 16

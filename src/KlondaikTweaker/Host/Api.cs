@@ -123,6 +123,11 @@ public static class Api
             case "soft.upgradeAll": return new { result = SoftCatalog.UpgradeAll() };
 
             case "repair.run": return RepairRun(S(p, "id"));
+            case "nic.adapters": return Nic.Adapters();
+            case "nic.params": return Nic.Params(S(p, "id"));
+            case "nic.set": return Nic.Set(S(p, "id"), S(p, "name"), S(p, "value"));
+            case "nic.preset": return Nic.Preset(S(p, "id"), S(p, "preset"));
+            case "nic.restart": return Nic.Restart(S(p, "id"));
             case "irq.list": return new { threads = Cpu.Threads(), hybrid = Cpu.Hybrid(), devices = Irq.Devices() };
             case "irq.bind": return Irq.Bind(S(p, "id"), Nums(p, "threads"), B(p, "priority"));
             case "irq.reset": return Irq.Reset(S(p, "id"));
