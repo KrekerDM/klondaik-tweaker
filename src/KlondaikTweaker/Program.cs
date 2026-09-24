@@ -12,13 +12,6 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        _mutex = new Mutex(true, "Global\\KlondaikTweakerSingleton", out var created);
-        if (!created)
-        {
-            MessageBox.Show("Klondaik Tweaker уже запущен.", "Klondaik Tweaker", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
-
         AppDomain.CurrentDomain.UnhandledException += (_, e) => Crash(e.ExceptionObject as Exception);
         Application.ThreadException += (_, e) => Crash(e.Exception);
         TaskScheduler.UnobservedTaskException += (_, e) => { Log(e.Exception); e.SetObserved(); };
@@ -26,6 +19,18 @@ internal static class Program
         Core.Win.Elevate.EnableAll();
 
         var args = Environment.GetCommandLineArgs();
+
+        var cli = args.Any(a => a.StartsWith("--", StringComparison.Ordinal));
+        if (!cli)
+        {
+            _mutex = new Mutex(true, "Global\\KlondaikTweakerSingleton", out var created);
+            if (!created)
+            {
+                MessageBox.Show("Klondaik Tweaker уже запущен.", "Klondaik Tweaker", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+        }
+
 
         var nic = Array.FindIndex(args, a => a.Equals("--nic", StringComparison.OrdinalIgnoreCase));
         if (nic >= 0)
