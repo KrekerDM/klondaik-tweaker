@@ -48,6 +48,42 @@ public sealed class MainForm : Form
         Load += OnLoad;
         FormClosing += OnClosing;
         Api.QuitRequested += OnQuitRequested;
+        Api.FilesRequested = PickFiles;
+        AllowDrop = true;
+        DragEnter += OnDragEnter;
+        DragDrop += OnDragDrop;
+    }
+
+    private static string[] Dropped(IDataObject? data)
+    {
+        if (data is null || !data.GetDataPresent(DataFormats.FileDrop)) return [];
+        return data.GetData(DataFormats.FileDrop) as string[] ?? [];
+    }
+
+    private void OnDragEnter(object? sender, DragEventArgs e)
+    {
+        e.Effect = Dropped(e.Data).Length > 0 ? DragDropEffects.Copy : DragDropEffects.None;
+    }
+
+    private void OnDragDrop(object? sender, DragEventArgs e)
+    {
+        var files = Dropped(e.Data);
+        if (files.Length == 0 || !_ready) return;
+        Push("drop", new { files });
+    }
+
+    private string[] PickFiles()
+    {
+        if (InvokeRequired) return (string[])Invoke(PickFiles);
+
+        using var dialog = new OpenFileDialog
+        {
+            Title = "Что добавить в автозагрузку",
+            Filter = "Программы и ярлыки|*.exe;*.lnk;*.bat;*.cmd;*.com|Все файлы|*.*",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+        return dialog.ShowDialog(this) == DialogResult.OK ? [dialog.FileName] : [];
     }
 
     private void OnQuitRequested()
@@ -109,6 +145,8 @@ public sealed class MainForm : Form
                 _metrics.Start();
                 Push("window", new { max = WindowState == FormWindowState.Maximized });
             };
+
+            _web.AllowExternalDrop = false;
 
             _metrics.Interval = 1500;
             _metrics.Tick += PushMetrics;

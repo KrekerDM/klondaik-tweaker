@@ -28,7 +28,8 @@ export default {
       '<div class="grid g2">' +
         '<div class="card stack-sm"><h3>' + esc(t("clean.deep")) + "</h3>" +
         '<p class="small dim">' + esc(t("clean.deepHint")) + "</p>" +
-        '<div><button class="btn btn-ghost btn-sm" data-a="deep">' + esc(t("act.run")) + "</button></div></div>" +
+        '<div class="row"><button class="btn btn-ghost btn-sm" data-a="deep">' + esc(t("act.run")) + "</button>" +
+        '<button class="btn btn-ghost btn-sm" data-a="resetbase">' + esc(t("clean.resetBase")) + "</button></div></div>" +
         '<div class="card stack-sm"><h3>' + esc(t("clean.logs")) + "</h3>" +
         '<p class="small dim">Application, System, Security</p>' +
         '<div><button class="btn btn-ghost btn-sm" data-a="logs">' + esc(t("act.run")) + "</button></div></div>" +
@@ -115,12 +116,18 @@ export default {
           toast(t("clean.freed") + ": " + bytes(r.freed) + " · " + r.files + " " + t("clean.files"));
           if (r.errors && r.errors.length) console.warn("clean errors", r.errors);
           await scan();
-        } else if (action === "deep") {
-          const ok = await confirmBox(t("clean.deep"), t("clean.deepHint"), t("act.run"), true);
+        } else if (action === "deep" || action === "resetbase") {
+          const hard = action === "resetbase";
+          const ok = await confirmBox(
+            hard ? t("clean.resetBase") : t("clean.deep"),
+            hard ? t("clean.resetBaseHint") : t("clean.deepHint"),
+            t("act.run"),
+            true
+          );
           if (!ok) return;
           progress(10);
           toast(t("bench.running"));
-          const r = await invoke("clean.deep", {}, 2400000);
+          const r = await invoke("clean.deep", { resetBase: hard }, 2400000);
           progress(100);
           toast(r.result === "ok" ? t("act.finish") : r.result, r.result === "ok" ? "" : "err");
           await scan();

@@ -1394,3 +1394,8 @@ a {
   background: var(--accent-soft);
   border-color: var(--accent-line);
 }
+
+.drop-zone {
+  border: 1px dashed var(--card-edge);
+  padding: var(--s-5) var(--s-6);
+}

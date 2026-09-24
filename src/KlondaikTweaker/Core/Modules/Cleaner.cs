@@ -285,9 +285,10 @@ public static class Cleaner
         return (freed, count, error);
     }
 
-    public static string DeepComponentCleanup()
+    public static string DeepComponentCleanup(bool resetBase = false)
     {
-        var r = Sh.Run("dism.exe", "/Online /Cleanup-Image /StartComponentCleanup /ResetBase", 1800000);
+        var args = "/Online /Cleanup-Image /StartComponentCleanup" + (resetBase ? " /ResetBase" : "");
+        var r = Sh.Run("dism.exe", args, 1800000);
         return r.Ok ? "ok" : r.All;
     }
 

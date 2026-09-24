@@ -77,5 +77,23 @@ public static class SvcGroups
         return name[..at];
     }
 
+    public static bool Foreign(string image)
+    {
+        if (image.Length == 0) return false;
+
+        var path = image.Trim().Trim('"');
+        if (path.StartsWith(@"\??\", StringComparison.Ordinal)) path = path[4..];
+        if (path.StartsWith(@"\SystemRoot", StringComparison.OrdinalIgnoreCase)) return false;
+        if (!path.Contains(':')) return false;
+
+        try { path = Environment.ExpandEnvironmentVariables(path); } catch { }
+
+        var windows = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        if (windows.Length == 0) return false;
+        if (!windows.EndsWith(Path.DirectorySeparatorChar)) windows += Path.DirectorySeparatorChar;
+
+        return !path.StartsWith(windows, StringComparison.OrdinalIgnoreCase);
+    }
+
     public static List<string> Ids() => Table.Select(x => x.Group).Concat(Prefixes.Select(x => x.Group)).Distinct(StringComparer.Ordinal).ToList();
 }

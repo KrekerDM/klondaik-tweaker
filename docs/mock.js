@@ -197,34 +197,36 @@
     }),
     "clean.run": () => ({ freed: 12938471028, files: 61594, errors: [] }),
     "startup.list": () => [
-      { id: "a", name: "Steam", command: "\"C:\\Program Files (x86)\\Steam\\steam.exe\" -silent", source: "HKCU Run", kind: "reg", enabled: true },
-      { id: "b", name: "Discord", command: "C:\\Users\\Aorus\\AppData\\Local\\Discord\\Update.exe --processStart Discord.exe", source: "HKCU Run", kind: "reg", enabled: true },
-      { id: "c", name: "NVIDIA App", command: "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA app.exe -silent", source: "HKLM Run", kind: "reg", enabled: false },
-      { id: "d", name: "OneDriveStandaloneUpdater", command: "%localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe", source: "Планировщик", kind: "task", enabled: true }
+      { id: "a", name: "Steam", command: "\"C:\\Program Files (x86)\\Steam\\steam.exe\" -silent", source: "run.hkcu", kind: "reg", enabled: true },
+      { id: "b", name: "Discord", command: "C:\\Users\\Aorus\\AppData\\Local\\Discord\\Update.exe --processStart Discord.exe", source: "run.hkcu", kind: "reg", enabled: true },
+      { id: "c", name: "NVIDIA App", command: "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA app.exe -silent", source: "run.hklm", kind: "reg", enabled: false },
+      { id: "d", name: "OneDriveStandaloneUpdater", command: "%localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe", source: "task", kind: "task", enabled: true }
     ],
     "startup.toggle": () => ({ ok: true }),
     "startup.delete": () => ({ ok: true }),
+    "startup.add": (p) => ({ ok: true, message: "Добавлено в автозагрузку", id: "HKCU|Run|" + p.path, cancelled: false }),
+    "startup.pick": () => ({ ok: false, cancelled: true, message: "" }),
     "services.list": () => [
-      { name: "DiagTrack", display: "Функциональные возможности для подключенных пользователей и телеметрия", desc: "Служба отправки диагностических данных в Microsoft", start: "auto", status: "running", recommended: true, touched: false, group: "telemetry", stock: "auto", changed: false },
-      { name: "SysMain", display: "SysMain", desc: "Поддерживает и улучшает производительность системы", start: "auto", status: "running", recommended: false, touched: false, group: "disk", stock: "auto", changed: false },
-      { name: "Spooler", display: "Диспетчер печати", desc: "Загружает файлы в память для последующей печати", start: "auto", status: "running", recommended: false, touched: false, group: "print", stock: "auto", changed: false },
-      { name: "WSearch", display: "Windows Search", desc: "Индексирование контента и кэширование свойств", start: "delayed", status: "running", recommended: false, touched: false, group: "index", stock: "auto", changed: true },
-      { name: "bthserv", display: "Служба поддержки Bluetooth", desc: "Поддерживает обнаружение и связывание удалённых устройств Bluetooth", start: "manual", status: "stopped", recommended: false, touched: false, group: "bluetooth", stock: "manual", changed: false },
-      { name: "TermService", display: "Службы удалённых рабочих столов", desc: "Разрешает пользователям подключаться к этому компьютеру", start: "manual", status: "stopped", recommended: false, touched: false, group: "remote", stock: "manual", changed: false },
-      { name: "NvContainerLocalSystem", display: "NVIDIA LocalSystem Container", desc: "Контейнер служб NVIDIA", start: "auto", status: "running", recommended: false, touched: false, group: "thirdparty", stock: null, changed: false },
-      { name: "Fax", display: "Факс", desc: "Позволяет отправлять и получать факсы", start: "disabled", status: "stopped", recommended: true, touched: true, group: "print", stock: "manual", changed: true }
+      { name: "DiagTrack", display: "Функциональные возможности для подключенных пользователей и телеметрия", desc: "Служба отправки диагностических данных в Microsoft", start: "auto", status: "running", recommended: true, touched: false, driver: false, group: "telemetry", stock: "auto", changed: false },
+      { name: "SysMain", display: "SysMain", desc: "Поддерживает и улучшает производительность системы", start: "auto", status: "running", recommended: false, touched: false, driver: false, group: "disk", stock: "auto", changed: false },
+      { name: "Spooler", display: "Диспетчер печати", desc: "Загружает файлы в память для последующей печати", start: "auto", status: "running", recommended: false, touched: false, driver: false, group: "print", stock: "auto", changed: false },
+      { name: "WSearch", display: "Windows Search", desc: "Индексирование контента и кэширование свойств", start: "delayed", status: "running", recommended: false, touched: false, driver: false, group: "index", stock: "auto", changed: true },
+      { name: "bthserv", display: "Служба поддержки Bluetooth", desc: "Поддерживает обнаружение и связывание удалённых устройств Bluetooth", start: "manual", status: "stopped", recommended: false, touched: false, driver: false, group: "bluetooth", stock: "manual", changed: false },
+      { name: "TermService", display: "Службы удалённых рабочих столов", desc: "Разрешает пользователям подключаться к этому компьютеру", start: "manual", status: "stopped", recommended: false, touched: false, driver: false, group: "remote", stock: "manual", changed: false },
+      { name: "NvContainerLocalSystem", display: "NVIDIA LocalSystem Container", desc: "Контейнер служб NVIDIA", start: "auto", status: "running", recommended: false, touched: false, driver: false, group: "thirdparty", stock: null, changed: false },
+      { name: "Fax", display: "Факс", desc: "Позволяет отправлять и получать факсы", start: "disabled", status: "stopped", recommended: true, touched: true, driver: false, group: "print", stock: "manual", changed: true }
     ],
     "services.set": (p) => ({ ok: true, start: p.mode, status: p.mode === "disabled" ? "stopped" : "running" }),
     "services.control": (p) => ({ ok: true, status: p.action === "start" ? "running" : "stopped" }),
     "appx.list": () => [
-      { name: "Microsoft.XboxGamingOverlay", display: "Xbox Game Bar", group: "xbox", framework: false, system: true },
-      { name: "Microsoft.GamingApp", display: "Xbox", group: "xbox", framework: false, system: true },
-      { name: "Microsoft.BingNews", display: "Новости", group: "bing", framework: false, system: false },
-      { name: "Microsoft.BingWeather", display: "Погода", group: "bing", framework: false, system: false },
-      { name: "Microsoft.Copilot", display: "Copilot", group: "ai", framework: false, system: false },
-      { name: "MSTeams", display: "Microsoft Teams", group: "social", framework: false, system: false },
-      { name: "Clipchamp.Clipchamp", display: "Clipchamp", group: "media", framework: false, system: false },
-      { name: "Microsoft.WindowsStore", display: "Microsoft Store", group: "essential", framework: false, system: true }
+      { name: "Microsoft.XboxGamingOverlay", display: "Xbox Game Bar", driver: false, group: "xbox", framework: false, system: true },
+      { name: "Microsoft.GamingApp", display: "Xbox", driver: false, group: "xbox", framework: false, system: true },
+      { name: "Microsoft.BingNews", display: "Новости", driver: false, group: "bing", framework: false, system: false },
+      { name: "Microsoft.BingWeather", display: "Погода", driver: false, group: "bing", framework: false, system: false },
+      { name: "Microsoft.Copilot", display: "Copilot", driver: false, group: "ai", framework: false, system: false },
+      { name: "MSTeams", display: "Microsoft Teams", driver: false, group: "social", framework: false, system: false },
+      { name: "Clipchamp.Clipchamp", display: "Clipchamp", driver: false, group: "media", framework: false, system: false },
+      { name: "Microsoft.WindowsStore", display: "Microsoft Store", driver: false, group: "essential", framework: false, system: true }
     ],
     "appx.remove": (p) => p.names.map((n) => ({ name: n, result: "ok" })),
     "net.adapters": () => ({
@@ -263,9 +265,9 @@
     "soft.install": () => ({ result: "ok" }),
     "soft.uninstall": () => ({ result: "ok" }),
     "journal.list": () => [
-      { id: "1", tweakId: "priv.telemetry-off", title: "Отключить телеметрию", group: "tweak", time: "2026-09-18 19:04", reverted: false, items: 4, risk: "safe" },
-      { id: "2", tweakId: "game.gamedvr-off", title: "Отключить Game DVR", group: "tweak", time: "2026-09-18 19:04", reverted: false, items: 4, risk: "safe" },
-      { id: "3", tweakId: "sec.vbs-off", title: "Отключить виртуализацию безопасности (VBS)", group: "tweak", time: "2026-09-18 18:52", reverted: true, items: 4, risk: "extreme" }
+      { id: "1", tweakId: "priv.telemetry-off", title: "Отключить телеметрию", driver: false, group: "tweak", time: "2026-09-18 19:04", reverted: false, items: 4, risk: "safe" },
+      { id: "2", tweakId: "game.gamedvr-off", title: "Отключить Game DVR", driver: false, group: "tweak", time: "2026-09-18 19:04", reverted: false, items: 4, risk: "safe" },
+      { id: "3", tweakId: "sec.vbs-off", title: "Отключить виртуализацию безопасности (VBS)", driver: false, group: "tweak", time: "2026-09-18 18:52", reverted: true, items: 4, risk: "extreme" }
     ],
     "journal.revert": () => ({ ok: true }),
     "journal.revertAll": () => ({ reverted: 3, failed: 0 }),
@@ -329,16 +331,16 @@
     "tasks.setGroup": () => ({ ok: true, changed: 2, message: "отключено задач: 2", details: [] }),
     "tasks.setOne": () => ({ ok: true, changed: 1, message: "задача отключена", details: [] }),
     "features.list": () => [
-      { name: "MicrosoftWindowsPowerShellV2Root", title: "PowerShell 2.0", desc: "Версия 2007 года, оставленная для совместимости. Её любят вредоносные скрипты именно потому, что она не умеет логировать свои действия.", rec: "insecure", group: "legacy", state: "enabled", known: true },
-      { name: "SMB1Protocol", title: "Протокол SMB 1.0", desc: "Старый протокол общих папок, через который распространялись WannaCry и NotPetya.", rec: "insecure", group: "legacy", state: "disabled", known: true },
-      { name: "LegacyComponents", title: "Компоненты прежних версий", desc: "DirectPlay — сетевая подсистема игр девяностых.", rec: "off", group: "legacy", state: "disabled", known: true },
-      { name: "Printing-XPSServices-Features", title: "Средство записи XPS-документов", desc: "Виртуальный принтер в формат XPS, которым никто не пользуется.", rec: "off", group: "print", state: "enabled", known: true },
-      { name: "Printing-PrintToPDFServices-Features", title: "Печать в PDF (Майкрософт)", desc: "Виртуальный принтер, который сохраняет документ в PDF.", rec: "keep", group: "print", state: "enabled", known: true },
-      { name: "MediaPlayback", title: "Компоненты для работы с мультимедиа", desc: "Базовые кодеки и проигрыватель.", rec: "risky", group: "media", state: "enabled", known: true },
-      { name: "WorkFolders-Client", title: "Рабочие папки", desc: "Корпоративная синхронизация файлов с сервером организации.", rec: "off", group: "corp", state: "enabled", known: true },
-      { name: "IIS-WebServerRole", title: "Службы IIS", desc: "Полноценный веб-сервер Microsoft.", rec: "off", group: "server", state: "disabled", known: true },
-      { name: "VirtualMachinePlatform", title: "Платформа виртуальной машины", desc: "Нужна для WSL 2 и Android-подсистемы.", rec: "keep", group: "virt", state: "enabled", known: true },
-      { name: "NetFx4-AdvSrvs", title: ".NET Framework 4.8 расширенные службы", desc: "Базовая часть современного .NET.", rec: "keep", group: "runtime", state: "enabled", known: true }
+      { name: "MicrosoftWindowsPowerShellV2Root", title: "PowerShell 2.0", desc: "Версия 2007 года, оставленная для совместимости. Её любят вредоносные скрипты именно потому, что она не умеет логировать свои действия.", rec: "insecure", driver: false, group: "legacy", state: "enabled", known: true },
+      { name: "SMB1Protocol", title: "Протокол SMB 1.0", desc: "Старый протокол общих папок, через который распространялись WannaCry и NotPetya.", rec: "insecure", driver: false, group: "legacy", state: "disabled", known: true },
+      { name: "LegacyComponents", title: "Компоненты прежних версий", desc: "DirectPlay — сетевая подсистема игр девяностых.", rec: "off", driver: false, group: "legacy", state: "disabled", known: true },
+      { name: "Printing-XPSServices-Features", title: "Средство записи XPS-документов", desc: "Виртуальный принтер в формат XPS, которым никто не пользуется.", rec: "off", driver: false, group: "print", state: "enabled", known: true },
+      { name: "Printing-PrintToPDFServices-Features", title: "Печать в PDF (Майкрософт)", desc: "Виртуальный принтер, который сохраняет документ в PDF.", rec: "keep", driver: false, group: "print", state: "enabled", known: true },
+      { name: "MediaPlayback", title: "Компоненты для работы с мультимедиа", desc: "Базовые кодеки и проигрыватель.", rec: "risky", driver: false, group: "media", state: "enabled", known: true },
+      { name: "WorkFolders-Client", title: "Рабочие папки", desc: "Корпоративная синхронизация файлов с сервером организации.", rec: "off", driver: false, group: "corp", state: "enabled", known: true },
+      { name: "IIS-WebServerRole", title: "Службы IIS", desc: "Полноценный веб-сервер Microsoft.", rec: "off", driver: false, group: "server", state: "disabled", known: true },
+      { name: "VirtualMachinePlatform", title: "Платформа виртуальной машины", desc: "Нужна для WSL 2 и Android-подсистемы.", rec: "keep", driver: false, group: "virt", state: "enabled", known: true },
+      { name: "NetFx4-AdvSrvs", title: ".NET Framework 4.8 расширенные службы", desc: "Базовая часть современного .NET.", rec: "keep", driver: false, group: "runtime", state: "enabled", known: true }
     ],
     "features.set": () => ({ ok: true, changed: 1, message: "компонент отключён", details: [] }),
     "sys.link": () => ({ ok: true }),

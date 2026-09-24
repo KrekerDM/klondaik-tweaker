@@ -1,4 +1,4 @@
-import { invoke } from "../bridge.js";
+import { invoke, on } from "../bridge.js";
 import { t } from "../i18n.js";
 import { h, esc, toast, switchEl, confirmBox } from "../ui.js";
 
@@ -17,8 +17,33 @@ export default {
       )
     );
 
+    const drop = h(
+      '<div class="pane drop-zone"><div class="stack" style="gap:8px;align-items:center;text-align:center">' +
+        '<div class="name">' + esc(t("start.dropTitle")) + "</div>" +
+        '<p class="small dim">' + esc(t("start.dropHint")) + "</p>" +
+        '<button class="btn btn-ghost btn-sm" data-a="pick">' + esc(t("start.pick")) + "</button>" +
+        "</div></div>"
+    );
+    el.appendChild(drop);
+
     const body = h('<div class="stack"></div>');
     el.appendChild(body);
+
+    async function accept(path) {
+      const r = await invoke(path ? "startup.add" : "startup.pick", path ? { path } : {});
+      if (r.cancelled) return;
+      toast(r.message || (r.ok ? "" : t("msg.failed")), r.ok ? "" : "err");
+      if (r.ok) await load();
+    }
+
+    drop.addEventListener("click", (e) => {
+      if (e.target.closest('[data-a="pick"]')) accept(null);
+    });
+
+    const off = on("drop", async (data) => {
+      const files = (data && data.files) || [];
+      for (const file of files) await accept(file);
+    });
 
     async function load() {
       body.innerHTML = '<div class="skel"></div><div class="skel"></div>';
@@ -32,10 +57,10 @@ export default {
 
       groups.forEach((g) => {
         if (!g.items.length) return;
-        const on = g.items.filter((x) => x.enabled).length;
+        const live = g.items.filter((x) => x.enabled).length;
         const section = h(
           '<section class="stack-sm"><h2>' + esc(g.title) +
-            ' <span class="dim small mono">' + on + " / " + g.items.length + " " + esc(t("start.enabled")) + "</span></h2>" +
+            ' <span class="dim small mono">' + live + " / " + g.items.length + " " + esc(t("start.enabled")) + "</span></h2>" +
             '<div class="list"></div></section>'
         );
         const list = section.querySelector(".list");
@@ -44,7 +69,7 @@ export default {
             '<div class="item">' +
               '<div class="grow" style="min-width:0"><div class="name">' + esc(item.name) + "</div>" +
               '<div class="sub mono">' + esc(item.command || "") + "</div></div>" +
-              '<span class="tag plain">' + esc(item.source) + "</span>" +
+              '<span class="tag plain">' + esc(t("start.src." + item.source)) + "</span>" +
               '<div data-sw></div>' +
               '<button class="btn btn-ghost btn-sm" data-del title="' + esc(t("act.remove")) + '">×</button>' +
               "</div>"
@@ -75,6 +100,6 @@ export default {
 
     el.querySelector('[data-a="refresh"]').addEventListener("click", load);
     await load();
-    return { el };
+    return { el, dispose: off };
   }
 };

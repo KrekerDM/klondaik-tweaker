@@ -11,6 +11,7 @@ public static class Api
     public delegate void Push(string channel, object data);
 
     public static event Action? QuitRequested;
+    public static Func<string[]>? FilesRequested;
 
     private static string Lang => Settings.Data.Lang;
 
@@ -81,12 +82,19 @@ public static class Api
 
             case "clean.scan": return new { targets = Cleaner.Scan(), disks = Cleaner.DiskInfo() };
             case "clean.run": return CleanRun(Arr(p, "ids"), push);
-            case "clean.deep": return new { result = Cleaner.DeepComponentCleanup() };
+            case "clean.deep": return new { result = Cleaner.DeepComponentCleanup(B(p, "resetBase")) };
             case "clean.eventlogs": return new { result = Cleaner.ClearEventLogs() };
 
             case "startup.list": return Startup.List();
             case "startup.toggle": return new { ok = Startup.SetEnabled(S(p, "id"), B(p, "enabled")) };
             case "startup.delete": return new { ok = Startup.Delete(S(p, "id")) };
+            case "startup.add": return AddStartup(S(p, "path"));
+            case "startup.pick":
+            {
+                var picked = FilesRequested?.Invoke() ?? [];
+                if (picked.Length == 0) return new { ok = false, cancelled = true, message = "" };
+                return AddStartup(picked[0]);
+            }
 
             case "services.list": return ServiceList();
             case "services.set": return ServiceSet(p);
@@ -430,10 +438,18 @@ public static class Api
         "diagnosticshub.standardcollector.service", "wisvc", "SCardSvr", "ScDeviceEnum", "SEMgrSvc"
     ];
 
-    private static string Group(string name, string? stock)
+    private static object AddStartup(string path)
     {
-        var group = SvcGroups.Of(name);
-        return group == "other" && stock is null ? "thirdparty" : group;
+        var (ok, message, id) = Startup.Add(path);
+        return new { ok, message, id, cancelled = false };
+    }
+
+    private static string Group(SvcInfo s)
+    {
+        var group = SvcGroups.Of(s.Name);
+        if (group != "other") return group;
+        if (s.Driver) return "driver";
+        return SvcGroups.Foreign(s.Image) ? "thirdparty" : "other";
     }
 
     private static object ServiceList()
@@ -456,7 +472,8 @@ public static class Api
                 touched = journalDisabled.Contains(s.Name),
                 stock = known,
                 changed = known is not null && !string.Equals(known, s.Start, StringComparison.OrdinalIgnoreCase),
-                group = Group(s.Name, known)
+                group = Group(s),
+                driver = s.Driver
             };
         });
     }

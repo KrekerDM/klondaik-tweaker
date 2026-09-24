@@ -165,18 +165,40 @@ public static class ModuleTest
             return new { folders = target.Files, megabytes = target.Bytes / 1024 / 1024 };
         });
 
+        Step("startup.addRoundTrip", () =>
+        {
+            var exe = Path.Combine(Environment.SystemDirectory, "notepad.exe");
+            if (!File.Exists(exe)) return new { skipped = true, reason = "notepad missing" };
+
+            var junk = Path.Combine(Path.GetTempPath(), "klondaik-not-a-program.txt");
+            File.WriteAllText(junk, "x");
+            var refused = Startup.Add(junk);
+            File.Delete(junk);
+
+            var (ok, message, id) = Startup.Add(exe);
+            if (!ok || id is null) throw new Exception("не добавилось: " + message);
+
+            var listed = Startup.List().FirstOrDefault(x => x.Id == id);
+            var deleted = Startup.Delete(id);
+            var gone = Startup.List().All(x => x.Id != id);
+
+            if (!deleted || !gone) throw new Exception("запись осталась в автозагрузке");
+            return new { added = listed?.Name, command = listed?.Command, junkRefused = !refused.Ok, junkReason = refused.Message, deleted, gone };
+        }, "программа кладётся в автозагрузку и убирается обратно");
+
         Step("services.groups", () =>
         {
             var stock = Repair.Db.ServiceDefaults;
             var all = Svc.All();
             var named = all.Count(x => SvcGroups.Of(x.Name) != "other");
-            var foreign = all.Count(x => SvcGroups.Of(x.Name) == "other" && !stock.ContainsKey(x.Name));
+            var drivers = all.Count(x => x.Driver);
+            var foreign = all.Count(x => !x.Driver && SvcGroups.Foreign(x.Image));
             var top = all.GroupBy(x => SvcGroups.Of(x.Name))
                 .Where(g => g.Key != "other")
                 .OrderByDescending(g => g.Count())
                 .Take(5)
                 .Select(g => g.Key + "=" + g.Count());
-            return new { services = all.Count, grouped = named, thirdParty = foreign, biggest = string.Join(" ", top) };
+            return new { services = all.Count, drivers, grouped = named, thirdParty = foreign, biggest = string.Join(" ", top) };
         });
 
         Step("services.changed", () =>

@@ -17,9 +17,9 @@ public static class Startup
 {
     private static readonly (string Hive, string Path, string Approved, string Label)[] RunKeys =
     [
-        ("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run", "HKCU Run"),
-        ("HKLM", @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run32", "HKLM Run"),
-        ("HKLM", @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run32", "HKLM Run x86")
+        ("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run", "run.hkcu"),
+        ("HKLM", @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run32", "run.hklm"),
+        ("HKLM", @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run", @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run32", "run.hklm32")
     ];
 
     public static List<StartupItem> List()
@@ -45,8 +45,8 @@ public static class Startup
 
         foreach (var (dir, label) in new[]
         {
-            (Environment.GetFolderPath(Environment.SpecialFolder.Startup), "Startup (user)"),
-            (Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), "Startup (all users)")
+            (Environment.GetFolderPath(Environment.SpecialFolder.Startup), "folder.user"),
+            (Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), "folder.all")
         })
         {
             try
@@ -77,7 +77,7 @@ public static class Startup
                 Id = "task|" + t.Path,
                 Name = t.Name,
                 Command = t.Action,
-                Source = "Планировщик",
+                Source = "task",
                 Kind = "task",
                 Enabled = t.Enabled,
                 Publisher = t.Author
@@ -151,5 +151,60 @@ public static class Startup
             return true;
         }
         catch { return false; }
+    }
+
+    public static (bool Ok, string Message, string? Id) Add(string raw)
+    {
+        var path = (raw ?? "").Trim().Trim('"');
+        if (path.Length == 0) return (false, "путь пустой", null);
+
+        try { path = Environment.ExpandEnvironmentVariables(path); } catch { }
+        try { path = Path.GetFullPath(path); } catch { return (false, "путь не разобран", null); }
+
+        if (Directory.Exists(path)) return (false, "это папка, а не программа", null);
+        if (!File.Exists(path)) return (false, "файл не найден", null);
+
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        if (ext == ".lnk") return AddShortcut(path);
+        if (ext is not (".exe" or ".bat" or ".cmd" or ".com"))
+            return (false, "можно добавить программу или ярлык, а не " + (ext.Length > 1 ? ext[1..] : "такой файл"), null);
+
+        var key = RunKeys[0];
+        var taken = Reg.Values(key.Hive, key.Path).Select(x => x.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var name = Unique(Path.GetFileNameWithoutExtension(path), taken.Contains);
+
+        try { Reg.Write(key.Hive, key.Path, name, "sz", "\"" + path + "\""); }
+        catch (Exception e) { return (false, e.Message, null); }
+
+        return (true, name + " добавлена в автозагрузку", key.Hive + "|" + key.Path + "|" + name);
+    }
+
+    private static (bool Ok, string Message, string? Id) AddShortcut(string path)
+    {
+        var dir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        if (dir.Length == 0 || !Directory.Exists(dir)) return (false, "папка автозагрузки не найдена", null);
+
+        if (string.Equals(Path.GetDirectoryName(path), dir, StringComparison.OrdinalIgnoreCase))
+            return (false, "ярлык уже лежит в автозагрузке", null);
+
+        var name = Unique(Path.GetFileNameWithoutExtension(path), x => File.Exists(Path.Combine(dir, x + ".lnk")));
+        var target = Path.Combine(dir, name + ".lnk");
+
+        try { File.Copy(path, target); }
+        catch (Exception e) { return (false, e.Message, null); }
+
+        return (true, name + " добавлен в автозагрузку", "file|" + target);
+    }
+
+    private static string Unique(string basis, Func<string, bool> taken)
+    {
+        if (basis.Length == 0) basis = "program";
+        if (!taken(basis)) return basis;
+        for (var i = 2; i < 100; i++)
+        {
+            var candidate = basis + " (" + i + ")";
+            if (!taken(candidate)) return candidate;
+        }
+        return basis + " " + Guid.NewGuid().ToString("N")[..6];
     }
 }

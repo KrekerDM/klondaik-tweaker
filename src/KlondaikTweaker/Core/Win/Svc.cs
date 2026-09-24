@@ -12,6 +12,8 @@ public sealed class SvcInfo
     public string Start { get; set; } = "";
     public string Status { get; set; } = "";
     public bool Protected { get; set; }
+    public bool Driver { get; set; }
+    public string Image { get; set; } = "";
 }
 
 public static class Svc
@@ -141,7 +143,9 @@ public static class Svc
                 Display = Resolve(disp) is { Length: > 0 } r ? r : (disp.Length > 0 ? disp : name),
                 Desc = Resolve(desc),
                 Start = ModeName((int)Reg.ParseNum(start.Value), delayed.Exists && delayed.Value == "1"),
-                Status = ""
+                Status = "",
+                Driver = (t & 0x10) == 0 && (t & 0x20) == 0,
+                Image = Reg.Read("HKLM", path, "ImagePath").Value
             });
         }
         try

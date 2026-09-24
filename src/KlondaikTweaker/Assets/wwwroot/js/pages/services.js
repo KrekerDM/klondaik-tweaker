@@ -11,7 +11,7 @@ export default {
 
   async render() {
     const el = h('<div class="stack" style="gap:20px"></div>');
-    const state = { q: "", running: false, recommended: false, changed: false, group: "" };
+    const state = { q: "", running: false, recommended: false, changed: false, drivers: false, group: "" };
     let all = [];
 
     el.appendChild(
@@ -27,6 +27,7 @@ export default {
         '<button class="chip" data-f="running">' + esc(t("svc.onlyRunning")) + "</button>" +
         '<button class="chip" data-f="recommended">' + esc(t("svc.recommended")) + "</button>" +
         '<button class="chip" data-f="changed">' + esc(t("svc.changedOnly")) + "</button>" +
+        '<button class="chip" data-f="drivers">' + esc(t("svc.withDrivers")) + "</button>" +
         '<select data-group style="max-width:260px"></select>' +
         '<span class="small dim" data-count></span>' +
         "</div>"
@@ -57,6 +58,7 @@ export default {
     function draw() {
       const q = state.q.toLowerCase();
       const items = all.filter((s) => {
+        if (s.driver && !state.drivers && state.group !== "driver") return false;
         if (state.running && s.status !== "running") return false;
         if (state.recommended && !s.recommended) return false;
         if (state.changed && !s.changed) return false;
