@@ -11,7 +11,7 @@ export default {
 
   async render() {
     const el = h('<div class="stack" style="gap:20px"></div>');
-    const state = { q: "", running: false, recommended: false };
+    const state = { q: "", running: false, recommended: false, changed: false };
     let all = [];
 
     el.appendChild(
@@ -26,6 +26,7 @@ export default {
       '<div class="row">' +
         '<button class="chip" data-f="running">' + esc(t("svc.onlyRunning")) + "</button>" +
         '<button class="chip" data-f="recommended">' + esc(t("svc.recommended")) + "</button>" +
+        '<button class="chip" data-f="changed">' + esc(t("svc.changedOnly")) + "</button>" +
         '<span class="small dim" data-count></span>' +
         "</div>"
     );
@@ -39,6 +40,7 @@ export default {
       const items = all.filter((s) => {
         if (state.running && s.status !== "running") return false;
         if (state.recommended && !s.recommended) return false;
+        if (state.changed && !s.changed) return false;
         if (!q) return true;
         return (
           s.name.toLowerCase().includes(q) ||
@@ -60,6 +62,7 @@ export default {
             '<div class="grow" style="min-width:0"><div class="name">' + esc(s.display) +
             (s.recommended ? ' <span class="tag safe">' + esc(t("svc.recommended")) + "</span>" : "") +
             (s.touched ? ' <span class="tag applied">' + esc(t("state.applied")) + "</span>" : "") +
+            (s.changed ? ' <span class="tag advanced">' + esc(t("svc.changed")) + "</span>" : "") +
             '</div><div class="sub">' + esc(s.desc || s.name) + "</div></div>" +
             '<span class="tag ' + (s.status === "running" ? "safe" : "plain") + '">' +
             esc(s.status === "running" ? t("svc.running") : t("svc.stopped")) + "</span>" +

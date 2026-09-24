@@ -158,6 +158,15 @@ public static class ModuleTest
             return new { adapter = first.Name, adapters = adapters.Count, parameters = list.Count, edited = list.Count(x => x.Edited) };
         });
 
+        Step("services.changed", () =>
+        {
+            var stock = Repair.Db.ServiceDefaults;
+            var all = Svc.All();
+            var known = all.Where(x => stock.ContainsKey(x.Name)).ToList();
+            var off = known.Count(x => !string.Equals(stock[x.Name], x.Start, StringComparison.OrdinalIgnoreCase));
+            return new { services = all.Count, known = known.Count, changed = off };
+        });
+
         Step("ghosts.list", () =>
         {
             var list = Ghosts.List();

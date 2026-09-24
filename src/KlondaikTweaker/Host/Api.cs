@@ -434,15 +434,23 @@ public static class Api
     {
         var all = Svc.All();
         var journalDisabled = Journal.Entries.Where(x => !x.Reverted).SelectMany(x => x.Items).Where(x => x.Kind == "svc").Select(x => x.Target).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        return all.Select(s => new
+        var stock = Repair.Db.ServiceDefaults;
+
+        return all.Select(s =>
         {
-            s.Name,
-            s.Display,
-            s.Desc,
-            s.Start,
-            s.Status,
-            recommended = SafeToDisable.Contains(s.Name, StringComparer.OrdinalIgnoreCase),
-            touched = journalDisabled.Contains(s.Name)
+            var known = stock.TryGetValue(s.Name, out var mode) ? mode : null;
+            return new
+            {
+                s.Name,
+                s.Display,
+                s.Desc,
+                s.Start,
+                s.Status,
+                recommended = SafeToDisable.Contains(s.Name, StringComparer.OrdinalIgnoreCase),
+                touched = journalDisabled.Contains(s.Name),
+                stock = known,
+                changed = known is not null && !string.Equals(known, s.Start, StringComparison.OrdinalIgnoreCase)
+            };
         });
     }
 
