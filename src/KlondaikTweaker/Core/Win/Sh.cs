@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace KlondaikTweaker.Core.Win;
@@ -11,7 +12,28 @@ public sealed record ShResult(int Code, string Out, string Err)
 
 public static class Sh
 {
-    public static ShResult Run(string exe, string args, int timeoutMs = 60000, string? workDir = null)
+    public static readonly Encoding Console = Resolve("OEMCP", 866);
+    public static readonly Encoding Ansi = Resolve("ACP", 1251);
+
+    private static Encoding Resolve(string valueName, int fallback)
+    {
+        try { Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); } catch { }
+
+        var page = fallback;
+        try
+        {
+            var raw = Reg.Read("HKLM", NlsPath, valueName).Value;
+            if (int.TryParse(raw, out var parsed) && parsed > 0) page = parsed;
+        }
+        catch { }
+
+        try { return Encoding.GetEncoding(page); }
+        catch { return Encoding.UTF8; }
+    }
+
+    private const string NlsPath = "SYSTEM" + "\\" + "CurrentControlSet" + "\\" + "Control" + "\\" + "Nls" + "\\" + "CodePage";
+
+    public static ShResult Run(string exe, string args, int timeoutMs = 60000, string? workDir = null, Encoding? encoding = null)
     {
         try
         {
@@ -23,8 +45,8 @@ public static class Sh
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8
+                StandardOutputEncoding = encoding ?? Console,
+                StandardErrorEncoding = encoding ?? Console
             };
             if (workDir is not null) psi.WorkingDirectory = workDir;
             using var p = Process.Start(psi);

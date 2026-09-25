@@ -1,3 +1,4 @@
+using System.Text;
 using System.Xml.Linq;
 using KlondaikTweaker.Core.Win;
 
@@ -29,7 +30,7 @@ public static class Ghosts
     public static List<GhostDevice> List()
     {
         var list = new List<GhostDevice>();
-        var r = Sh.Run("pnputil.exe", "/enum-devices /disconnected /format xml", 120000);
+        var r = Sh.Run("pnputil.exe", "/enum-devices /disconnected /format xml", 120000, null, Sh.Ansi);
         if (!r.Ok || r.Out.IndexOf("<PnpUtil", StringComparison.OrdinalIgnoreCase) < 0) return list;
 
         try
@@ -79,7 +80,7 @@ public static class Ghosts
                 continue;
             }
 
-            var r = Sh.Run("pnputil.exe", $"/remove-device \"{id}\"", 60000);
+            var r = Sh.Run("pnputil.exe", $"/remove-device \"{id}\"", 60000, null, Sh.Ansi);
             if (r.Ok) result.Changed++;
             else if (result.Details.Count < 20) result.Details.Add(device.Name + ": " + Trim(r.All));
         }

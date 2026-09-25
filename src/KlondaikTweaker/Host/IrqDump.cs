@@ -15,6 +15,7 @@ public static class IrqDump
         report.AppendLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         report.AppendLine(new string('-', 78));
 
+        report.AppendLine($"кодировки вывода: консоль={Sh.Console.CodePage}, ansi={Sh.Ansi.CodePage}");
         report.AppendLine($"потоков: {threads.Count}, гибридный процессор: {(Cpu.Hybrid() ? "да" : "нет")}");
         foreach (var group in threads.GroupBy(x => x.Core).OrderBy(x => x.Key))
         {

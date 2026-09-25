@@ -110,6 +110,26 @@ public static class SelfTest
             }
             return new { total = Catalog.Db.Tweaks.Count, applied, unavailable };
         });
+        Check("shell.encoding", () =>
+        {
+            var probes = new[]
+            {
+                ("sc.exe", "qdescription TrkWks", Sh.Console),
+                ("pnputil.exe", "/enum-devices /disconnected", Sh.Ansi)
+            };
+
+            var broken = new List<string>();
+            foreach (var (exe, args, encoding) in probes)
+            {
+                var r = Sh.Run(exe, args, 60000, null, encoding);
+                var text = r.All;
+                if (text.Contains('�')) broken.Add(exe + ": вывод прочитан не в той кодировке");
+            }
+
+            if (broken.Count > 0) throw new Exception(string.Join("; ", broken));
+            return new { console = Sh.Console.CodePage, ansi = Sh.Ansi.CodePage };
+        });
+
         Check("assets.embedded", () =>
         {
             var missing = MissingAssets();
