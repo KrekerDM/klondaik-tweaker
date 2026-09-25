@@ -9,6 +9,9 @@ namespace KlondaikTweaker.Host;
 
 public static class ModuleTest
 {
+    private static JsonElement? Payload(object value) =>
+        JsonDocument.Parse(JsonSerializer.Serialize(value, Store.Options)).RootElement.Clone();
+
     public static void Run(string outPath)
     {
         var report = new StringBuilder();
@@ -186,6 +189,30 @@ public static class ModuleTest
             return new { added = listed?.Name, command = listed?.Command, junkRefused = !refused.Ok, junkReason = refused.Message, deleted, gone };
         }, "программа кладётся в автозагрузку и убирается обратно");
 
+        Step("services.roundTrip", () =>
+        {
+            var all = Svc.All();
+            var pick = new[] { "TrkWks", "Spooler", "Fax", "WSearch" }
+                .FirstOrDefault(n => all.Any(x => string.Equals(x.Name, n, StringComparison.OrdinalIgnoreCase)));
+            if (pick is null) return new { skipped = true, reason = "no safe service found" };
+
+            var before = Svc.GetStart(pick);
+            var target = before == "manual" ? "auto" : "manual";
+
+            var setJson = JsonSerializer.Serialize(
+                Api.Handle("services.set", Payload(new { name = pick, mode = target }), (_, _) => { }), Store.Options);
+            var mid = Svc.GetStart(pick);
+
+            Api.Handle("services.set", Payload(new { name = pick, mode = before }), (_, _) => { });
+            var after = Svc.GetStart(pick);
+
+            if (!setJson.Contains("\"ok\":true")) throw new Exception("смена режима не отчиталась успехом: " + setJson);
+            if (!string.Equals(mid, target, StringComparison.OrdinalIgnoreCase)) throw new Exception("режим не сменился: " + mid);
+            if (!string.Equals(after, before, StringComparison.OrdinalIgnoreCase)) throw new Exception("режим не вернулся: " + after + " вместо " + before);
+
+            return new { service = pick, before, target, mid, after, restored = true };
+        }, "режим службы меняется, сверяется с системой и возвращается обратно");
+
         Step("services.groups", () =>
         {
             var stock = Repair.Db.ServiceDefaults;
@@ -319,7 +346,7 @@ public static class ModuleTest
             var first = Api.Handle("update.auto", null, (_, _) => { });
             var second = Api.Handle("update.auto", null, (_, _) => { });
             var stamp = Settings.Data.LastUpdateCheck;
-            var json = System.Text.Json.JsonSerializer.Serialize(second, Store.Options);
+            var json = JsonSerializer.Serialize(second, Store.Options);
             if (stamp is null) throw new Exception("время проверки не записалось в настройки");
             if (!json.Contains("recent")) throw new Exception("вторая проверка не отсеклась по времени: " + json);
             return new { stamped = stamp, secondCall = json };
@@ -344,6 +371,7 @@ public static class ModuleTest
         report.AppendLine();
         report.AppendLine($"journal entries left active: {Journal.Entries.Count(x => !x.Reverted)}");
         report.AppendLine($"{results.Count - failed}/{results.Count} passed");
+        Environment.ExitCode = failed > 0 ? 1 : 0;
 
         try
         {

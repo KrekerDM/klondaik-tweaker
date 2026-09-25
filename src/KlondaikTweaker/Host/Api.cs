@@ -118,7 +118,17 @@ public static class Api
             case "net.dns": return NetworkTools.DnsPresets();
             case "net.testDns": return NetworkTools.TestDns();
             case "net.setDns": return new { result = NetworkTools.SetDns(S(p, "adapter"), S(p, "primary"), S(p, "secondary")) };
-            case "net.nagle": NetworkTools.SetNagle(B(p, "disabled", true)); return new { ok = true };
+            case "net.nagle":
+            {
+                var (changed, failed) = NetworkTools.SetNagle(B(p, "disabled", true));
+                return new
+                {
+                    ok = changed > 0,
+                    changed,
+                    failed,
+                    error = changed > 0 ? null : (PrefersEnglish ? "no network interface accepted the change" : "ни один сетевой интерфейс не принял изменение")
+                };
+            }
             case "net.reset": return new { result = NetworkTools.ResetStack() };
             case "net.ping": return NetworkTools.PingTargets();
             case "net.telemetry": return NetTelemetry(B(p, "block", true));
@@ -179,7 +189,11 @@ public static class Api
             case "update.check": return Updater.Check();
             case "update.install": return UpdateInstall(S(p, "url"), push);
 
-            case "sys.open": Sh.Run(S(p, "target"), S(p, "args"), 5000); return new { ok = true };
+            case "sys.open":
+            {
+                var r = Sh.Run(S(p, "target"), S(p, "args"), 5000);
+                return new { ok = r.Ok, error = r.Ok ? null : Short(r.All) };
+            }
             case "sys.link": Sh.OpenExternal(S(p, "url")); return new { ok = true };
             case "sys.folder": Sh.OpenExternal(Paths.Root); return new { ok = true };
             case "sys.power": return Power(S(p, "action"));
@@ -219,7 +233,7 @@ public static class Api
         return new { info.Available, info.Latest, info.Current, info.Size, info.Error };
     }
 
-    private static readonly HashSet<string> Languages = new(StringComparer.OrdinalIgnoreCase)
+    public static readonly HashSet<string> Languages = new(StringComparer.OrdinalIgnoreCase)
     {
         "ru", "uk", "be", "kk", "uz", "az", "en", "de", "pl", "es", "fr"
     };
@@ -534,12 +548,29 @@ public static class Api
         var mode = S(p, "mode", "manual");
         try
         {
-            var entry = new JournalEntry { TweakId = "svc:" + name, Title = name, Group = "service" };
-            entry.Items.Add(new JournalItem { Kind = "svc", Target = name, PrevValue = Svc.GetStart(name) });
+            var before = Svc.GetStart(name);
             Svc.SetStart(name, mode);
             if (mode == "disabled") Svc.Stop(name);
+
+            var after = Svc.GetStart(name);
+            if (!string.Equals(after, mode, StringComparison.OrdinalIgnoreCase))
+            {
+                return new
+                {
+                    ok = false,
+                    start = after,
+                    status = Svc.GetStatus(name),
+                    error = PrefersEnglish
+                        ? "the service still reports \"" + after + "\": Windows did not accept the change"
+                        : "служба по-прежнему показывает «" + after + "»: Windows не принял изменение"
+                };
+            }
+
+            var entry = new JournalEntry { TweakId = "svc:" + name, Title = name, Group = "service" };
+            entry.Items.Add(new JournalItem { Kind = "svc", Target = name, PrevValue = before });
             Journal.Add(entry);
-            return new { ok = true, start = Svc.GetStart(name), status = Svc.GetStatus(name) };
+
+            return new { ok = true, start = after, status = Svc.GetStatus(name), error = (string?)null };
         }
         catch (Exception ex) { return new { ok = false, error = ex.Message }; }
     }
@@ -640,15 +671,24 @@ public static class Api
         }
     }
 
+    private static string Short(string text)
+    {
+        text = (text ?? "").Replace('\r', ' ').Replace('\n', ' ').Trim();
+        return text.Length > 200 ? text[..200] : text;
+    }
+
     private static object Power(string action)
     {
-        switch (action)
+        var result = action switch
         {
-            case "restart": Sh.Run("shutdown.exe", "/r /t 5 /c \"Klondaik Tweaker\"", 5000); break;
-            case "logoff": Sh.Run("shutdown.exe", "/l", 5000); break;
-            case "explorer": Sh.Ps("Stop-Process -Name explorer -Force", 20000); break;
-            case "cancel": Sh.Run("shutdown.exe", "/a", 5000); break;
-        }
-        return new { ok = true };
+            "restart" => Sh.Run("shutdown.exe", "/r /t 5 /c \"Klondaik Tweaker\"", 5000),
+            "logoff" => Sh.Run("shutdown.exe", "/l", 5000),
+            "explorer" => Sh.Ps("Stop-Process -Name explorer -Force", 20000),
+            "cancel" => Sh.Run("shutdown.exe", "/a", 5000),
+            _ => null
+        };
+
+        if (result is null) return new { ok = false, error = "неизвестное действие: " + action };
+        return new { ok = result.Ok, error = result.Ok ? null : Short(result.All) };
     }
 }

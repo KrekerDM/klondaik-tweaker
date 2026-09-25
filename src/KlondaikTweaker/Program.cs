@@ -32,6 +32,20 @@ internal static class Program
         }
 
 
+        if (args.Any(a => a.Equals("--verify-assets", StringComparison.OrdinalIgnoreCase)))
+        {
+            var missing = Host.SelfTest.MissingAssets();
+            if (missing.Count == 0)
+            {
+                Console.WriteLine($"в сборке на месте все {Host.SelfTest.RequiredAssetCount} обязательных ресурсов");
+                Environment.ExitCode = 0;
+                return;
+            }
+            foreach (var item in missing) Console.Error.WriteLine("ОТСУТСТВУЕТ: " + item);
+            Environment.ExitCode = 1;
+            return;
+        }
+
         var nic = Array.FindIndex(args, a => a.Equals("--nic", StringComparison.OrdinalIgnoreCase));
         if (nic >= 0)
         {

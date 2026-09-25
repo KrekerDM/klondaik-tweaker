@@ -80,8 +80,10 @@ public static class NetworkTools
         return a.Exists && a.Value == "1" && b.Exists && b.Value == "1";
     }
 
-    public static void SetNagle(bool disabled)
+    public static (int Changed, int Failed) SetNagle(bool disabled)
     {
+        var changed = 0;
+        var failed = 0;
         foreach (var guid in Reg.SubKeys("HKLM", IfBase))
         {
             try
@@ -98,9 +100,11 @@ public static class NetworkTools
                     Reg.DeleteValue("HKLM", $@"{IfBase}\{guid}", "TCPNoDelay");
                     Reg.DeleteValue("HKLM", $@"{IfBase}\{guid}", "TcpDelAckTicks");
                 }
+                changed++;
             }
-            catch { }
+            catch { failed++; }
         }
+        return (changed, failed);
     }
 
     public static string SetDns(string adapterName, string primary, string secondary)

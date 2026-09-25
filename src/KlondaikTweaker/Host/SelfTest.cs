@@ -26,6 +26,46 @@ public static class SelfTest
         "upd.full-off"
     ];
 
+    public static List<string> MissingAssets()
+    {
+        var required = new List<(string Name, int MinBytes)>
+        {
+            ("data/tweaks.json", 50000),
+            ("data/wizard.json", 5000),
+            ("data/repair.json", 2000),
+            ("data/features.json", 3000),
+            ("data/tasks.json", 2000),
+            ("data/software.json", 3000),
+            ("data/credits.json", 200),
+            ("web/index.html", 500),
+            ("web/css/app.css", 10000),
+            ("web/js/app.js", 2000),
+            ("web/js/i18n.js", 500),
+            ("web/js/bridge.js", 500),
+            ("web/js/ui.js", 1000),
+            ("vendor/nvidiaProfileInspector.exe", 200 * 1024)
+        };
+
+        foreach (var code in Api.Languages.OrderBy(x => x, StringComparer.Ordinal))
+            required.Add(("web/js/lang/" + code + ".js", 5000));
+
+        var missing = new List<string>();
+        foreach (var (name, min) in required)
+        {
+            var bytes = Res.Bytes(name);
+            if (bytes is null) missing.Add(name + " — нет в сборке");
+            else if (bytes.Length < min) missing.Add(name + " — только " + bytes.Length + " байт");
+        }
+
+        var inspector = Res.Bytes("vendor/nvidiaProfileInspector.exe");
+        if (inspector is { Length: > 1 } && (inspector[0] != 'M' || inspector[1] != 'Z'))
+            missing.Add("vendor/nvidiaProfileInspector.exe — не похож на программу");
+
+        return missing;
+    }
+
+    public static int RequiredAssetCount => 14 + Api.Languages.Count;
+
     public static void Run(string outPath)
     {
         var report = new StringBuilder();
@@ -70,14 +110,12 @@ public static class SelfTest
             }
             return new { total = Catalog.Db.Tweaks.Count, applied, unavailable };
         });
-        Check("nvidia.bundled", () =>
+        Check("assets.embedded", () =>
         {
-            var bytes = Res.Bytes("vendor/nvidiaProfileInspector.exe");
-            if (bytes is null || bytes.Length < 200 * 1024)
-                throw new Exception("Profile Inspector не вложен в сборку, вкладка NVIDIA работать не будет");
-            if (bytes[0] != 'M' || bytes[1] != 'Z')
-                throw new Exception("вложенный Profile Inspector не похож на программу");
-            return new { kilobytes = bytes.Length / 1024, version = Res.Text("vendor/version.txt").Trim() };
+            var missing = MissingAssets();
+            if (missing.Count > 0)
+                throw new Exception("в сборку не попало: " + string.Join("; ", missing));
+            return new { checkedItems = RequiredAssetCount, languages = Api.Languages.Count, total = Res.All().Count() };
         });
 
         Check("wizard.questions", () => Api.Handle("wizard.questions", null, Noop));
@@ -126,6 +164,7 @@ public static class SelfTest
         report.AppendLine();
         report.AppendLine($"{results.Count - failed}/{results.Count} passed");
 
+        Environment.ExitCode = failed > 0 ? 1 : 0;
         Write(outPath, report, results);
     }
 
@@ -243,6 +282,7 @@ public static class SelfTest
         report.AppendLine();
         report.AppendLine($"{results.Count - failed}/{results.Count} passed");
 
+        Environment.ExitCode = failed > 0 ? 1 : 0;
         Write(outPath, report, results);
     }
 

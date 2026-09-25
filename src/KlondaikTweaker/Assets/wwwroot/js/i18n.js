@@ -1,5 +1,14 @@
 import ru from "./lang/ru.js";
+import uk from "./lang/uk.js";
+import be from "./lang/be.js";
+import kk from "./lang/kk.js";
+import uz from "./lang/uz.js";
+import az from "./lang/az.js";
 import en from "./lang/en.js";
+import de from "./lang/de.js";
+import pl from "./lang/pl.js";
+import es from "./lang/es.js";
+import fr from "./lang/fr.js";
 
 export const LANGS = [
   { id: "ru", name: "Русский" },
@@ -15,20 +24,14 @@ export const LANGS = [
   { id: "fr", name: "Français" }
 ];
 
-const dict = { ru, en };
+const dict = { ru, uk, be, kk, uz, az, en, de, pl, es, fr };
 let lang = "ru";
 
 export function known(code) {
-  return LANGS.some((x) => x.id === code);
+  return Object.prototype.hasOwnProperty.call(dict, code);
 }
 
-export async function loadLang(code) {
-  if (!known(code) || dict[code]) return;
-  try {
-    const module = await import("./lang/" + code + ".js");
-    if (module && module.default) dict[code] = module.default;
-  } catch {}
-}
+export async function loadLang() {}
 
 export function setLang(value) {
   lang = known(value) ? value : "ru";

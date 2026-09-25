@@ -119,6 +119,12 @@ export default {
           }
           toast(name + " · " + t("svc.mode." + sel.value));
         } else {
+          const s = all.find((x) => x.name === name);
+          if (s && r.start) {
+            s.start = r.start;
+            if (r.status) s.status = r.status;
+          }
+          if (r.start) sel.value = r.start;
           toast(t("msg.failed") + ": " + (r.error || name), "err");
         }
       } finally {
