@@ -113,7 +113,7 @@
 
   const handlers = {
     "app.info": () => ({
-      version: "1.1.0",
+      version: "1.1.1",
       settings,
       facts,
       restore: true,
@@ -384,7 +384,7 @@
     "app.quit": () => ({ ok: true }),
     "update.check": () => ({
       available: true,
-      current: "1.1.0",
+      current: "1.1.1",
       latest: "v1.1.0",
       size: 56623104,
       url: "https://github.com/Faliseven/klondaik-tweaker/releases/download/v1.1.0/KlondaikTweaker.exe",
