@@ -49,27 +49,36 @@ public static class Nvidia
             .OrderByDescending(x => x, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
 
-    private static bool Ensure()
+    private static string? Ensure()
     {
-        if (File.Exists(ToolPath)) return true;
+        if (File.Exists(ToolPath)) return null;
+
+        byte[]? bytes;
+        try { bytes = Res.Bytes("vendor/" + Exe); }
+        catch (Exception e) { return "не удалось прочитать вложенный файл: " + Trim(e.Message); }
+
+        if (bytes is null || bytes.Length < 1024)
+            return "в этой сборке нет Profile Inspector. Скачайте его с github.com/Orbmu2k/nvidiaProfileInspector и положите рядом: " + ToolPath;
+
         try
         {
-            var bytes = Res.Bytes("vendor/" + Exe);
-            if (bytes is null || bytes.Length < 1024) return false;
             File.WriteAllBytes(ToolPath, bytes);
 
             var license = Res.Text("vendor/nvidiaProfileInspector-LICENSE.txt");
             if (license.Length > 0)
                 File.WriteAllText(Path.Combine(Folder, "nvidiaProfileInspector-LICENSE.txt"), license);
-
-            return File.Exists(ToolPath);
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            return "не удалось записать файл в " + Folder + ": " + Trim(e.Message);
+        }
+
+        return File.Exists(ToolPath) ? null : "файл не появился в " + Folder;
     }
 
     public static RepairResult Export()
     {
-        if (!Ensure()) return Bad("не удалось распаковать NVIDIA Profile Inspector");
+        if (Ensure() is { } problem) return Bad(problem);
 
         var before = Directory.GetFiles(Folder, "*.nip").ToHashSet(StringComparer.OrdinalIgnoreCase);
         var r = Sh.Run(ToolPath, "-exportCustomized", 180000);
@@ -90,7 +99,7 @@ public static class Nvidia
 
         var file = Path.Combine(Folder, fileName);
         if (!File.Exists(file)) return Bad("файл не найден в папке профилей");
-        if (!Ensure()) return Bad("не удалось распаковать NVIDIA Profile Inspector");
+        if (Ensure() is { } problem) return Bad(problem);
 
         var r = Sh.Run(ToolPath, $"-silentImport \"{file}\"", 180000);
         return r.Ok
@@ -100,7 +109,7 @@ public static class Nvidia
 
     public static RepairResult Open()
     {
-        if (!Ensure()) return Bad("не удалось распаковать NVIDIA Profile Inspector");
+        if (Ensure() is { } problem) return Bad(problem);
         Sh.OpenExternal(ToolPath);
         return new RepairResult { Message = "окно Profile Inspector открыто" };
     }

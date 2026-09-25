@@ -313,6 +313,18 @@ public static class ModuleTest
             };
         }, "a device is pinned to thread 0 and unpinned again");
 
+        Step("update.auto", () =>
+        {
+            Settings.Update(s => s.LastUpdateCheck = null);
+            var first = Api.Handle("update.auto", null, (_, _) => { });
+            var second = Api.Handle("update.auto", null, (_, _) => { });
+            var stamp = Settings.Data.LastUpdateCheck;
+            var json = System.Text.Json.JsonSerializer.Serialize(second, Store.Options);
+            if (stamp is null) throw new Exception("время проверки не записалось в настройки");
+            if (!json.Contains("recent")) throw new Exception("вторая проверка не отсеклась по времени: " + json);
+            return new { stamped = stamp, secondCall = json };
+        }, "обновления проверяются не чаще раза в двадцать часов");
+
         Step("soft.winget", () => SoftCatalog.HasWinget());
         Step("api.router", () =>
         {

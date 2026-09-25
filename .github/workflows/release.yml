@@ -26,19 +26,38 @@ jobs:
 
       - name: Generate data files
         working-directory: tools
+        shell: pwsh
+        env:
+          PYTHONIOENCODING: utf-8
         run: |
-          python gen_tweaks.py
-          python gen_wizard.py
-          python gen_software.py
-          python gen_repair.py
-          python gen_features.py
-          python gen_tasks.py
-          python get_inspector.py
-          python gen_credits.py
+          $scripts = @(
+            "gen_tweaks.py",
+            "gen_wizard.py",
+            "gen_software.py",
+            "gen_repair.py",
+            "gen_features.py",
+            "gen_tasks.py",
+            "get_inspector.py",
+            "gen_credits.py"
+          )
+          foreach ($script in $scripts) {
+            Write-Host "--- $script"
+            python $script
+            if ($LASTEXITCODE -ne 0) { throw "$script exited with $LASTEXITCODE" }
+          }
 
       - name: Fail if generated data differs from the commit
         run: |
           git diff --exit-code -- src/KlondaikTweaker/Assets/Data
+
+      - name: Fail if the bundled tools are missing
+        shell: pwsh
+        run: |
+          $exe = "src/KlondaikTweaker/Assets/vendor/nvidiaProfileInspector.exe"
+          if (-not (Test-Path $exe)) { throw "Profile Inspector was not bundled, the NVIDIA tab would be dead" }
+          $size = (Get-Item $exe).Length
+          if ($size -lt 200KB) { throw "bundled Profile Inspector is only $size bytes" }
+          Write-Host "Profile Inspector bundled, $([math]::Round($size / 1KB)) KB"
 
       - name: Publish
         run: dotnet publish src/KlondaikTweaker/KlondaikTweaker.csproj -c Release -o dist --nologo

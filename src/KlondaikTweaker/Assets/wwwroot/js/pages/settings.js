@@ -21,6 +21,7 @@ export default {
         row("lang", t("set.lang"), "", true) +
         row("showExtreme", t("set.extreme"), t("set.extremeHint")) +
         row("autoRestorePoint", t("set.restore"), t("set.restoreHint")) +
+        row("autoUpdateCheck", t("set.autoUpdate"), t("set.autoUpdateHint")) +
         row("monitor3d", t("set.3d"), t("set.3dHint")) +
         row("liveMonitor", t("set.live"), t("set.liveHint")) +
         row("reduced", t("set.reduced"), t("set.reducedHint")) +
@@ -43,6 +44,7 @@ export default {
     const toggles = [
       ["showExtreme", s.showExtreme],
       ["autoRestorePoint", s.autoRestorePoint],
+      ["autoUpdateCheck", s.autoUpdateCheck !== false],
       ["monitor3d", s.monitor3d],
       ["liveMonitor", s.liveMonitor],
       ["reduced", s.reduced]

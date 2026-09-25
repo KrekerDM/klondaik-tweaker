@@ -13,6 +13,8 @@ public sealed class SettingsData
     public string Accent { get; set; } = "ice";
     public List<string> Favorites { get; set; } = [];
     public string? LastProfile { get; set; }
+    public bool AutoUpdateCheck { get; set; } = true;
+    public string? LastUpdateCheck { get; set; }
 }
 
 public static class Settings

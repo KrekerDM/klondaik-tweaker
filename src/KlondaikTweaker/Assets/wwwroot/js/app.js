@@ -1,5 +1,5 @@
 import { invoke, send, on, onBusy } from "./bridge.js";
-import { setLang, getLang, t } from "./i18n.js";
+import { setLang, getLang, loadLang, LANGS, t } from "./i18n.js";
 import { h, esc, toast, icon, progress, modal } from "./ui.js";
 import { initScene, setEnabled } from "./scene.js";
 
@@ -23,6 +23,11 @@ import soft from "./pages/soft.js";
 import journal from "./pages/journal.js";
 import settings from "./pages/settings.js";
 
+function syncLangPicker() {
+  const picker = document.getElementById("langBtn");
+  if (picker && picker.tagName === "SELECT") picker.value = getLang();
+}
+
 const PAGES = [dash, wizard, tweaks, tools, clean, startup, services, features, tasks, irq, nic, power, nvidia, apps, network, bench, soft, journal, settings];
 const GROUPS = ["main", "system", "extra"];
 
@@ -30,9 +35,11 @@ const app = {
   info: null,
   current: null,
   active: null,
+  seq: 0,
 
   async go(id) {
     const page = PAGES.find((p) => p.id === id) || PAGES[0];
+    const token = ++this.seq;
     if (this.active && this.active.dispose) {
       try {
         this.active.dispose();
@@ -45,11 +52,20 @@ const app = {
     content.innerHTML = '<div class="stack"><div class="skel"></div><div class="skel"></div></div>';
     try {
       const result = await page.render(app);
+      if (token !== this.seq) {
+        if (result && result.dispose) {
+          try {
+            result.dispose();
+          } catch {}
+        }
+        return;
+      }
       content.innerHTML = "";
       content.appendChild(result.el);
       content.scrollTop = 0;
       this.active = result;
     } catch (err) {
+      if (token !== this.seq) return;
       content.innerHTML = "";
       content.appendChild(
         h('<div class="pane stack"><h2>' + esc(t("msg.failed")) + '</h2><p class="small dim mono">' + esc(String(err.message || err)) + "</p></div>")
@@ -67,8 +83,9 @@ const app = {
 
   async reload() {
     app.info = await invoke("app.info");
+    await loadLang(app.info.settings.lang);
     setLang(app.info.settings.lang);
-    document.getElementById("langBtn").textContent = getLang().toUpperCase();
+    syncLangPicker();
     buildNav();
     await app.go(app.current || "dash");
   }
@@ -117,9 +134,18 @@ function wireChrome() {
   });
   drag.addEventListener("dblclick", () => send("window.maximize"));
 
-  document.getElementById("langBtn").addEventListener("click", async () => {
-    const next = getLang() === "ru" ? "en" : "ru";
-    await invoke("app.setSetting", { key: "lang", value: next });
+  const langBtn = document.getElementById("langBtn");
+  const picker = document.createElement("select");
+  picker.id = "langBtn";
+  picker.className = "langpick";
+  picker.innerHTML = LANGS.map(
+    (l) => '<option value="' + l.id + '">' + l.name + "</option>"
+  ).join("");
+  picker.value = getLang();
+  picker.title = t("set.lang");
+  langBtn.replaceWith(picker);
+  picker.addEventListener("change", async () => {
+    await invoke("app.setSetting", { key: "lang", value: picker.value });
     await app.reload();
   });
 
@@ -159,8 +185,9 @@ async function boot() {
     return;
   }
 
+  await loadLang(app.info.settings.lang);
   setLang(app.info.settings.lang);
-  document.getElementById("langBtn").textContent = getLang().toUpperCase();
+  syncLangPicker();
   document.getElementById("verTag").textContent = "v" + app.info.version;
   document.body.classList.toggle("reduced", !!app.info.settings.reduced);
 
@@ -196,6 +223,13 @@ async function boot() {
     setTimeout(() => toast(t("msg.tamper"), "warn"), 1200);
   }
   progress(0);
+
+  setTimeout(async () => {
+    try {
+      const info = await invoke("update.auto", {}, 60000);
+      if (info && info.available) toast(t("upd.found") + " " + info.latest + " · " + t("page.settings"), "warn");
+    } catch {}
+  }, 4000);
 }
 
 boot();

@@ -83,6 +83,34 @@
     };
   }
 
+  const emit = (evt, data) =>
+    listeners.forEach((l) => l({ data: JSON.stringify({ evt, data }) }));
+
+  const walk = (ids, ok) => {
+    const names = {};
+    ((tweaks && tweaks.tweaks) || []).forEach((x) => {
+      names[x.id] = (x.ru && x.ru.t) || x.id;
+    });
+    ids.forEach((id, i) => {
+      setTimeout(() => {
+        emit("progress", { stage: id, title: names[id] || id, percent: (i * 100) / ids.length, total: ids.length, done: i, phase: "start" });
+      }, i * 260);
+      setTimeout(() => {
+        const good = ok || i !== 1;
+        emit("progress", {
+          stage: id,
+          title: names[id] || id,
+          percent: ((i + 1) * 100) / ids.length,
+          total: ids.length,
+          done: i + 1,
+          phase: "done",
+          ok: good,
+          error: good ? null : "изменение не удержалось: система по-прежнему показывает прежнее значение"
+        });
+      }, i * 260 + 200);
+    });
+  };
+
   const handlers = {
     "app.info": () => ({
       version: "1.1.0",
@@ -134,8 +162,8 @@
         { id: "max", title: rows[3][0], desc: rows[3][1], count: 114, ids: [] }
       ];
     },
-    "tweaks.apply": (p) => ({
-      results: p.ids.map((id) => ({ id, ok: true, error: null, state: "applied" })),
+    "tweaks.apply": (p) => (walk(p.ids, false), {
+      results: p.ids.map((id, i) => ({ id, ok: i !== 1, error: i === 1 ? "изменение не удержалось" : null, state: i === 1 ? "notapplied" : "applied" })),
       restart: false,
       restorePoint: "ok",
       applied: p.ids.length
@@ -387,7 +415,9 @@
       } else {
         payload = { id: msg.id, ok: true, result: fn(msg.payload || {}) };
       }
-      setTimeout(() => listeners.forEach((l) => l({ data: JSON.stringify(payload) })), 120);
+      const slow = msg.method === "tweaks.apply" || msg.method === "tweaks.revert";
+      const wait = slow ? ((msg.payload && msg.payload.ids ? msg.payload.ids.length : 1) * 260 + 400) : 120;
+      setTimeout(() => listeners.forEach((l) => l({ data: JSON.stringify(payload) })), wait);
     }
   };
 

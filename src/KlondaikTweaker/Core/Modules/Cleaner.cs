@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using KlondaikTweaker.Core.Win;
 
 namespace KlondaikTweaker.Core.Modules;
@@ -186,24 +187,41 @@ public static class Cleaner
         return (bytes, count);
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct RecycleInfo
+    {
+        public int Size;
+        public long Bytes;
+        public long Items;
+    }
+
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+    private static extern int SHQueryRecycleBin(string? root, ref RecycleInfo info);
+
     private static (long, int) RecycleSize()
     {
         long bytes = 0;
-        int count = 0;
+        long items = 0;
+        var answered = false;
+
         foreach (var drive in DriveInfo.GetDrives())
         {
             try
             {
                 if (!drive.IsReady || drive.DriveType != DriveType.Fixed) continue;
-                var bin = Path.Combine(drive.RootDirectory.FullName, "$Recycle.Bin");
-                if (!Directory.Exists(bin)) continue;
-                var (b, c) = Measure(bin, null);
-                bytes += b;
-                count += c;
+
+                var info = new RecycleInfo { Size = Marshal.SizeOf<RecycleInfo>() };
+                if (SHQueryRecycleBin(drive.RootDirectory.FullName, ref info) != 0) continue;
+
+                answered = true;
+                bytes += info.Bytes;
+                items += info.Items;
             }
             catch { }
         }
-        return (bytes, count);
+
+        if (!answered) return (0, 0);
+        return (bytes, items > int.MaxValue ? int.MaxValue : (int)items);
     }
 
     public static (long Freed, int Files, List<string> Errors) Clean(IEnumerable<string> ids)

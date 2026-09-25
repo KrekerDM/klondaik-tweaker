@@ -15,6 +15,15 @@ public static class Api
 
     private static string Lang => Settings.Data.Lang;
 
+    private static readonly HashSet<string> LatinText = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "en", "de", "pl", "es", "fr"
+    };
+
+    private static bool PrefersEnglish => LatinText.Contains(Lang);
+
+    private static string TextLang => PrefersEnglish ? "en" : "ru";
+
     private static string S(JsonElement? p, string name, string fallback = "")
     {
         if (p is null || p.Value.ValueKind != JsonValueKind.Object) return fallback;
@@ -57,6 +66,7 @@ public static class Api
         {
             case "app.info": return AppInfo();
             case "app.settings": return Settings.Data;
+            case "update.auto": return UpdateAuto();
             case "app.setSetting": return SetSetting(p);
             case "app.strings": return new { lang = Lang };
             case "app.quit": QuitRequested?.Invoke(); return new { ok = true };
@@ -158,10 +168,10 @@ public static class Api
             case "irq.list": return new { threads = Cpu.Threads(), hybrid = Cpu.Hybrid(), devices = Irq.Devices() };
             case "irq.bind": return Irq.Bind(S(p, "id"), Nums(p, "threads"), B(p, "priority"));
             case "irq.reset": return Irq.Reset(S(p, "id"));
-            case "tasks.list": return TaskGroups.List(Lang);
-            case "tasks.setGroup": return TaskGroups.SetGroup(S(p, "id"), B(p, "enable"), Lang);
+            case "tasks.list": return TaskGroups.List(TextLang);
+            case "tasks.setGroup": return TaskGroups.SetGroup(S(p, "id"), B(p, "enable"), TextLang);
             case "tasks.setOne": return TaskGroups.SetOne(S(p, "path"), B(p, "enable"));
-            case "features.list": return Features.List(Lang, B(p, "refresh"));
+            case "features.list": return Features.List(TextLang, B(p, "refresh"));
             case "features.set": return Features.Set(S(p, "name"), B(p, "enable"));
             case "repair.status": return new { ctxti = ShellMenu.TiInstalled, ctxown = ShellMenu.OwnInstalled };
             case "app.credits": return Credits();
@@ -196,6 +206,24 @@ public static class Api
         };
     }
 
+    private static object UpdateAuto()
+    {
+        if (!Settings.Data.AutoUpdateCheck) return new { skipped = "off" };
+
+        var last = Settings.Data.LastUpdateCheck;
+        if (DateTime.TryParse(last, out var when) && DateTime.UtcNow - when < TimeSpan.FromHours(20))
+            return new { skipped = "recent" };
+
+        Settings.Update(s => s.LastUpdateCheck = DateTime.UtcNow.ToString("o"));
+        var info = Updater.Check();
+        return new { info.Available, info.Latest, info.Current, info.Size, info.Error };
+    }
+
+    private static readonly HashSet<string> Languages = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "ru", "uk", "be", "kk", "uz", "az", "en", "de", "pl", "es", "fr"
+    };
+
     private static object SetSetting(JsonElement? p)
     {
         var key = S(p, "key");
@@ -203,7 +231,7 @@ public static class Api
         {
             switch (key)
             {
-                case "lang": s.Lang = S(p, "value", "ru") == "en" ? "en" : "ru"; break;
+                case "lang": s.Lang = Languages.Contains(S(p, "value", "ru")) ? S(p, "value", "ru") : "ru"; break;
                 case "showExtreme": s.ShowExtreme = B(p, "value"); break;
                 case "autoRestorePoint": s.AutoRestorePoint = B(p, "value"); break;
                 case "monitor3d": s.Monitor3d = B(p, "value"); break;
@@ -211,6 +239,7 @@ public static class Api
                 case "reduced": s.Reduced = B(p, "value"); break;
                 case "wizardDone": s.WizardDone = B(p, "value"); break;
                 case "acceptedRisk": s.AcceptedRisk = B(p, "value"); break;
+                case "autoUpdateCheck": s.AutoUpdateCheck = B(p, "value"); break;
                 case "favorite":
                     {
                         var id = S(p, "value");
@@ -225,7 +254,7 @@ public static class Api
 
     private static object TweakList(JsonElement? p)
     {
-        var lang = Lang;
+        var lang = TextLang;
         var cat = S(p, "cat");
         var risk = S(p, "risk");
         var query = S(p, "q").Trim();
@@ -269,7 +298,7 @@ public static class Api
 
         if (apply && Settings.Data.AutoRestorePoint && defs.Any(x => x.Risk != "safe"))
         {
-            push("progress", new { stage = "restore", percent = 0, total = defs.Count, done = 0 });
+            push("progress", new { stage = "restore", title = PrefersEnglish ? "Creating a restore point" : "Создаю точку восстановления", percent = 0, total = defs.Count, done = 0, phase = "start" });
             var rp = RestorePoint.Create("Klondaik Tweaker: " + DateTime.Now.ToString("dd.MM HH:mm"));
             restorePoint = rp.Ok ? "ok" : rp.Message;
         }
@@ -277,11 +306,27 @@ public static class Api
         int done = 0;
         foreach (var t in defs)
         {
+            var title = PrefersEnglish ? t.En.T : t.Ru.T;
+            push("progress", new { stage = t.Id, title, percent = done * 100 / Math.Max(1, defs.Count), total = defs.Count, done, phase = "start" });
+
             var r = apply ? TweakEngine.Apply(t) : TweakEngine.Revert(t);
             done++;
-            push("progress", new { stage = t.Id, percent = done * 100 / Math.Max(1, defs.Count), total = defs.Count, done });
+
+            var state = TweakEngine.Detect(t);
+            var ok = r.Ok;
+            var error = r.Error;
+
+            if (ok && state == (apply ? TweakState.NotApplied : TweakState.Applied))
+            {
+                ok = false;
+                error = PrefersEnglish
+                    ? "the change did not stick: the system still reports the old value"
+                    : "изменение не удержалось: система по-прежнему показывает прежнее значение";
+            }
+
+            push("progress", new { stage = t.Id, title, percent = done * 100 / Math.Max(1, defs.Count), total = defs.Count, done, phase = "done", ok, error });
             restart |= r.NeedsRestart;
-            results.Add(new { id = t.Id, ok = r.Ok, error = r.Error, state = TweakEngine.Detect(t).ToString().ToLowerInvariant() });
+            results.Add(new { id = t.Id, ok, error, state = state.ToString().ToLowerInvariant() });
         }
 
         return new { results, restart, restorePoint, applied = results.Count };
@@ -299,7 +344,7 @@ public static class Api
 
     private static object Presets()
     {
-        var lang = Lang;
+        var lang = TextLang;
         var groups = new (string Id, string Ru, string En, string DescRu, string DescEn, Func<TweakDef, bool> Match)[]
         {
             ("balanced", "Сбалансированный", "Balanced", "Только безопасные твики: телеметрия, мусор в интерфейсе, отзывчивость", "Safe tweaks only: telemetry, interface clutter, responsiveness", t => t.Risk == "safe"),
@@ -315,8 +360,8 @@ public static class Api
             return new
             {
                 id = g.Id,
-                title = lang == "en" ? g.En : g.Ru,
-                desc = lang == "en" ? g.DescEn : g.DescRu,
+                title = PrefersEnglish ? g.En : g.Ru,
+                desc = PrefersEnglish ? g.DescEn : g.DescRu,
                 count = ids.Length,
                 ids
             };
@@ -325,19 +370,19 @@ public static class Api
 
     private static object WizardQuestions()
     {
-        var lang = Lang;
+        var lang = TextLang;
         return Wizard.Questions().Select(q => new
         {
             id = q.Id,
             multi = q.Multi,
-            title = lang == "en" ? q.En : q.Ru,
-            sub = lang == "en" ? q.SubEn : q.SubRu,
+            title = PrefersEnglish ? q.En : q.Ru,
+            sub = PrefersEnglish ? q.SubEn : q.SubRu,
             when = q.When,
             options = q.Options.Select(o => new
             {
                 id = o.Id,
-                title = lang == "en" ? o.En : o.Ru,
-                hint = lang == "en" ? o.HintEn : o.HintRu
+                title = PrefersEnglish ? o.En : o.Ru,
+                hint = PrefersEnglish ? o.HintEn : o.HintRu
             })
         });
     }
@@ -358,7 +403,7 @@ public static class Api
             }
         }
         var ids = Wizard.Resolve(answers);
-        var lang = Lang;
+        var lang = TextLang;
         var items = ids.Select(id => Catalog.Find(id)).Where(x => x is not null).Cast<TweakDef>()
             .Select(t => TweakEngine.ToView(t, lang)).ToList();
         return new
@@ -376,7 +421,7 @@ public static class Api
 
     private static object JournalList()
     {
-        var lang = Lang;
+        var lang = TextLang;
         return Journal.Entries.OrderByDescending(x => x.Utc).Take(400).Select(e =>
         {
             var def = Catalog.Find(e.TweakId);
@@ -384,7 +429,7 @@ public static class Api
             {
                 id = e.Id,
                 tweakId = e.TweakId,
-                title = def is null ? e.Title : (lang == "en" ? def.En.T : def.Ru.T),
+                title = def is null ? e.Title : (PrefersEnglish ? def.En.T : def.Ru.T),
                 group = e.Group,
                 time = e.Utc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"),
                 reverted = e.Reverted,

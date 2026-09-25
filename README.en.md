@@ -60,7 +60,9 @@ gets the full catalogue of 172 tweaks, each stating what it costs.
   are numbers rather than impressions.
 - **A single portable exe** — 54 MB, no installation, no .NET on the user's
   machine, settings in `%ProgramData%\KlondaikTweaker`.
-- **Russian and English** interface, switched without a restart.
+- **Eleven interface languages**: Russian, Ukrainian, Belarusian, Kazakh, Uzbek,
+  Azerbaijani, English, German, Polish, Spanish and French. The tweak
+  descriptions themselves are still Russian and English.
 
 ## Warning
 

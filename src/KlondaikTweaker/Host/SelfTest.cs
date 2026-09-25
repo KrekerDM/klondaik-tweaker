@@ -70,6 +70,16 @@ public static class SelfTest
             }
             return new { total = Catalog.Db.Tweaks.Count, applied, unavailable };
         });
+        Check("nvidia.bundled", () =>
+        {
+            var bytes = Res.Bytes("vendor/nvidiaProfileInspector.exe");
+            if (bytes is null || bytes.Length < 200 * 1024)
+                throw new Exception("Profile Inspector не вложен в сборку, вкладка NVIDIA работать не будет");
+            if (bytes[0] != 'M' || bytes[1] != 'Z')
+                throw new Exception("вложенный Profile Inspector не похож на программу");
+            return new { kilobytes = bytes.Length / 1024, version = Res.Text("vendor/version.txt").Trim() };
+        });
+
         Check("wizard.questions", () => Api.Handle("wizard.questions", null, Noop));
         Check("wizard.resolve", () => Api.Handle("wizard.resolve", null, Noop));
         Check("services.list", () => ((IEnumerable<object>)Api.Handle("services.list", null, Noop)!).Count());

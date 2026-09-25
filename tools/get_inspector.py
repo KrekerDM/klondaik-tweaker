@@ -3,6 +3,11 @@ import json
 import os
 import shutil
 import sys
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 import urllib.request
 import zipfile
 
