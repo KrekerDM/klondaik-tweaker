@@ -75,8 +75,9 @@ jobs:
       - name: Verify the published exe carries everything it needs
         shell: pwsh
         run: |
-          & dist/KlondaikTweaker.exe --verify-assets
-          if ($LASTEXITCODE -ne 0) { throw "the published exe is missing embedded resources" }
+          $run = Start-Process -FilePath dist/KlondaikTweaker.exe -ArgumentList "--verify-assets" -Wait -PassThru -NoNewWindow
+          if ($run.ExitCode -ne 0) { throw "the published exe is missing embedded resources (exit $($run.ExitCode))" }
+          Write-Host "the published exe carries every required resource"
 
       - uses: actions/upload-artifact@v7
         with:
