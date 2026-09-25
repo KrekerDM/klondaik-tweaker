@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.Win32;
 using System.Globalization;
 
@@ -100,10 +101,18 @@ public static class Reg
         key.SetValue(name ?? "", Materialize(type, value), KindFrom(type));
     }
 
+    private static bool IsPendingDeletion(IOException e) => (uint)e.HResult == 0x800703FA;
+
     public static void Write(string hive, string path, string? name, string? type, string value)
     {
         try
         {
+            WriteDirect(hive, path, name, type, value);
+            return;
+        }
+        catch (IOException pending) when (IsPendingDeletion(pending))
+        {
+            Thread.Sleep(200);
             WriteDirect(hive, path, name, type, value);
             return;
         }

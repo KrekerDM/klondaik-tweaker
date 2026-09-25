@@ -210,7 +210,7 @@ public static class Ti
             var text = "";
             try
             {
-                if (File.Exists(output)) text = File.ReadAllText(output, Encoding.UTF8).Trim();
+                if (File.Exists(output)) text = File.ReadAllText(output, Sh.Console).Trim();
             }
             catch { }
 
