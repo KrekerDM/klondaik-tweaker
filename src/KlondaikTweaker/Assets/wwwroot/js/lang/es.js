@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Impulso para juegos",
   "dash.boostOn": "Impulso activo",
   "dash.boostOff": "Desactivar el impulso",
+  "dash.boostPaused": "servicios pausados",
+  "dash.boostFreed": "liberado",
   "dash.trim": "Liberar memoria",
   "dash.wizard": "Elegir ajustes",
   "dash.cleanNow": "Limpiar la basura",

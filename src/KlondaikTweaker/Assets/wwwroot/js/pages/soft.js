@@ -1,5 +1,5 @@
 import { invoke } from "../bridge.js";
-import { t, getLang } from "../i18n.js";
+import { t, textLang } from "../i18n.js";
 import { h, esc, toast, progress } from "../ui.js";
 
 export default {
@@ -47,7 +47,7 @@ export default {
       }
 
       list.forEach((s) => {
-        const desc = getLang() === "en" ? s.en : s.ru;
+        const desc = textLang() === "en" ? s.en : s.ru;
         const card = h(
           '<div class="card stack-sm" data-id="' + esc(s.id) + '">' +
             '<div class="row" style="gap:6px"><h3 class="grow">' + esc(s.name) + "</h3>" +

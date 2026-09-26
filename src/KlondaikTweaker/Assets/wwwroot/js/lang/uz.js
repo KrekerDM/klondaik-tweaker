@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Oʻyin busti",
   "dash.boostOn": "Bust faol",
   "dash.boostOff": "Bustni oʻchirish",
+  "dash.boostPaused": "xizmat toʻxtatildi",
+  "dash.boostFreed": "boʻshatildi",
   "dash.trim": "Xotirani tozalash",
   "dash.wizard": "Tvaklarni tanlash",
   "dash.cleanNow": "Keraksizni tozalash",

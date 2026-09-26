@@ -1,5 +1,5 @@
 import { invoke } from "../bridge.js";
-import { t, getLang } from "../i18n.js";
+import { t, getLang, textLang } from "../i18n.js";
 import { h, esc, toast, confirmBox, progress } from "../ui.js";
 import { mountToolCards, unmountToolCards } from "../toolcards.js";
 import { pulse } from "../scene.js";
@@ -114,7 +114,7 @@ export default {
 
     const grid = h('<div class="toolgrid"></div>');
     TOOLS.forEach((tool) => {
-      const text = lang === "en" ? tool.en : tool.ru;
+      const text = textLang() === "en" ? tool.en : tool.ru;
       grid.appendChild(
         h(
           '<button class="toolcard" data-tool="' + esc(tool.id) + '">' +
@@ -146,7 +146,7 @@ export default {
       if (!card || card.classList.contains("busy")) return;
       const tool = TOOLS.find((x) => x.id === card.dataset.tool);
       if (!tool) return;
-      const text = getLang() === "en" ? tool.en : tool.ru;
+      const text = textLang() === "en" ? tool.en : tool.ru;
 
       if (tool.confirm) {
         const ok = await confirmBox(text[0], text[1], t("act.run"), true);

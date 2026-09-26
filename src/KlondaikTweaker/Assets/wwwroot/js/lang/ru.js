@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Игровой буст",
   "dash.boostOn": "Буст активен",
   "dash.boostOff": "Выключить буст",
+  "dash.boostPaused": "служб приостановлено",
+  "dash.boostFreed": "освобождено",
   "dash.trim": "Очистить память",
   "dash.wizard": "Подобрать твики",
   "dash.cleanNow": "Очистить мусор",

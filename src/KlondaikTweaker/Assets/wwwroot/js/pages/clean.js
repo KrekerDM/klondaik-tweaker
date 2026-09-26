@@ -1,5 +1,5 @@
 import { invoke } from "../bridge.js";
-import { t, getLang } from "../i18n.js";
+import { t, textLang } from "../i18n.js";
 import { h, esc, bytes, toast, confirmBox, progress } from "../ui.js";
 import { pulse } from "../scene.js";
 
@@ -73,8 +73,8 @@ export default {
 
       list.innerHTML = "";
       data.targets.forEach((target) => {
-        const title = getLang() === "en" ? target.en : target.ru;
-        const desc = getLang() === "en" ? target.descEn : target.descRu;
+        const title = textLang() === "en" ? target.en : target.ru;
+        const desc = textLang() === "en" ? target.descEn : target.descRu;
         const row = h(
           '<div class="item" data-id="' + esc(target.id) + '" data-bytes="' + target.bytes + '">' +
             '<div class="cb' + (target.default && target.bytes > 0 ? " on" : "") + '"></div>' +

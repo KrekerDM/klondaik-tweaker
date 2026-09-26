@@ -141,7 +141,8 @@ export default {
           btn.className = "btn " + (r.active ? "btn-danger" : "btn-primary");
           const note = el.querySelector("[data-boost-note]");
           note.textContent = r.active
-            ? Object.keys(r.services || {}).length + " services paused · " + bytes(r.freedRam) + " freed"
+            ? Object.keys(r.services || {}).length + " " + t("dash.boostPaused") + "  ·  " +
+              bytes(r.freedRam) + " " + t("dash.boostFreed")
             : "";
           if (r.active) pulse(3000);
           toast(r.active ? t("dash.boostOn") : t("msg.reverted"));

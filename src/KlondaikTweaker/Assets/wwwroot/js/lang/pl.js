@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Boost do gier",
   "dash.boostOn": "Boost aktywny",
   "dash.boostOff": "Wyłącz boost",
+  "dash.boostPaused": "usług wstrzymano",
+  "dash.boostFreed": "zwolniono",
   "dash.trim": "Zwolnij pamięć",
   "dash.wizard": "Dobierz tweaki",
   "dash.cleanNow": "Usuń śmieci",

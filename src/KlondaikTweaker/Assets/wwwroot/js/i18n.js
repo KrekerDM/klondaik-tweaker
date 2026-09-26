@@ -27,6 +27,12 @@ export const LANGS = [
 const dict = { ru, uk, be, kk, uz, az, en, de, pl, es, fr };
 let lang = "ru";
 
+const LATIN = new Set(["en", "de", "pl", "es", "fr"]);
+
+export function textLang() {
+  return LATIN.has(lang) ? "en" : "ru";
+}
+
 export function known(code) {
   return Object.prototype.hasOwnProperty.call(dict, code);
 }

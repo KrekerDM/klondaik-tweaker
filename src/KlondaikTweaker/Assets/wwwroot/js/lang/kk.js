@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Ойын бусты",
   "dash.boostOn": "Буст белсенді",
   "dash.boostOff": "Бусты өшіру",
+  "dash.boostPaused": "қызмет тоқтатылды",
+  "dash.boostFreed": "босатылды",
   "dash.trim": "Жадты тазалау",
   "dash.wizard": "Твиктерді таңдау",
   "dash.cleanNow": "Қоқысты тазалау",

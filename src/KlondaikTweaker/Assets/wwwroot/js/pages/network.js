@@ -1,5 +1,5 @@
 import { invoke } from "../bridge.js";
-import { t, getLang } from "../i18n.js";
+import { t, textLang } from "../i18n.js";
 import { h, esc, toast, switchEl, confirmBox } from "../ui.js";
 
 export default {
@@ -121,7 +121,7 @@ export default {
           '<button class="opt' + (selectedDns === d.id ? " on" : "") + '" data-dnsid="' + esc(d.id) + '">' +
             '<div style="min-width:0"><div class="t">' + esc(d.name) +
             (d.ping >= 0 ? ' <span class="mono dim small">' + d.ping + " " + esc(t("unit.ms")) + "</span>" : "") +
-            '</div><div class="h">' + esc(getLang() === "en" ? d.noteEn : d.noteRu) + "</div>" +
+            '</div><div class="h">' + esc(textLang() === "en" ? d.noteEn : d.noteRu) + "</div>" +
             '<div class="h mono">' + esc(d.primary) + " · " + esc(d.secondary) + "</div></div></button>"
         );
         card.addEventListener("click", () => {

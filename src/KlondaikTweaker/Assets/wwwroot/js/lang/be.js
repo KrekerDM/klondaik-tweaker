@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Гульнявы буст",
   "dash.boostOn": "Буст актыўны",
   "dash.boostOff": "Выключыць буст",
+  "dash.boostPaused": "службаў прыпынена",
+  "dash.boostFreed": "вызвалена",
   "dash.trim": "Ачысціць памяць",
   "dash.wizard": "Падабраць твікі",
   "dash.cleanNow": "Ачысціць смецце",

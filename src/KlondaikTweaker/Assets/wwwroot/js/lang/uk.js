@@ -180,6 +180,8 @@ export default {
   "dash.boost": "Ігровий буст",
   "dash.boostOn": "Буст активний",
   "dash.boostOff": "Вимкнути буст",
+  "dash.boostPaused": "служб призупинено",
+  "dash.boostFreed": "звільнено",
   "dash.trim": "Очистити пам’ять",
   "dash.wizard": "Дібрати твіки",
   "dash.cleanNow": "Очистити сміття",

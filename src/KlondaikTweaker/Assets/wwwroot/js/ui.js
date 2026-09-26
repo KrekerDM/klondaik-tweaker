@@ -29,10 +29,12 @@ export function bytes(value) {
 }
 
 export function num(value, digits = 0) {
-  return (Number(value) || 0).toLocaleString(getLang() === "en" ? "en-US" : "ru-RU", {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits
-  });
+  const options = { minimumFractionDigits: digits, maximumFractionDigits: digits };
+  try {
+    return (Number(value) || 0).toLocaleString(getLang(), options);
+  } catch {
+    return (Number(value) || 0).toLocaleString("en-US", options);
+  }
 }
 
 export function duration(seconds) {

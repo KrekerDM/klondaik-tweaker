@@ -1,5 +1,5 @@
 import { invoke, on } from "../bridge.js";
-import { t, getLang } from "../i18n.js";
+import { t, textLang, LANGS } from "../i18n.js";
 import { h, esc, toast, switchEl, progress, bytes } from "../ui.js";
 import { setEnabled } from "../scene.js";
 import { restartExplorer } from "../actions.js";
@@ -32,8 +32,11 @@ export default {
     const langBox = opts.querySelector('[data-row="lang"] [data-ctl]');
     langBox.appendChild(
       h(
-        '<select data-lang><option value="ru"' + (s.lang === "ru" ? " selected" : "") + ">Русский</option>" +
-          '<option value="en"' + (s.lang === "en" ? " selected" : "") + ">English</option></select>"
+        '<select data-lang>' +
+          LANGS.map(
+            (l) => '<option value="' + l.id + '"' + (s.lang === l.id ? " selected" : "") + ">" + esc(l.name) + "</option>"
+          ).join("") +
+          "</select>"
       )
     );
     langBox.querySelector("[data-lang]").addEventListener("change", async (e) => {
@@ -192,7 +195,7 @@ export default {
 
     invoke("app.credits")
       .then((data) => {
-        const lang = getLang();
+        const lang = textLang();
         credits.querySelector("[data-note]").textContent = (data.note && data.note[lang]) || "";
         const box = credits.querySelector("[data-sources]");
         box.innerHTML = "";
