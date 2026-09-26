@@ -1,6 +1,7 @@
 using System.Text;
 using System.Xml.Linq;
 using KlondaikTweaker.Core.Win;
+using KlondaikTweaker.Core.Engine;
 
 namespace KlondaikTweaker.Core.Modules;
 
@@ -76,7 +77,7 @@ public static class Ghosts
             if (!device.Removable)
             {
                 result.Skipped++;
-                if (result.Details.Count < 20) result.Details.Add(device.Name + ": класс не разрешён к удалению");
+                if (result.Details.Count < 20) result.Details.Add(device.Name + Texts.Pick(": класс не разрешён к удалению", ": this device class may not be removed"));
                 continue;
             }
 
@@ -86,8 +87,8 @@ public static class Ghosts
         }
 
         result.Message = result.Changed == 0
-            ? "ничего не удалено"
-            : $"убрано записей: {result.Changed}";
+            ? Texts.Pick("ничего не удалено", "nothing was removed")
+            : Texts.Pick($"убрано записей: {result.Changed}", $"entries removed: {result.Changed}");
         return result;
     }
 

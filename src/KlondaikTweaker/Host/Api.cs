@@ -15,14 +15,9 @@ public static class Api
 
     private static string Lang => Settings.Data.Lang;
 
-    private static readonly HashSet<string> LatinText = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "en", "de", "pl", "es", "fr"
-    };
+    private static bool PrefersEnglish => Texts.English;
 
-    private static bool PrefersEnglish => LatinText.Contains(Lang);
-
-    private static string TextLang => PrefersEnglish ? "en" : "ru";
+    private static string TextLang => Texts.Lang;
 
     private static string S(JsonElement? p, string name, string fallback = "")
     {
@@ -641,20 +636,20 @@ public static class Api
     private static RepairResult MemoryTool()
     {
         var t = HwMonitor.TrimMemory();
-        return new RepairResult { Changed = t.Trimmed, Message = "освобождено " + t.Freed / 1024 / 1024 + " МБ" };
+        return new RepairResult { Changed = t.Trimmed, Message = Texts.Pick("освобождено " + t.Freed / 1024 / 1024 + " МБ", "freed " + t.Freed / 1024 / 1024 + " MB") };
     }
 
     private static RepairResult ExplorerTool()
     {
         Sh.Ps("Stop-Process -Name explorer -Force", 20000);
-        return new RepairResult { Message = "проводник перезапущен" };
+        return new RepairResult { Message = Texts.Pick("проводник перезапущен", "Explorer restarted") };
     }
 
     private static object UpdateInstall(string url, Push push)
     {
         var expected = $"https://github.com/{Updater.Owner}/{Updater.Repo}/releases/download/";
         if (!url.StartsWith(expected, StringComparison.OrdinalIgnoreCase))
-            return new { ok = false, message = "ссылка не принадлежит релизам Klondaik Tweaker" };
+            return new { ok = false, message = Texts.Pick("ссылка не принадлежит релизам Klondaik Tweaker", "the link does not belong to Klondaik Tweaker releases") };
 
         try
         {
@@ -688,7 +683,7 @@ public static class Api
             _ => null
         };
 
-        if (result is null) return new { ok = false, error = "неизвестное действие: " + action };
+        if (result is null) return new { ok = false, error = Texts.Pick("неизвестное действие: " + action, "unknown action: " + action) };
         return new { ok = result.Ok, error = result.Ok ? null : Short(result.All) };
     }
 }

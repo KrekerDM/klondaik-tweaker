@@ -129,7 +129,7 @@ public static class Nic
         if (!Valid(id) || !ValidName(name))
         {
             result.Ok = false;
-            result.Message = "недопустимый адаптер или параметр";
+            result.Message = Texts.Pick("недопустимый адаптер или параметр", "invalid adapter or setting");
             return result;
         }
 
@@ -137,7 +137,7 @@ public static class Nic
         if (known is null)
         {
             result.Ok = false;
-            result.Message = "у этого адаптера нет такого параметра";
+            result.Message = Texts.Pick("у этого адаптера нет такого параметра", "this adapter has no such setting");
             return result;
         }
 
@@ -145,7 +145,7 @@ public static class Nic
             !known.Options.Any(x => x.Value.Equals(value, StringComparison.OrdinalIgnoreCase)))
         {
             result.Ok = false;
-            result.Message = "значение не из списка допустимых";
+            result.Message = Texts.Pick("значение не из списка допустимых", "the value is not one of the allowed options");
             return result;
         }
 
@@ -175,7 +175,7 @@ public static class Nic
 
         Journal.Add(entry);
         result.Changed = 1;
-        result.Message = "параметр записан, нужен перезапуск адаптера";
+        result.Message = Texts.Pick("параметр записан, нужен перезапуск адаптера", "setting written, the adapter needs a restart");
         return result;
     }
 
@@ -185,7 +185,7 @@ public static class Nic
         if (!Valid(id))
         {
             result.Ok = false;
-            result.Message = "адаптер не найден";
+            result.Message = Texts.Pick("адаптер не найден", "adapter not found");
             return result;
         }
 
@@ -206,8 +206,8 @@ public static class Nic
         }
 
         result.Message = result.Changed == 0
-            ? "менять нечего"
-            : $"изменено параметров: {result.Changed}, нужен перезапуск адаптера";
+            ? Texts.Pick("менять нечего", "nothing to change")
+            : Texts.Pick($"изменено параметров: {result.Changed}, нужен перезапуск адаптера", $"settings changed: {result.Changed}, the adapter needs a restart");
         return result;
     }
 
@@ -221,12 +221,12 @@ public static class Nic
     public static RepairResult Restart(string id)
     {
         var adapter = Adapters().FirstOrDefault(x => x.Id == id);
-        if (adapter is null) return new RepairResult { Ok = false, Message = "адаптер не найден" };
+        if (adapter is null) return new RepairResult { Ok = false, Message = Texts.Pick("адаптер не найден", "adapter not found") };
 
         var safe = adapter.Name.Replace("'", "''");
         var r = Sh.Ps($"Get-NetAdapter -InterfaceDescription '{safe}' -ErrorAction Stop | Restart-NetAdapter -Confirm:$false", 120000);
         return r.Ok
-            ? new RepairResult { Changed = 1, Message = "адаптер перезапущен, параметры вступили в силу" }
+            ? new RepairResult { Changed = 1, Message = Texts.Pick("адаптер перезапущен, параметры вступили в силу", "adapter restarted, the settings are in effect") }
             : new RepairResult { Ok = false, Message = Trim(r.All) };
     }
 

@@ -61,14 +61,14 @@ public static class PowerPlans
 
     public static RepairResult Activate(string guid)
     {
-        if (!ValidGuid(guid)) return Bad("неверный идентификатор схемы");
+        if (!ValidGuid(guid)) return Bad(Texts.Pick("неверный идентификатор схемы", "invalid scheme id"));
         var before = Power.ActiveScheme();
         var r = Sh.Run("powercfg.exe", $"/setactive {guid}", 30000);
         if (!r.Ok) return Bad(Trim(r.All));
 
         if (before is not null && !before.Equals(guid, StringComparison.OrdinalIgnoreCase))
         {
-            var entry = new JournalEntry { TweakId = "power.scheme", Title = "Схема электропитания", Group = "power" };
+            var entry = new JournalEntry { TweakId = "power.scheme", Title = Texts.Pick("Схема электропитания", "Power scheme"), Group = "power" };
             entry.Items.Add(new JournalItem
             {
                 Kind = "cmd",
@@ -79,24 +79,24 @@ public static class PowerPlans
             Journal.Add(entry);
         }
 
-        return new RepairResult { Changed = 1, Message = "схема включена" };
+        return new RepairResult { Changed = 1, Message = Texts.Pick("схема включена", "scheme activated") };
     }
 
     public static RepairResult Delete(string guid)
     {
-        if (!ValidGuid(guid)) return Bad("неверный идентификатор схемы");
+        if (!ValidGuid(guid)) return Bad(Texts.Pick("неверный идентификатор схемы", "invalid scheme id"));
         if (string.Equals(Power.ActiveScheme(), guid, StringComparison.OrdinalIgnoreCase))
-            return Bad("нельзя удалить схему, которая сейчас активна");
+            return Bad(Texts.Pick("нельзя удалить схему, которая сейчас активна", "the active scheme cannot be deleted"));
 
         var r = Sh.Run("powercfg.exe", $"/delete {guid}", 30000);
         return r.Ok
-            ? new RepairResult { Changed = 1, Message = "схема удалена" }
+            ? new RepairResult { Changed = 1, Message = Texts.Pick("схема удалена", "scheme deleted") }
             : Bad(Trim(r.All));
     }
 
     public static RepairResult Export(string guid)
     {
-        if (!ValidGuid(guid)) return Bad("неверный идентификатор схемы");
+        if (!ValidGuid(guid)) return Bad(Texts.Pick("неверный идентификатор схемы", "invalid scheme id"));
 
         var scheme = Schemes().FirstOrDefault(x => x.Guid.Equals(guid, StringComparison.OrdinalIgnoreCase));
         var name = Safe(scheme?.Name ?? guid);
@@ -104,21 +104,21 @@ public static class PowerPlans
 
         var r = Sh.Run("powercfg.exe", $"/export \"{file}\" {guid}", 60000);
         return r.Ok
-            ? new RepairResult { Changed = 1, Message = "сохранено в " + Path.GetFileName(file) }
+            ? new RepairResult { Changed = 1, Message = Texts.Pick("сохранено в ", "saved to ") + Path.GetFileName(file) }
             : Bad(Trim(r.All));
     }
 
     public static RepairResult Import(string fileName)
     {
         if (fileName.Contains("..") || fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-            return Bad("недопустимое имя файла");
+            return Bad(Texts.Pick("недопустимое имя файла", "invalid file name"));
 
         var file = Path.Combine(Folder, fileName);
-        if (!File.Exists(file)) return Bad("файл не найден в папке схем");
+        if (!File.Exists(file)) return Bad(Texts.Pick("файл не найден в папке схем", "the file is not in the schemes folder"));
 
         var r = Sh.Run("powercfg.exe", $"/import \"{file}\"", 60000);
         return r.Ok
-            ? new RepairResult { Changed = 1, Message = "схема добавлена в список" }
+            ? new RepairResult { Changed = 1, Message = Texts.Pick("схема добавлена в список", "scheme added to the list") }
             : Bad(Trim(r.All));
     }
 
@@ -136,7 +136,7 @@ public static class PowerPlans
         var entry = new JournalEntry
         {
             TweakId = "power.unhide",
-            Title = "Скрытые параметры электропитания",
+            Title = Texts.Pick("Скрытые параметры электропитания", "Hidden power settings"),
             Group = "power"
         };
 
@@ -166,8 +166,8 @@ public static class PowerPlans
 
         if (entry.Items.Count > 0) Journal.Add(entry);
         result.Message = result.Changed == 0
-            ? "скрытых параметров не осталось"
-            : $"открыто параметров: {result.Changed}";
+            ? Texts.Pick("скрытых параметров не осталось", "no hidden settings are left")
+            : Texts.Pick($"открыто параметров: {result.Changed}", $"settings revealed: {result.Changed}");
         return result;
     }
 

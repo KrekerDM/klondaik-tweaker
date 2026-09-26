@@ -124,12 +124,12 @@ public static class Features
         if (string.IsNullOrWhiteSpace(name) || name.Any(c => !char.IsLetterOrDigit(c) && c != '-' && c != '_' && c != '.'))
         {
             result.Ok = false;
-            result.Message = "недопустимое имя компонента";
+            result.Message = Texts.Pick("недопустимое имя компонента", "invalid feature name");
             return result;
         }
 
         var meta = Db.Features.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        var title = meta?.Ru ?? name;
+        var title = meta is null ? name : Texts.Pick(meta.Ru, meta.En);
 
         var cmd = enable
             ? $"Enable-WindowsOptionalFeature -Online -FeatureName '{name}' -NoRestart -All -ErrorAction Stop"
@@ -155,7 +155,7 @@ public static class Features
         Journal.Add(entry);
 
         result.Changed = 1;
-        result.Message = enable ? "компонент включён" : "компонент отключён";
+        result.Message = enable ? Texts.Pick("компонент включён", "feature enabled") : Texts.Pick("компонент отключён", "feature disabled");
         if (r.All.Contains("restart", StringComparison.OrdinalIgnoreCase)) result.Details.Add("restart");
         return result;
     }

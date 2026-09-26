@@ -132,7 +132,7 @@ public static class Irq
             if (t < 0 || t > 63)
             {
                 result.Ok = false;
-                result.Message = "номер потока вне допустимого диапазона";
+                result.Message = Texts.Pick("номер потока вне допустимого диапазона", "the thread number is out of range");
                 return result;
             }
             mask |= 1UL << t;
@@ -142,7 +142,7 @@ public static class Irq
         if (device is null)
         {
             result.Ok = false;
-            result.Message = "устройство не найдено";
+            result.Message = Texts.Pick("устройство не найдено", "device not found");
             return result;
         }
 
@@ -151,7 +151,7 @@ public static class Irq
         if (mask == 0 || (mask & ~allowed) != 0)
         {
             result.Ok = false;
-            result.Message = "маска указывает на потоки, которых нет в этом процессоре";
+            result.Message = Texts.Pick("маска указывает на потоки, которых нет в этом процессоре", "the mask points at threads this processor does not have");
             return result;
         }
 
@@ -180,7 +180,7 @@ public static class Irq
 
         if (entry.Items.Count > 0) Journal.Add(entry);
         result.Changed = 1;
-        result.Message = "прерывания привязаны, изменение вступит в силу после перезагрузки";
+        result.Message = Texts.Pick("прерывания привязаны, изменение вступит в силу после перезагрузки", "interrupts pinned, the change takes effect after a restart");
         return result;
     }
 
@@ -193,7 +193,7 @@ public static class Irq
         {
             if (!Reg.KeyExists("HKLM", path))
             {
-                result.Message = "у устройства и так нет привязки";
+                result.Message = Texts.Pick("у устройства и так нет привязки", "the device has no affinity set anyway");
                 return result;
             }
 
@@ -214,7 +214,7 @@ public static class Irq
 
             if (entry.Items.Count > 0) Journal.Add(entry);
             result.Changed = 1;
-            result.Message = "привязка снята, изменение вступит в силу после перезагрузки";
+            result.Message = Texts.Pick("привязка снята, изменение вступит в силу после перезагрузки", "affinity cleared, the change takes effect after a restart");
         }
         catch (Exception ex)
         {

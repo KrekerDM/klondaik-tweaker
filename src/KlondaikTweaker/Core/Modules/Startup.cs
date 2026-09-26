@@ -1,4 +1,5 @@
 using KlondaikTweaker.Core.Win;
+using KlondaikTweaker.Core.Engine;
 
 namespace KlondaikTweaker.Core.Modules;
 
@@ -156,18 +157,19 @@ public static class Startup
     public static (bool Ok, string Message, string? Id) Add(string raw)
     {
         var path = (raw ?? "").Trim().Trim('"');
-        if (path.Length == 0) return (false, "путь пустой", null);
+        if (path.Length == 0) return (false, Texts.Pick("путь пустой", "the path is empty"), null);
 
         try { path = Environment.ExpandEnvironmentVariables(path); } catch { }
-        try { path = Path.GetFullPath(path); } catch { return (false, "путь не разобран", null); }
+        try { path = Path.GetFullPath(path); } catch { return (false, Texts.Pick("путь не разобран", "the path could not be parsed"), null); }
 
-        if (Directory.Exists(path)) return (false, "это папка, а не программа", null);
-        if (!File.Exists(path)) return (false, "файл не найден", null);
+        if (Directory.Exists(path)) return (false, Texts.Pick("это папка, а не программа", "this is a folder, not a program"), null);
+        if (!File.Exists(path)) return (false, Texts.Pick("файл не найден", "file not found"), null);
 
         var ext = Path.GetExtension(path).ToLowerInvariant();
         if (ext == ".lnk") return AddShortcut(path);
         if (ext is not (".exe" or ".bat" or ".cmd" or ".com"))
-            return (false, "можно добавить программу или ярлык, а не " + (ext.Length > 1 ? ext[1..] : "такой файл"), null);
+            return (false, Texts.Pick("можно добавить программу или ярлык, а не ", "only a program or a shortcut can be added, not ")
+                + (ext.Length > 1 ? ext[1..] : Texts.Pick("такой файл", "this kind of file")), null);
 
         var key = RunKeys[0];
         var taken = Reg.Values(key.Hive, key.Path).Select(x => x.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -176,16 +178,16 @@ public static class Startup
         try { Reg.Write(key.Hive, key.Path, name, "sz", "\"" + path + "\""); }
         catch (Exception e) { return (false, e.Message, null); }
 
-        return (true, name + " добавлена в автозагрузку", key.Hive + "|" + key.Path + "|" + name);
+        return (true, name + Texts.Pick(" добавлена в автозагрузку", " added to startup"), key.Hive + "|" + key.Path + "|" + name);
     }
 
     private static (bool Ok, string Message, string? Id) AddShortcut(string path)
     {
         var dir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-        if (dir.Length == 0 || !Directory.Exists(dir)) return (false, "папка автозагрузки не найдена", null);
+        if (dir.Length == 0 || !Directory.Exists(dir)) return (false, Texts.Pick("папка автозагрузки не найдена", "the startup folder was not found"), null);
 
         if (string.Equals(Path.GetDirectoryName(path), dir, StringComparison.OrdinalIgnoreCase))
-            return (false, "ярлык уже лежит в автозагрузке", null);
+            return (false, Texts.Pick("ярлык уже лежит в автозагрузке", "the shortcut is already in startup"), null);
 
         var name = Unique(Path.GetFileNameWithoutExtension(path), x => File.Exists(Path.Combine(dir, x + ".lnk")));
         var target = Path.Combine(dir, name + ".lnk");
@@ -193,7 +195,7 @@ public static class Startup
         try { File.Copy(path, target); }
         catch (Exception e) { return (false, e.Message, null); }
 
-        return (true, name + " добавлен в автозагрузку", "file|" + target);
+        return (true, name + Texts.Pick(" добавлен в автозагрузку", " added to startup"), "file|" + target);
     }
 
     private static string Unique(string basis, Func<string, bool> taken)

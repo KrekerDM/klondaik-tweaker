@@ -55,10 +55,12 @@ public static class Nvidia
 
         byte[]? bytes;
         try { bytes = Res.Bytes("vendor/" + Exe); }
-        catch (Exception e) { return "не удалось прочитать вложенный файл: " + Trim(e.Message); }
+        catch (Exception e) { return Texts.Pick("не удалось прочитать вложенный файл: ", "cannot read the embedded file: ") + Trim(e.Message); }
 
         if (bytes is null || bytes.Length < 1024)
-            return "в этой сборке нет Profile Inspector. Скачайте его с github.com/Orbmu2k/nvidiaProfileInspector и положите рядом: " + ToolPath;
+            return Texts.Pick(
+                "в этой сборке нет Profile Inspector. Скачайте его с github.com/Orbmu2k/nvidiaProfileInspector и положите рядом: ",
+                "this build carries no Profile Inspector. Download it from github.com/Orbmu2k/nvidiaProfileInspector and put it next to: ") + ToolPath;
 
         try
         {
@@ -70,10 +72,10 @@ public static class Nvidia
         }
         catch (Exception e)
         {
-            return "не удалось записать файл в " + Folder + ": " + Trim(e.Message);
+            return Texts.Pick("не удалось записать файл в ", "cannot write the file to ") + Folder + ": " + Trim(e.Message);
         }
 
-        return File.Exists(ToolPath) ? null : "файл не появился в " + Folder;
+        return File.Exists(ToolPath) ? null : Texts.Pick("файл не появился в ", "the file did not appear in ") + Folder;
     }
 
     public static RepairResult Export()
@@ -86,24 +88,24 @@ public static class Nvidia
 
         var fresh = Directory.GetFiles(Folder, "*.nip").FirstOrDefault(x => !before.Contains(x));
         return fresh is null
-            ? new RepairResult { Message = "изменённых профилей не нашлось, сохранять нечего" }
-            : new RepairResult { Changed = 1, Message = "сохранено: " + Path.GetFileName(fresh) };
+            ? new RepairResult { Message = Texts.Pick("изменённых профилей не нашлось, сохранять нечего", "no customized profiles found, nothing to save") }
+            : new RepairResult { Changed = 1, Message = Texts.Pick("сохранено: ", "saved: ") + Path.GetFileName(fresh) };
     }
 
     public static RepairResult Import(string fileName)
     {
         if (fileName.Contains("..") || fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-            return Bad("недопустимое имя файла");
+            return Bad(Texts.Pick("недопустимое имя файла", "invalid file name"));
         if (!fileName.EndsWith(".nip", StringComparison.OrdinalIgnoreCase))
-            return Bad("нужен файл .nip");
+            return Bad(Texts.Pick("нужен файл .nip", "a .nip file is required"));
 
         var file = Path.Combine(Folder, fileName);
-        if (!File.Exists(file)) return Bad("файл не найден в папке профилей");
+        if (!File.Exists(file)) return Bad(Texts.Pick("файл не найден в папке профилей", "the file is not in the profiles folder"));
         if (Ensure() is { } problem) return Bad(problem);
 
         var r = Sh.Run(ToolPath, $"-silentImport \"{file}\"", 180000);
         return r.Ok
-            ? new RepairResult { Changed = 1, Message = "профиль применён к драйверу" }
+            ? new RepairResult { Changed = 1, Message = Texts.Pick("профиль применён к драйверу", "profile applied to the driver") }
             : Bad(Trim(r.All));
     }
 
@@ -111,7 +113,7 @@ public static class Nvidia
     {
         if (Ensure() is { } problem) return Bad(problem);
         Sh.OpenExternal(ToolPath);
-        return new RepairResult { Message = "окно Profile Inspector открыто" };
+        return new RepairResult { Message = Texts.Pick("окно Profile Inspector открыто", "the Profile Inspector window is open") };
     }
 
     private static RepairResult Bad(string message) => new() { Ok = false, Message = message };

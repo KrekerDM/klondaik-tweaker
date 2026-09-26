@@ -131,8 +131,8 @@ public sealed class MainForm : Form
 
         using var dialog = new OpenFileDialog
         {
-            Title = "Что добавить в автозагрузку",
-            Filter = "Программы и ярлыки|*.exe;*.lnk;*.bat;*.cmd;*.com|Все файлы|*.*",
+            Title = Texts.Pick("Что добавить в автозагрузку", "What to add to startup"),
+            Filter = Texts.Pick("Программы и ярлыки", "Programs and shortcuts") + "|*.exe;*.lnk;*.bat;*.cmd;*.com|" + Texts.Pick("Все файлы", "All files") + "|*.*",
             CheckFileExists = true,
             Multiselect = false
         };
@@ -208,7 +208,7 @@ public sealed class MainForm : Form
         catch (Exception ex)
         {
             Program.Log(ex);
-            MessageBox.Show("Не удалось запустить интерфейс: " + ex.Message, "Klondaik Tweaker");
+            MessageBox.Show(Texts.Pick("Не удалось запустить интерфейс: ", "Could not start the interface: ") + ex.Message, "Klondaik Tweaker");
             Close();
         }
     }

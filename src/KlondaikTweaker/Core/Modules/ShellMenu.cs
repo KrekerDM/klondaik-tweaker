@@ -16,7 +16,7 @@ public static class ShellMenu
 
     private static string Exe => Environment.ProcessPath ?? "";
 
-    private static bool Ru => Settings.Data.Lang != "en";
+    private static bool Ru => !Texts.English;
 
     public static bool TiInstalled => Reg.KeyExists("HKLM", $@"{Classes}\*\shell\{TiVerb}");
 

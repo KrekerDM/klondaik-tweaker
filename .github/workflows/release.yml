@@ -50,6 +50,17 @@ jobs:
         run: |
           git diff --exit-code -- src/KlondaikTweaker/Assets/Data
 
+      - name: Fail if the languages disagree anywhere
+        working-directory: tools
+        shell: pwsh
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python check_lang.py
+          if ($LASTEXITCODE -ne 0) { throw "the language lists or dictionaries do not line up" }
+          python check_texts.py
+          if ($LASTEXITCODE -ne 0) { throw "the backend would answer a non-Russian user in Russian" }
+
       - name: Fail if the bundled tools are missing
         shell: pwsh
         run: |

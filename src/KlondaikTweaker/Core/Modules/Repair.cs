@@ -45,7 +45,7 @@ public static class Repair
     public static RepairResult RestoreServices()
     {
         var result = new RepairResult();
-        var entry = new JournalEntry { TweakId = "repair.services", Title = "Службы по умолчанию", Group = "repair" };
+        var entry = new JournalEntry { TweakId = "repair.services", Title = Texts.Pick("Службы по умолчанию", "Default services"), Group = "repair" };
 
         foreach (var (name, mode) in Db.ServiceDefaults)
         {
@@ -68,15 +68,15 @@ public static class Repair
 
         if (entry.Items.Count > 0) Journal.Add(entry);
         result.Message = result.Changed == 0
-            ? "все службы уже в значениях по умолчанию"
-            : $"возвращено служб: {result.Changed}";
+            ? Texts.Pick("все службы уже в значениях по умолчанию", "every service already has its default value")
+            : Texts.Pick($"возвращено служб: {result.Changed}", $"services restored: {result.Changed}");
         return result;
     }
 
     public static RepairResult RestoreDefender()
     {
         var result = new RepairResult();
-        var entry = new JournalEntry { TweakId = "repair.defender", Title = "Защитник Windows", Group = "repair" };
+        var entry = new JournalEntry { TweakId = "repair.defender", Title = Texts.Pick("Защитник Windows", "Windows Defender"), Group = "repair" };
 
         var policyKeys = new[]
         {
@@ -119,14 +119,16 @@ public static class Repair
         }
 
         if (entry.Items.Count > 0) Journal.Add(entry);
-        result.Message = result.Changed == 0 ? "Защитник не был отключён" : $"снято ограничений: {result.Changed}";
+        result.Message = result.Changed == 0
+            ? Texts.Pick("Защитник не был отключён", "Defender was not turned off")
+            : Texts.Pick($"снято ограничений: {result.Changed}", $"restrictions lifted: {result.Changed}");
         return result;
     }
 
     public static RepairResult RestoreUpdates()
     {
         var result = new RepairResult();
-        var entry = new JournalEntry { TweakId = "repair.updates", Title = "Центр обновления", Group = "repair" };
+        var entry = new JournalEntry { TweakId = "repair.updates", Title = Texts.Pick("Центр обновления", "Windows Update"), Group = "repair" };
 
         foreach (var path in new[] { @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU", @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" })
         {
@@ -160,7 +162,9 @@ public static class Repair
         }
 
         if (entry.Items.Count > 0) Journal.Add(entry);
-        result.Message = result.Changed == 0 ? "обновления не были заблокированы" : $"снято ограничений: {result.Changed}";
+        result.Message = result.Changed == 0
+            ? Texts.Pick("обновления не были заблокированы", "updates were not blocked")
+            : Texts.Pick($"снято ограничений: {result.Changed}", $"restrictions lifted: {result.Changed}");
         return result;
     }
 
@@ -191,7 +195,7 @@ public static class Repair
         steps.Add("re-register: " + (reregister.Ok ? "ok" : Trim(reregister.All)));
 
         result.Details = steps;
-        result.Message = "Store переустановлен, кэш сброшен";
+        result.Message = Texts.Pick("Store переустановлен, кэш сброшен", "Store re-registered, cache cleared");
         return result;
     }
 
@@ -208,7 +212,7 @@ public static class Repair
                 Svc.Start("WSearch");
             }
             result.Changed = 1;
-            result.Message = "индекс поиска будет перестроен";
+            result.Message = Texts.Pick("индекс поиска будет перестроен", "the search index will be rebuilt");
         }
         catch (Exception ex)
         {
@@ -239,7 +243,7 @@ public static class Repair
 
         HostsFile.Unblock(NetworkTools.TelemetryHosts);
         result.Details = steps;
-        result.Message = "сетевой стек сброшен, нужна перезагрузка";
+        result.Message = Texts.Pick("сетевой стек сброшен, нужна перезагрузка", "network stack reset, a restart is needed");
         return result;
     }
 
@@ -251,7 +255,7 @@ public static class Repair
             var dir = Path.Combine(Path.GetTempPath(), "GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}");
             Directory.CreateDirectory(dir);
             Sh.OpenExternal(dir);
-            result.Message = "панель всех настроек открыта";
+            result.Message = Texts.Pick("панель всех настроек открыта", "the all-settings panel is open");
         }
         catch (Exception ex)
         {
@@ -264,7 +268,7 @@ public static class Repair
     public static RepairResult FlushDns()
     {
         var r = Sh.Run("ipconfig.exe", "/flushdns", 20000);
-        return new RepairResult { Ok = r.Ok, Message = r.Ok ? "кэш DNS очищен" : Trim(r.All) };
+        return new RepairResult { Ok = r.Ok, Message = r.Ok ? Texts.Pick("кэш DNS очищен", "DNS cache cleared") : Trim(r.All) };
     }
 
     private static string Trim(string s)

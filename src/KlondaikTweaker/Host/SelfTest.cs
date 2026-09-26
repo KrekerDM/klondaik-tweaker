@@ -138,6 +138,38 @@ public static class SelfTest
             return new { checkedItems = RequiredAssetCount, languages = Api.Languages.Count, total = Res.All().Count() };
         });
 
+        Check("texts.rule", () =>
+        {
+            var expected = new Dictionary<string, string>
+            {
+                ["ru"] = "ru", ["uk"] = "ru", ["be"] = "ru", ["kk"] = "ru", ["uz"] = "ru", ["az"] = "ru",
+                ["en"] = "en", ["de"] = "en", ["pl"] = "en", ["es"] = "en", ["fr"] = "en"
+            };
+
+            if (expected.Count != Api.Languages.Count)
+                throw new Exception("языков " + Api.Languages.Count + ", а правило знает про " + expected.Count);
+
+            var was = Settings.Data.Lang;
+            var wrong = new List<string>();
+            try
+            {
+                foreach (var (code, wanted) in expected)
+                {
+                    Settings.Update(s => s.Lang = code);
+                    if (Texts.Lang != wanted) wrong.Add(code + " -> " + Texts.Lang);
+                    if (Texts.Pick("русский", "english") != (wanted == "en" ? "english" : "русский"))
+                        wrong.Add(code + ": Pick выбрал не тот язык");
+                }
+            }
+            finally
+            {
+                Settings.Update(s => s.Lang = was);
+            }
+
+            if (wrong.Count > 0) throw new Exception(string.Join("; ", wrong));
+            return new { languages = expected.Count, restored = Settings.Data.Lang };
+        });
+
         Check("wizard.questions", () => Api.Handle("wizard.questions", null, Noop));
         Check("wizard.resolve", () => Api.Handle("wizard.resolve", null, Noop));
         Check("services.list", () => ((IEnumerable<object>)Api.Handle("services.list", null, Noop)!).Count());

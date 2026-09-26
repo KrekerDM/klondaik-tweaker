@@ -101,7 +101,7 @@ public static class TaskGroups
     public static RepairResult SetGroup(string id, bool enable, string lang)
     {
         var meta = Db.Groups.FirstOrDefault(x => x.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
-        if (meta is null) return new RepairResult { Ok = false, Message = "группа не найдена: " + id };
+        if (meta is null) return new RepairResult { Ok = false, Message = Texts.Pick("группа не найдена: ", "group not found: ") + id };
 
         var title = lang == "en" ? meta.En : meta.Ru;
         var entry = new JournalEntry { TweakId = "tasks." + meta.Id, Title = title, Group = "tasks" };
@@ -127,8 +127,12 @@ public static class TaskGroups
         if (entry.Items.Count > 0) Journal.Add(entry);
 
         result.Message = result.Changed == 0
-            ? (result.Details.Count > 0 ? "не удалось переключить задачи" : "уже в нужном состоянии")
-            : (enable ? $"включено задач: {result.Changed}" : $"отключено задач: {result.Changed}");
+            ? (result.Details.Count > 0
+                ? Texts.Pick("не удалось переключить задачи", "the tasks could not be switched")
+                : Texts.Pick("уже в нужном состоянии", "already in the state you asked for"))
+            : (enable
+                ? Texts.Pick($"включено задач: {result.Changed}", $"tasks enabled: {result.Changed}")
+                : Texts.Pick($"отключено задач: {result.Changed}", $"tasks disabled: {result.Changed}"));
         if (result.Changed == 0 && result.Details.Count > 0) result.Ok = false;
         return result;
     }
@@ -137,13 +141,13 @@ public static class TaskGroups
     {
         var known = Db.Groups.SelectMany(g => g.Paths)
             .Any(p => p.Equals(path, StringComparison.OrdinalIgnoreCase));
-        if (!known) return new RepairResult { Ok = false, Message = "задача не входит в известные группы" };
+        if (!known) return new RepairResult { Ok = false, Message = Texts.Pick("задача не входит в известные группы", "the task is not part of any known group") };
 
         var state = Tasks.GetEnabled(path);
-        if (state is null) return new RepairResult { Ok = false, Message = "задача не найдена в планировщике" };
+        if (state is null) return new RepairResult { Ok = false, Message = Texts.Pick("задача не найдена в планировщике", "the task is not in the scheduler") };
 
         if (!Tasks.SetEnabled(path, enable))
-            return new RepairResult { Ok = false, Message = "не удалось переключить задачу" };
+            return new RepairResult { Ok = false, Message = Texts.Pick("не удалось переключить задачу", "the task could not be switched") };
 
         var entry = new JournalEntry
         {
@@ -154,6 +158,6 @@ public static class TaskGroups
         entry.Items.Add(new JournalItem { Kind = "task", Target = path, PrevValue = state.Value ? "on" : "off" });
         Journal.Add(entry);
 
-        return new RepairResult { Changed = 1, Message = enable ? "задача включена" : "задача отключена" };
+        return new RepairResult { Changed = 1, Message = enable ? Texts.Pick("задача включена", "task enabled") : Texts.Pick("задача отключена", "task disabled") };
     }
 }

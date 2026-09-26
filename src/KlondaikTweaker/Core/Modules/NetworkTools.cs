@@ -199,7 +199,7 @@ public static class NetworkTools
             var r = Sh.Run(exe, args, 60000);
             if (!r.Ok) errors.Add(Path.GetFileName(exe) + " " + args);
         }
-        return errors.Count == 0 ? "ok" : "проблемы: " + string.Join(", ", errors);
+        return errors.Count == 0 ? "ok" : Texts.Pick("проблемы: ", "problems: ") + string.Join(", ", errors);
     }
 
     public static List<object> PingTargets()
