@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Autostart",
   "start.sub": "Alles, was mit Windows startet",
-  "start.dropTitle": "Programm oder Verknüpfung hierher ziehen",
+  "start.dropTitle": "Eigenes Programm hinzufügen",
   "start.dropHint": "Es startet dann bei der Anmeldung. Angenommen werden exe, bat, cmd und Verknüpfungen; entfernen können Sie es in der Liste unten.",
   "start.pick": "Datei wählen",
   "start.src.run.hkcu": "Registry: dieser Benutzer",

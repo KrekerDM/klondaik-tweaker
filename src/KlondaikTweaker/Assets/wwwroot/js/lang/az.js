@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Avtoyüklənmə",
   "start.sub": "Windows ilə birlikdə işə düşən hər şey",
-  "start.dropTitle": "Proqramı və ya qısayolu bura sürüşdürün",
+  "start.dropTitle": "Öz proqramınızı əlavə edin",
   "start.dropHint": "O, sistemə girəndə işə düşəcək. exe, bat, cmd və qısayollar qəbul edilir; aşağıdakı siyahıdan silmək olar.",
   "start.pick": "Fayl seç",
   "start.src.run.hkcu": "Reyestr: bu istifadəçi",

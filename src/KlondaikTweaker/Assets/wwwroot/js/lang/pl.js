@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Autostart",
   "start.sub": "Wszystko, co startuje razem z Windows",
-  "start.dropTitle": "Przeciągnij tutaj program albo skrót",
+  "start.dropTitle": "Dodaj własny program",
   "start.dropHint": "Będzie uruchamiany przy logowaniu. Przyjmujemy exe, bat, cmd i skróty; usunąć można na liście poniżej.",
   "start.pick": "Wybierz plik",
   "start.src.run.hkcu": "Rejestr: ten użytkownik",

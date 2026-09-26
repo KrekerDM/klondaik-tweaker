@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Inicio automático",
   "start.sub": "Todo lo que arranca junto con Windows",
-  "start.dropTitle": "Arrastra aquí un programa o un acceso directo",
+  "start.dropTitle": "Añadir tu propio programa",
   "start.dropHint": "Se lanzará al iniciar sesión. Se admiten exe, bat, cmd y accesos directos; para quitarlo, usa la lista de abajo.",
   "start.pick": "Elegir archivo",
   "start.src.run.hkcu": "Registro: este usuario",

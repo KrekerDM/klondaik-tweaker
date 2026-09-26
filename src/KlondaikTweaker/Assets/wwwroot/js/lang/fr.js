@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Démarrage automatique",
   "start.sub": "Tout ce qui démarre en même temps que Windows",
-  "start.dropTitle": "Glissez ici un programme ou un raccourci",
+  "start.dropTitle": "Ajouter votre programme",
   "start.dropHint": "Il se lancera à l’ouverture de session. Les fichiers exe, bat, cmd et les raccourcis sont acceptés ; pour l’enlever, utilisez la liste ci-dessous.",
   "start.pick": "Choisir un fichier",
   "start.src.run.hkcu": "Registre : cet utilisateur",

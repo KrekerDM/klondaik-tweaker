@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Startup",
   "start.sub": "Everything that launches with Windows",
-  "start.dropTitle": "Drop a program or a shortcut here",
+  "start.dropTitle": "Add your own program",
   "start.dropHint": "It will start when you sign in. Takes exe, bat, cmd and shortcuts; remove it from the list below.",
   "start.pick": "Choose a file",
   "start.src.run.hkcu": "Registry: this user",

@@ -49,9 +49,62 @@ public sealed class MainForm : Form
         FormClosing += OnClosing;
         Api.QuitRequested += OnQuitRequested;
         Api.FilesRequested = PickFiles;
-        AllowDrop = true;
+        AllowDrop = false;
+        HandleCreated += (_, _) => AcceptDropsFromLowerIntegrity();
         DragEnter += OnDragEnter;
         DragDrop += OnDragDrop;
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool ChangeWindowMessageFilterEx(IntPtr window, uint message, uint action, IntPtr info);
+
+    [DllImport("shell32.dll")]
+    private static extern void DragAcceptFiles(IntPtr window, bool accept);
+
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+    private static extern uint DragQueryFileW(IntPtr drop, uint index, System.Text.StringBuilder? file, uint size);
+
+    [DllImport("shell32.dll")]
+    private static extern void DragFinish(IntPtr drop);
+
+    private const int WmDropFiles = 0x0233;
+
+    private void AcceptDropsFromLowerIntegrity()
+    {
+        if (!IsHandleCreated) return;
+
+        const uint allow = 1;
+        foreach (var message in new uint[] { WmDropFiles, 0x004A, 0x0049 })
+        {
+            try { ChangeWindowMessageFilterEx(Handle, message, allow, IntPtr.Zero); }
+            catch { }
+        }
+
+        try { DragAcceptFiles(Handle, true); }
+        catch { }
+    }
+
+    private void TakeDroppedFiles(IntPtr drop)
+    {
+        try
+        {
+            var count = DragQueryFileW(drop, 0xFFFFFFFF, null, 0);
+            var files = new List<string>();
+
+            for (uint i = 0; i < count; i++)
+            {
+                var length = DragQueryFileW(drop, i, null, 0);
+                var buffer = new System.Text.StringBuilder((int)length + 1);
+                if (DragQueryFileW(drop, i, buffer, (uint)buffer.Capacity) > 0) files.Add(buffer.ToString());
+            }
+
+            if (files.Count > 0 && _ready) Push("drop", new { files = files.ToArray() });
+        }
+        catch (Exception ex) { Program.Log(ex); }
+        finally
+        {
+            try { DragFinish(drop); } catch { }
+        }
     }
 
     private static string[] Dropped(IDataObject? data)
@@ -284,6 +337,12 @@ public sealed class MainForm : Form
     {
         const int WM_NCHITTEST = 0x0084;
         const int WM_GETMINMAXINFO = 0x0024;
+
+        if (m.Msg == WmDropFiles)
+        {
+            TakeDroppedFiles(m.WParam);
+            return;
+        }
 
         if (m.Msg == WM_NCHITTEST && WindowState == FormWindowState.Normal)
         {

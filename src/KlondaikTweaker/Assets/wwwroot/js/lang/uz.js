@@ -274,7 +274,7 @@ export default {
 
   "start.title": "Avtoishga tushirish",
   "start.sub": "Windows bilan birga ishga tushadigan hamma narsa",
-  "start.dropTitle": "Dastur yoki yorliqni shu yerga tashlang",
+  "start.dropTitle": "Oʻz dasturingizni qoʻshish",
   "start.dropHint": "U tizimga kirganda ishga tushadi. exe, bat, cmd va yorliqlar qabul qilinadi; quyidagi roʻyxatdan olib tashlash mumkin.",
   "start.pick": "Fayl tanlash",
   "start.src.run.hkcu": "Reyestr: shu foydalanuvchi",

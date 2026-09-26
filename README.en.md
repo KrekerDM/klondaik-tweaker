@@ -53,9 +53,8 @@ gets the full catalogue of 172 tweaks, each stating what it costs.
 - **NVIDIA panel** — driver profiles through a bundled Profile Inspector, with
   export and import.
 - **Cleanup, startup, services, built-in apps, network** — every action is
-  journalled too. You can add your own program to startup by dropping it on the
-  page, and cleanup has its own row for the folders of apps you removed long
-  ago.
+  journalled too. You can add your own program to startup by picking a file,
+  and cleanup has its own row for the folders of apps you removed long ago.
 - **Benchmark** — CPU, memory, disk and responsiveness, so "before" and "after"
   are numbers rather than impressions.
 - **A single portable exe** — 54 MB, no installation, no .NET on the user's
@@ -159,9 +158,8 @@ stock start mode.
 ## Startup
 
 Registry keys, startup folders and scheduled tasks in one list, each saying
-where it comes from. You can add your own program by dropping it on the page or
-picking a file: exe and bat go in as a registry value, a shortcut is copied
-into the startup folder.
+where it comes from. You can add your own program by picking a file: exe and
+bat go in as a registry value, a shortcut is copied into the startup folder.
 
 ![Startup](docs/screenshot-startup-en.png)
 
