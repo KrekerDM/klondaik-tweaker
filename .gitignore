@@ -8,5 +8,5 @@ out/
 __pycache__/
 *.pyc
 otherstweaks/
-frostpane-main.zip
+*-main.zip
 src/KlondaikTweaker/Assets/vendor/

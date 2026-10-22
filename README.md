@@ -346,7 +346,7 @@ python docs\make_screenshots.py
 Xyueta), All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
-ios1ph optimization, Lodd (MIT, krekerdm),
+ios1ph optimization,
 [three.js](https://github.com/mrdoob/three.js) (MIT),
 [IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
 
@@ -355,5 +355,4 @@ ios1ph optimization, Lodd (MIT, krekerdm),
 MIT — см. [LICENSE](LICENSE), включая отдельный отказ от ответственности за
 последствия изменения системы.
 
-Внешний вид следует дизайн-системе Lodd, тема Module. Шрифты IBM Plex
-(SIL OFL 1.1), three.js (MIT).
+Шрифты IBM Plex (SIL OFL 1.1), three.js (MIT).

@@ -52,15 +52,6 @@ SOURCES = [
         "en": "A collection of registry tweaks and scripts used to cross-check performance and memory values."
     },
     {
-        "id": "lodd",
-        "name": "Lodd",
-        "authors": "krekerdm",
-        "license": "MIT",
-        "url": "https://github.com/krekerdm/lodd",
-        "ru": "Дизайн-система, на которой построен интерфейс: тема Module — волосяные линейки, прямые углы, два начертания, один акцентный цвет.",
-        "en": "The design system behind the interface: the Module theme — hairline rules, square corners, two weights, a single accent colour."
-    },
-    {
         "id": "threejs",
         "name": "three.js",
         "authors": "three.js authors",

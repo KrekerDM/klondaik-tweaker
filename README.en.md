@@ -341,7 +341,7 @@ inside the program on the Settings tab:
 All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
-ios1ph optimization, Frostpane (MIT, krekerdm),
+ios1ph optimization,
 [three.js](https://github.com/mrdoob/three.js) (MIT),
 [IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
 
@@ -350,5 +350,5 @@ ios1ph optimization, Frostpane (MIT, krekerdm),
 MIT — see [LICENSE](LICENSE), including a separate disclaimer for the
 consequences of changing the system.
 
-The look follows the Frostpane design system. Fonts are IBM Plex (SIL OFL 1.1),
+Fonts are IBM Plex (SIL OFL 1.1),
 three.js (MIT).
