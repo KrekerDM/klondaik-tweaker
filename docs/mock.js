@@ -113,7 +113,7 @@
 
   const handlers = {
     "app.info": () => ({
-      version: "1.3.1",
+      version: "1.4.0",
       settings,
       facts,
       restore: true,
@@ -303,6 +303,8 @@
       { id: "2", tweakId: "game.gamedvr-off", title: "Отключить Game DVR", driver: false, group: "tweak", time: "2026-09-18 19:04", reverted: false, items: 4, risk: "safe" },
       { id: "3", tweakId: "sec.vbs-off", title: "Отключить виртуализацию безопасности (VBS)", driver: false, group: "tweak", time: "2026-09-18 18:52", reverted: true, items: 4, risk: "extreme" }
     ],
+    "profile.save": () => ({ ok: true, path: "C:\ProgramData\KlondaikTweaker\profiles\klondaik-2026-10-22.json", count: 3 }),
+    "profile.open": () => ({ ok: true, path: "D:\klondaik-2026-10-22.json", ids: ["priv.telemetry-off", "game.gamedvr-off"], unknown: 1, windows: "11 24H2", created: "2026-10-22 20:40" }),
     "journal.verify": () => ({
       total: 3,
       held: 2,
@@ -392,7 +394,7 @@
     "app.quit": () => ({ ok: true }),
     "update.check": () => ({
       available: true,
-      current: "1.3.1",
+      current: "1.4.0",
       latest: "v1.1.0",
       size: 56623104,
       url: "https://github.com/Faliseven/klondaik-tweaker/releases/download/v1.1.0/KlondaikTweaker.exe",

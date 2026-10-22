@@ -341,6 +341,33 @@ public static class ModuleTest
             };
         }, "a device is pinned to thread 0 and unpinned again");
 
+        Step("profile.roundTrip", () =>
+        {
+            var ids = Profile.Applied();
+            if (ids.Count == 0) ids = Catalog.Db.Tweaks.Take(3).Select(x => x.Id).ToList();
+
+            var path = Path.Combine(Path.GetTempPath(), "klondaik-profile-test.json");
+            var alien = Path.Combine(Path.GetTempPath(), "klondaik-profile-alien.json");
+            try
+            {
+                Profile.Write(path, Profile.Build(ids));
+                var (back, error) = Profile.Read(path);
+                if (back is null) throw new Exception("свой же набор не прочитался: " + error);
+                if (!back.Tweaks.SequenceEqual(ids)) throw new Exception("список твиков не совпал после записи и чтения");
+
+                File.WriteAllText(alien, "{\"kind\":\"something-else\",\"tweaks\":[\"priv.telemetry-off\"]}");
+                var (bad, badError) = Profile.Read(alien);
+                if (bad is not null) throw new Exception("чужой файл приняли за набор твиков");
+
+                return new { saved = ids.Count, readBack = back.Tweaks.Count, windows = back.Windows, alienRefused = badError };
+            }
+            finally
+            {
+                try { File.Delete(path); } catch { }
+                try { File.Delete(alien); } catch { }
+            }
+        }, "набор твиков пишется в файл, читается обратно, а чужой файл отклоняется");
+
         Step("journal.verify", () =>
         {
             var pick = Catalog.Db.Tweaks.FirstOrDefault(x =>

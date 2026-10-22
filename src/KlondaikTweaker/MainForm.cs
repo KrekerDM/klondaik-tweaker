@@ -49,6 +49,8 @@ public sealed class MainForm : Form
         FormClosing += OnClosing;
         Api.QuitRequested += OnQuitRequested;
         Api.FilesRequested = PickFiles;
+        Api.SaveRequested = PickSavePath;
+        Api.OpenRequested = PickOpenPath;
         AllowDrop = false;
         HandleCreated += (_, _) => AcceptDropsFromLowerIntegrity();
         DragEnter += OnDragEnter;
@@ -137,6 +139,38 @@ public sealed class MainForm : Form
             Multiselect = false
         };
         return dialog.ShowDialog(this) == DialogResult.OK ? [dialog.FileName] : [];
+    }
+
+    private string? PickSavePath(string title, string filter, string suggested)
+    {
+        if (InvokeRequired) return (string?)Invoke(() => PickSavePath(title, filter, suggested));
+
+        using var dialog = new SaveFileDialog
+        {
+            Title = title,
+            Filter = filter,
+            FileName = suggested,
+            InitialDirectory = Profile.Folder,
+            OverwritePrompt = true,
+            AddExtension = true,
+            DefaultExt = "json"
+        };
+        return dialog.ShowDialog(this) == DialogResult.OK ? dialog.FileName : null;
+    }
+
+    private string? PickOpenPath(string title, string filter)
+    {
+        if (InvokeRequired) return (string?)Invoke(() => PickOpenPath(title, filter));
+
+        using var dialog = new OpenFileDialog
+        {
+            Title = title,
+            Filter = filter,
+            InitialDirectory = Profile.Folder,
+            CheckFileExists = true,
+            Multiselect = false
+        };
+        return dialog.ShowDialog(this) == DialogResult.OK ? dialog.FileName : null;
     }
 
     private void OnQuitRequested()

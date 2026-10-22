@@ -32,8 +32,48 @@ export default {
       )
     );
 
-    const presetBox = h('<div class="pane stack"><h2>' + esc(t("tw.presets")) + '</h2><div class="row" data-presets></div></div>');
+    const presetBox = h(
+      '<div class="pane stack"><h2>' + esc(t("tw.presets")) + "</h2>" +
+        '<div class="row" data-presets></div>' +
+        '<div class="row"><button class="btn btn-sm" data-a="saveSet">' + esc(t("tw.setSave")) + "</button>" +
+        '<button class="btn btn-sm" data-a="openSet">' + esc(t("tw.setOpen")) + "</button>" +
+        '<span class="small dim">' + esc(t("tw.setHint")) + "</span></div></div>"
+    );
     el.appendChild(presetBox);
+
+    presetBox.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-a]");
+      if (!btn) return;
+      btn.disabled = true;
+      try {
+        if (btn.dataset.a === "saveSet") {
+          const r = await invoke("profile.save");
+          if (r.empty) toast(t("tw.setEmpty"), "warn");
+          else if (r.ok) toast(t("tw.setSaved") + ": " + r.count);
+          else if (!r.cancelled) toast(t("msg.failed") + ": " + (r.error || ""), "err");
+          return;
+        }
+        if (btn.dataset.a === "openSet") {
+          const r = await invoke("profile.open");
+          if (!r.ok) {
+            if (!r.cancelled) toast(t("msg.failed") + ": " + (r.error || ""), "err");
+            return;
+          }
+          if (!r.ids.length) {
+            toast(t("tw.setEmpty"), "warn");
+            return;
+          }
+          if (r.unknown) toast(t("tw.setUnknown") + ": " + r.unknown, "warn");
+          const done = await runTweaks(r.ids, true, catalog);
+          if (done) {
+            await app.refresh();
+            load();
+          }
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     const filters = h('<div class="stack-sm"><div class="row" data-cats></div><div class="row" data-risks></div></div>');
     el.appendChild(filters);

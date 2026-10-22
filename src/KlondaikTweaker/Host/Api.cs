@@ -12,6 +12,8 @@ public static class Api
 
     public static event Action? QuitRequested;
     public static Func<string[]>? FilesRequested;
+    public static Func<string, string, string, string?>? SaveRequested;
+    public static Func<string, string, string?>? OpenRequested;
 
     private static string Lang => Settings.Data.Lang;
 
@@ -101,6 +103,9 @@ public static class Api
                 if (picked.Length == 0) return new { ok = false, cancelled = true, message = "" };
                 return AddStartup(picked[0]);
             }
+
+            case "profile.save": return ProfileSave();
+            case "profile.open": return ProfileOpen();
 
             case "services.list": return ServiceList();
             case "services.set": return ServiceSet(p);
@@ -462,6 +467,56 @@ public static class Api
         }
         Journal.MarkReverted(e.Id);
         return new { ok = errors.Count == 0, error = errors.Count > 0 ? string.Join("; ", errors.Take(2)) : null };
+    }
+
+    private static object ProfileSave()
+    {
+        var ids = Profile.Applied();
+        if (ids.Count == 0)
+            return new { ok = false, empty = true };
+
+        var filter = Texts.Pick("Набор твиков", "Tweak set") + "|*.json";
+        var path = SaveRequested?.Invoke(Texts.Pick("Куда сохранить набор", "Where to save the set"), filter, Profile.SuggestedName());
+        if (string.IsNullOrEmpty(path)) return new { ok = false, cancelled = true };
+
+        try
+        {
+            Profile.Write(path, Profile.Build(ids));
+        }
+        catch (Exception e)
+        {
+            return new { ok = false, error = Short(e.Message) };
+        }
+
+        return new { ok = true, path, count = ids.Count };
+    }
+
+    private static object ProfileOpen()
+    {
+        var filter = Texts.Pick("Набор твиков", "Tweak set") + "|*.json";
+        var path = OpenRequested?.Invoke(Texts.Pick("Какой набор применить", "Which set to apply"), filter);
+        if (string.IsNullOrEmpty(path)) return new { ok = false, cancelled = true };
+
+        var (file, error) = Profile.Read(path);
+        if (file is null) return new { ok = false, error };
+
+        var known = new List<string>();
+        var unknown = new List<string>();
+        foreach (var id in file.Tweaks)
+        {
+            if (Catalog.Find(id) is null) unknown.Add(id);
+            else known.Add(id);
+        }
+
+        return new
+        {
+            ok = true,
+            path,
+            ids = known,
+            unknown = unknown.Count,
+            windows = file.Windows,
+            created = file.Created
+        };
     }
 
     private static object JournalVerify(Push push)
