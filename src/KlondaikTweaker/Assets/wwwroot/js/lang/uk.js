@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "відкочено",
   "jr.empty": "Поки нічого не застосовувалося",
   "jr.restore": "Точки відновлення",
+  "jr.verify": "перевірити застосоване",
+  "jr.verifyClean": "усі застосовані твіки на місці",
+  "jr.verifyHeld": "тримаються",
+  "jr.verifyDrift": "злетіло",
+  "jr.drifted": "злетів",
+  "jr.reapply": "застосувати знову",
 
   "set.title": "Налаштування",
   "set.lang": "Мова інтерфейсу",

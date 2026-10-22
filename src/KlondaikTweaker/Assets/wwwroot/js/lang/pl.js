@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "cofnięto",
   "jr.empty": "Na razie nic nie zostało zastosowane",
   "jr.restore": "Punkty przywracania",
+  "jr.verify": "sprawdź zastosowane",
+  "jr.verifyClean": "wszystkie zastosowane tweaki trzymają",
+  "jr.verifyHeld": "trzymają",
+  "jr.verifyDrift": "cofnięte",
+  "jr.drifted": "cofnięty",
+  "jr.reapply": "zastosuj ponownie",
 
   "set.title": "Ustawienia",
   "set.lang": "Język interfejsu",

@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "адкочана",
   "jr.empty": "Пакуль нічога не ўжывалася",
   "jr.restore": "Кропкі аднаўлення",
+  "jr.verify": "пераправерыць ужытае",
+  "jr.verifyClean": "усе ўжытыя твікі на месцы",
+  "jr.verifyHeld": "трымаюцца",
+  "jr.verifyDrift": "зляцела",
+  "jr.drifted": "зляцеў",
+  "jr.reapply": "ужыць нанова",
 
   "set.title": "Налады",
   "set.lang": "Мова інтэрфейсу",

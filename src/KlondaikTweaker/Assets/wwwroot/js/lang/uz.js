@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "qaytarildi",
   "jr.empty": "Hozircha hech narsa qoʻllanmagan",
   "jr.restore": "Tiklash nuqtalari",
+  "jr.verify": "qoʻllanganni qayta tekshirish",
+  "jr.verifyClean": "barcha qoʻllangan tvaklar joyida",
+  "jr.verifyHeld": "joyida",
+  "jr.verifyDrift": "qaytarilgan",
+  "jr.drifted": "qaytarilgan",
+  "jr.reapply": "qayta qoʻllash",
 
   "set.title": "Sozlamalar",
   "set.lang": "Interfeys tili",

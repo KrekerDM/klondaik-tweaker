@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "geri qaytarılıb",
   "jr.empty": "Hələ heç nə tətbiq edilməyib",
   "jr.restore": "Bərpa nöqtələri",
+  "jr.verify": "tətbiq olunanı yoxla",
+  "jr.verifyClean": "bütün tətbiq olunan tvaklar yerindədir",
+  "jr.verifyHeld": "yerindədir",
+  "jr.verifyDrift": "geri qayıdıb",
+  "jr.drifted": "geri qayıdıb",
+  "jr.reapply": "yenidən tətbiq et",
 
   "set.title": "Parametrlər",
   "set.lang": "İnterfeys dili",

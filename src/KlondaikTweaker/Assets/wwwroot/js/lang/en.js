@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "reverted",
   "jr.empty": "Nothing has been applied yet",
   "jr.restore": "Restore points",
+  "jr.verify": "re-check what is applied",
+  "jr.verifyClean": "every applied tweak still holds",
+  "jr.verifyHeld": "still hold",
+  "jr.verifyDrift": "drifted",
+  "jr.drifted": "drifted",
+  "jr.reapply": "apply again",
 
   "set.title": "Settings",
   "set.lang": "Interface language",

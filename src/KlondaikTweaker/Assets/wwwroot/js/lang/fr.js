@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "annulé",
   "jr.empty": "Rien n’a encore été appliqué",
   "jr.restore": "Points de restauration",
+  "jr.verify": "revérifier ce qui est appliqué",
+  "jr.verifyClean": "tous les réglages appliqués tiennent",
+  "jr.verifyHeld": "tiennent",
+  "jr.verifyDrift": "annulés",
+  "jr.drifted": "annulé",
+  "jr.reapply": "appliquer à nouveau",
 
   "set.title": "Paramètres",
   "set.lang": "Langue de l’interface",

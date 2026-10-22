@@ -78,6 +78,7 @@ public static class Api
             case "journal.list": return JournalList();
             case "journal.revert": return JournalRevert(S(p, "id"));
             case "journal.revertAll": return JournalRevertAll(push);
+            case "journal.verify": return JournalVerify(push);
             case "journal.clear": Journal.Clear(); return new { ok = true };
 
             case "restore.status": return new { enabled = RestorePoint.Enabled(), points = RestorePoint.List().Take(12).Select(x => new { seq = x.Seq, desc = x.Desc, time = x.Time }).ToList() };
@@ -460,6 +461,48 @@ public static class Api
         }
         Journal.MarkReverted(e.Id);
         return new { ok = errors.Count == 0, error = errors.Count > 0 ? string.Join("; ", errors.Take(2)) : null };
+    }
+
+    private static object JournalVerify(Push push)
+    {
+        var entries = Journal.Entries
+            .Where(x => !x.Reverted)
+            .GroupBy(x => x.TweakId, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.OrderByDescending(x => x.Utc).First())
+            .ToList();
+
+        var drifted = new List<object>();
+        var held = 0;
+        var skipped = 0;
+        var done = 0;
+
+        foreach (var e in entries)
+        {
+            var def = Catalog.Find(e.TweakId);
+            done++;
+            if (def is null)
+            {
+                skipped++;
+                continue;
+            }
+
+            var title = PrefersEnglish ? def.En.T : def.Ru.T;
+            push("progress", new { stage = e.TweakId, title, percent = done * 100 / Math.Max(1, entries.Count), total = entries.Count, done });
+
+            var state = TweakEngine.Detect(def);
+            if (state == TweakState.Applied) held++;
+            else
+                drifted.Add(new
+                {
+                    id = e.Id,
+                    tweakId = e.TweakId,
+                    title,
+                    state = state.ToString().ToLowerInvariant(),
+                    time = e.Utc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                });
+        }
+
+        return new { total = entries.Count, held, skipped, drifted };
     }
 
     private static object JournalRevertAll(Push push)

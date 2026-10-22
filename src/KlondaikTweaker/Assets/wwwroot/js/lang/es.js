@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "deshecho",
   "jr.empty": "Todavía no se ha aplicado nada",
   "jr.restore": "Puntos de restauración",
+  "jr.verify": "volver a comprobar lo aplicado",
+  "jr.verifyClean": "todos los ajustes aplicados siguen",
+  "jr.verifyHeld": "siguen",
+  "jr.verifyDrift": "revertidos",
+  "jr.drifted": "revertido",
+  "jr.reapply": "aplicar de nuevo",
 
   "set.title": "Ajustes",
   "set.lang": "Idioma de la interfaz",

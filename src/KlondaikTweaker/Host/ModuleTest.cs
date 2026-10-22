@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using KlondaikTweaker.Core.Engine;
+using KlondaikTweaker.Core.Model;
 using KlondaikTweaker.Core.Modules;
 using KlondaikTweaker.Core.Win;
 
@@ -339,6 +340,39 @@ public static class ModuleTest
                 restored = !afterReset.Bound && afterReset.Policy == free.Policy
             };
         }, "a device is pinned to thread 0 and unpinned again");
+
+        Step("journal.verify", () =>
+        {
+            var pick = Catalog.Db.Tweaks.FirstOrDefault(x =>
+                x.Risk == "safe" &&
+                x.Actions.Length > 0 &&
+                x.Actions.All(a => a.K == "reg" && a.H == "HKCU") &&
+                TweakEngine.Detect(x) == TweakState.NotApplied);
+            if (pick is null) return new { skipped = true, reason = "no idle user-hive tweak to borrow" };
+
+            var applied = TweakEngine.Apply(pick);
+            if (!applied.Ok) throw new Exception("твик не применился: " + applied.Error);
+
+            var clean = JsonSerializer.Serialize(Api.Handle("journal.verify", null, Noop), Store.Options);
+            if (clean.Contains(pick.Id)) throw new Exception("только что применённый твик уже считается слетевшим");
+
+            var entry = Journal.Latest(pick.Id) ?? throw new Exception("записи в журнале нет");
+            for (var i = entry.Items.Count - 1; i >= 0; i--) TweakEngine.RevertItem(entry.Items[i]);
+
+            var broken = JsonSerializer.Serialize(Api.Handle("journal.verify", null, Noop), Store.Options);
+            var caught = broken.Contains(pick.Id);
+
+            Api.Handle("tweaks.apply", Payload(new { ids = new[] { pick.Id } }), (_, _) => { });
+            var again = JsonSerializer.Serialize(Api.Handle("journal.verify", null, Noop), Store.Options);
+            var healed = !again.Contains(pick.Id);
+
+            Api.Handle("tweaks.revert", Payload(new { ids = new[] { pick.Id } }), (_, _) => { });
+            var state = TweakEngine.Detect(pick);
+
+            if (!caught) throw new Exception("подмену значения проверка не заметила");
+            if (!healed) throw new Exception("повторное применение не вернуло твик в строй");
+            return new { tweak = pick.Id, caught, healed, restored = state.ToString().ToLowerInvariant() };
+        }, "применённый твик ломается в обход журнала, проверка его ловит и возвращает");
 
         Step("update.auto", () =>
         {

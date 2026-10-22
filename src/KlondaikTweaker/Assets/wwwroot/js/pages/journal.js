@@ -1,6 +1,7 @@
 import { invoke } from "../bridge.js";
 import { t } from "../i18n.js";
 import { h, esc, toast, confirmBox, progress } from "../ui.js";
+import { runTweaks } from "../actions.js";
 
 export default {
   id: "journal",
@@ -13,7 +14,9 @@ export default {
       h(
         '<div class="page-head"><div><h1>' + esc(t("jr.title")) + '</h1>' +
           '<p class="lead">' + esc(t("jr.sub")) + "</p></div>" +
-          '<div class="row"><button class="btn btn-ghost" data-a="clear">' + esc(t("jr.clear")) + "</button>" +
+          '<div class="row"><button class="btn btn-primary" data-a="verify">' + esc(t("jr.verify")) + "</button>" +
+          '<button class="btn" data-a="reapply" hidden>' + esc(t("jr.reapply")) + "</button>" +
+          '<button class="btn" data-a="clear">' + esc(t("jr.clear")) + "</button>" +
           '<button class="btn btn-danger" data-a="revertAll">' + esc(t("jr.revertAll")) + "</button></div></div>"
       )
     );
@@ -26,6 +29,8 @@ export default {
 
     const list = h('<div class="list" data-list></div>');
     el.appendChild(list);
+
+    const drift = new Map();
 
     async function loadPoints() {
       const box = restore.querySelector("[data-points]");
@@ -64,10 +69,11 @@ export default {
       entries.forEach((e) => {
         list.appendChild(
           h(
-            '<div class="item" data-id="' + esc(e.id) + '">' +
+            '<div class="item" data-id="' + esc(e.id) + '" data-tweak="' + esc(e.tweakId) + '">' +
               '<div class="grow" style="min-width:0"><div class="name lc">' + esc(e.title || e.tweakId) +
               ' <span class="tag ' + esc(e.risk) + '">' + esc(t("risk." + e.risk)) + "</span>" +
               (e.reverted ? ' <span class="tag plain">' + esc(t("jr.reverted")) + "</span>" : "") +
+              (drift.has(e.tweakId) ? ' <span class="tag extreme">' + esc(t("jr.drifted")) + "</span>" : "") +
               '</div><div class="sub mono">' + esc(e.tweakId) + " · " + esc(e.time) + " · " + e.items + "</div></div>" +
               (e.reverted ? "" : '<button class="btn btn-ghost btn-sm" data-rev>' + esc(t("act.revert")) + "</button>") +
               "</div>"
@@ -98,7 +104,25 @@ export default {
       const action = btn.dataset.a;
       btn.disabled = true;
       try {
-        if (action === "revertAll") {
+        if (action === "verify") {
+          progress(5);
+          const r = await invoke("journal.verify", {}, 900000);
+          progress(100);
+          drift.clear();
+          (r.drifted || []).forEach((d) => drift.set(d.tweakId, d));
+          el.querySelector('[data-a="reapply"]').hidden = !drift.size;
+          await load();
+          if (!drift.size) toast(t("jr.verifyClean") + ": " + r.held);
+          else toast(t("jr.verifyDrift") + ": " + drift.size + "  ·  " + t("jr.verifyHeld") + ": " + r.held, "warn");
+        } else if (action === "reapply") {
+          const ids = [...drift.keys()];
+          if (!ids.length) return;
+          await runTweaks(ids, true, null);
+          drift.clear();
+          btn.hidden = true;
+          await app.refresh();
+          await load();
+        } else if (action === "revertAll") {
           const ok = await confirmBox(t("jr.revertAll"), t("jr.sub"), t("act.revert"), true);
           if (!ok) return;
           progress(5);

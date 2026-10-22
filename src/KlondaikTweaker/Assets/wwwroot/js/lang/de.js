@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "zurückgenommen",
   "jr.empty": "Bisher wurde nichts angewendet",
   "jr.restore": "Wiederherstellungspunkte",
+  "jr.verify": "Angewendetes prüfen",
+  "jr.verifyClean": "alle angewendeten Tweaks halten",
+  "jr.verifyHeld": "halten",
+  "jr.verifyDrift": "zurückgesetzt",
+  "jr.drifted": "zurückgesetzt",
+  "jr.reapply": "erneut anwenden",
 
   "set.title": "Einstellungen",
   "set.lang": "Sprache der Oberfläche",

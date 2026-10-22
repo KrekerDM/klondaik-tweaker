@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "қайтарылды",
   "jr.empty": "Әзірге ештеңе қолданылған жоқ",
   "jr.restore": "Қалпына келтіру нүктелері",
+  "jr.verify": "қолданылғанды тексеру",
+  "jr.verifyClean": "барлық қолданылған твиктер орнында",
+  "jr.verifyHeld": "орнында",
+  "jr.verifyDrift": "қайтарылды",
+  "jr.drifted": "қайтарылды",
+  "jr.reapply": "қайта қолдану",
 
   "set.title": "Баптаулар",
   "set.lang": "Интерфейс тілі",

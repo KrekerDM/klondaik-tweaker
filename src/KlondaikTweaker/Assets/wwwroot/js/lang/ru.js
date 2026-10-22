@@ -405,6 +405,12 @@ export default {
   "jr.reverted": "откачено",
   "jr.empty": "Пока ничего не применялось",
   "jr.restore": "Точки восстановления",
+  "jr.verify": "перепроверить применённое",
+  "jr.verifyClean": "все применённые твики на месте",
+  "jr.verifyHeld": "держатся",
+  "jr.verifyDrift": "слетело",
+  "jr.drifted": "слетел",
+  "jr.reapply": "применить заново",
 
   "set.title": "Настройки",
   "set.lang": "Язык интерфейса",
