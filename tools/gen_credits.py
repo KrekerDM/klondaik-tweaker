@@ -52,15 +52,6 @@ SOURCES = [
         "en": "A collection of registry tweaks and scripts used to cross-check performance and memory values."
     },
     {
-        "id": "threejs",
-        "name": "three.js",
-        "authors": "three.js authors",
-        "license": "MIT",
-        "url": "https://threejs.org",
-        "ru": "Библиотека, на которой сделаны трёхмерные объекты в карточках инструментов.",
-        "en": "The library behind the 3D objects inside the tool cards."
-    },
-    {
         "id": "plex",
         "name": "IBM Plex",
         "authors": "IBM",

@@ -4,7 +4,7 @@
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)
 ![Tweaks](https://img.shields.io/badge/%D0%A2%D0%B2%D0%B8%D0%BA%D0%BE%D0%B2-172-2EA043)
-![UI](https://img.shields.io/badge/GUI-WebView2%20%2B%20three.js-5C3EE8)
+![UI](https://img.shields.io/badge/GUI-WebView2-5C3EE8)
 ![Rights](https://img.shields.io/badge/%D0%9F%D1%80%D0%B0%D0%B2%D0%B0-TrustedInstaller-B85C38)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-555555)
@@ -217,7 +217,7 @@ src/KlondaikTweaker/
                        игровой буст, каталог софта, починка, обновление
   Core/Win/            реестр с эскалацией прав, токен TrustedInstaller, привилегии
   Assets/Data/         твики, мастер, каталог софта, дефолты служб — вшиты в exe
-  Assets/wwwroot/      HTML, CSS и ES-модули без сборщика, three.js для карточек
+  Assets/wwwroot/      HTML, CSS и ES-модули без сборщика, шрифты
 tools/                 генераторы данных на Python и пакет для тестовой машины
 docs/                  скриншоты, скрипт их пересборки, заготовка релиза
 build.ps1              генерация данных и публикация exe
@@ -227,9 +227,10 @@ build.ps1              генерация данных и публикация e
 `https://app.klondaik/`, навигация за пределы этого адреса запрещена. Ни npm,
 ни сборщика: обычные ES-модули.
 
-**3D.** Двенадцать карточек «Инструментов» рисует один и тот же WebGL-контекст
-через scissor и viewport, а не двенадцать контекстов, поэтому вкладка не роняет
-видеокарту. Фоновой сцены нет с 1.2.0: она ничего не сообщала.
+**Знаки.** Тридцать один знак — девятнадцать в меню и двенадцать на карточках
+«Инструментов» — нарисованы вручную из кругов, дуг и прямоугольников. Готовых
+иконок нет, библиотеки для трёхмерной графики тоже: она весила 704 кБ и рисовала
+фигуры, которые половину времени были повёрнуты ребром и не читались.
 
 **Данные.** Твики описываются в Python, а не в JSON руками: генератор собирает
 172 записи и проверяет уникальность идентификаторов, корректность веток реестра,
@@ -347,7 +348,6 @@ Xyueta), All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
 ios1ph optimization,
-[three.js](https://github.com/mrdoob/three.js) (MIT),
 [IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
 
 ## Лицензия
@@ -355,4 +355,4 @@ ios1ph optimization,
 MIT — см. [LICENSE](LICENSE), включая отдельный отказ от ответственности за
 последствия изменения системы.
 
-Шрифты IBM Plex (SIL OFL 1.1), three.js (MIT).
+Шрифты IBM Plex (SIL OFL 1.1).

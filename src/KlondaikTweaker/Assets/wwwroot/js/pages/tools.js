@@ -1,7 +1,6 @@
 import { invoke } from "../bridge.js";
 import { t, getLang, textLang } from "../i18n.js";
-import { h, esc, toast, confirmBox, progress } from "../ui.js";
-import { mountToolCards, unmountToolCards } from "../toolcards.js";
+import { h, esc, toast, confirmBox, progress, toolSign } from "../ui.js";
 
 const TOOLS = [
   {
@@ -105,7 +104,7 @@ export default {
       grid.appendChild(
         h(
           '<button class="toolcard" data-tool="' + esc(tool.id) + '">' +
-            '<div class="toolcard-3d" data-shape="' + esc(tool.id) + '"></div>' +
+            '<div class="toolcard-sign">' + toolSign(tool.id) + "</div>" +
             '<div class="toolcard-body">' +
             "<h3>" + esc(text[0]) + "</h3>" +
             "<p>" + esc(text[1]) + "</p>" +
@@ -169,7 +168,6 @@ export default {
       }
     });
 
-    setTimeout(() => mountToolCards(grid), 30);
-    return { el, dispose: unmountToolCards };
+    return { el };
   }
 };

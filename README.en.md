@@ -4,7 +4,7 @@
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)
 ![Tweaks](https://img.shields.io/badge/Tweaks-172-2EA043)
-![UI](https://img.shields.io/badge/GUI-WebView2%20%2B%20three.js-5C3EE8)
+![UI](https://img.shields.io/badge/GUI-WebView2-5C3EE8)
 ![Rights](https://img.shields.io/badge/Rights-TrustedInstaller-B85C38)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-555555)
@@ -220,7 +220,7 @@ src/KlondaikTweaker/
                        game boost, software catalogue, repair, updates
   Core/Win/            registry with escalation, TrustedInstaller token, privileges
   Assets/Data/         tweaks, wizard, software catalogue, service defaults — in the exe
-  Assets/wwwroot/      HTML, CSS and ES modules with no bundler, three.js backdrop
+  Assets/wwwroot/      HTML, CSS and ES modules with no bundler, fonts
 tools/                 Python data generators and the test-machine package
 docs/                  screenshots, the script that rebuilds them, release notes
 build.ps1              data generation and exe publishing
@@ -230,9 +230,10 @@ build.ps1              data generation and exe publishing
 `https://app.klondaik/`, and navigation outside that address is blocked. No npm
 and no bundler: plain ES modules.
 
-**3D.** The backdrop is eighteen three.js primitives. The cards on the Tools tab
-are drawn by a single WebGL context through scissor and viewport rather than
-twenty contexts, so the tab does not bring the GPU down.
+**Signs.** Thirty-one signs — nineteen in the menu and twelve on the Tools
+cards — are drawn by hand out of circles, arcs and rectangles. No icon library
+and no 3D library either: that one weighed 704 kB and drew shapes that spent
+half their time turned edge-on and unreadable.
 
 **Data.** Tweaks are written in Python rather than JSON by hand: the generator
 checks identifier uniqueness, registry hives, value types and non-empty
@@ -342,7 +343,6 @@ All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
 ios1ph optimization,
-[three.js](https://github.com/mrdoob/three.js) (MIT),
 [IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
 
 ## License
@@ -350,5 +350,4 @@ ios1ph optimization,
 MIT — see [LICENSE](LICENSE), including a separate disclaimer for the
 consequences of changing the system.
 
-Fonts are IBM Plex (SIL OFL 1.1),
-three.js (MIT).
+Fonts are IBM Plex (SIL OFL 1.1).

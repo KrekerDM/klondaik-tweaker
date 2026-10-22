@@ -49,7 +49,7 @@ def free_port():
 
 
 def stage(target):
-    for name in ("css", "js", "fonts", "vendor"):
+    for name in ("css", "js", "fonts"):
         shutil.copytree(ASSETS / "wwwroot" / name, target / name)
     shutil.copy(ASSETS / "wwwroot" / "logo.png", target)
     shutil.copytree(ASSETS / "Data", target / "data")

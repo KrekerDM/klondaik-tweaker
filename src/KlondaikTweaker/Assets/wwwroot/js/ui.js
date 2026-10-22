@@ -213,3 +213,67 @@ const SIGNS = {
 export function icon(name) {
   return '<svg class="sign" viewBox="0 0 24 24" aria-hidden="true">' + (SIGNS[name] || SIGNS.dash) + "</svg>";
 }
+
+/* Знак инструмента показывает предмет, с которым тот работает: полки служб,
+   щит, лупа. Сетка 48, потому что места здесь вчетверо больше, чем в меню. */
+const TOOL_SIGNS = {
+  services:
+    '<rect class="on" x="8" y="9" width="32" height="7"/>' +
+    '<rect class="o" x="8" y="20" width="32" height="7"/>' +
+    '<rect class="o" x="8" y="31" width="32" height="7"/>',
+  defender:
+    '<path class="o" d="M24 5 L40 11 V25 C40 33 33 39 24 43 C15 39 8 33 8 25 V11 Z"/>' +
+    '<path class="on" d="M17 23 l5 5 l10 -11"/>',
+  updates:
+    '<path class="o" d="M24 10 A14 14 0 1 0 38 24"/>' +
+    '<path class="on" d="M17 4 L29 10 L17 16 Z"/>',
+  store:
+    '<rect class="o" x="9" y="18" width="30" height="22"/>' +
+    '<path class="on" d="M17 18 V14 a7 7 0 0 1 14 0 V18"/>',
+  search:
+    '<circle class="o" cx="21" cy="21" r="11"/>' +
+    '<path class="on" d="M29 29 L41 41"/>',
+  network:
+    '<path class="o" d="M24 24 L24 11 M24 24 L36 32 M24 24 L12 32"/>' +
+    '<circle class="o" cx="24" cy="9" r="5"/>' +
+    '<circle class="o" cx="38" cy="33" r="5"/>' +
+    '<circle class="o" cx="10" cy="33" r="5"/>' +
+    '<circle class="on" cx="24" cy="24" r="5"/>',
+  memory:
+    '<rect class="o" x="6" y="14" width="36" height="18"/>' +
+    '<rect class="on" x="11" y="19" width="7" height="8"/>' +
+    '<rect class="on" x="21" y="19" width="7" height="8"/>' +
+    '<rect class="on" x="31" y="19" width="7" height="8"/>' +
+    '<rect x="11" y="35" width="5" height="5"/><rect x="21" y="35" width="5" height="5"/>' +
+    '<rect x="31" y="35" width="5" height="5"/>',
+  dns:
+    '<rect x="22" y="8" width="4" height="34"/>' +
+    '<path class="on" d="M26 11 H40 l4 5 l-4 5 H26 Z"/>' +
+    '<path class="o" d="M22 25 H8 l-4 5 l4 5 H22 Z"/>',
+  godmode:
+    '<circle class="on o" cx="24" cy="13" r="8"/>' +
+    '<rect x="22" y="20" width="4" height="22"/>' +
+    '<rect x="26" y="28" width="8" height="4"/>' +
+    '<rect x="26" y="36" width="6" height="4"/>',
+  ctxti:
+    '<rect class="o" x="5" y="10" width="38" height="28"/>' +
+    '<rect x="5" y="10" width="38" height="6"/>' +
+    '<path class="on" d="M13 22 l6 5 l-6 5"/>' +
+    '<rect class="on" x="23" y="29" width="12" height="3"/>',
+  ctxown:
+    '<path class="o" d="M16 21 V15 a8 8 0 0 1 16 0 V21"/>' +
+    '<rect class="o" x="10" y="21" width="28" height="20"/>' +
+    '<circle class="on" cx="24" cy="29" r="3"/>' +
+    '<rect class="on" x="23" y="31" width="2" height="6"/>',
+  explorer:
+    '<path class="o" d="M6 13 H20 l4 5 H42 V39 H6 Z"/>' +
+    '<rect class="on" x="6" y="9" width="14" height="5"/>'
+};
+
+export function toolSign(name) {
+  return (
+    '<svg class="sign sign-lg" viewBox="0 0 48 48" aria-hidden="true">' +
+    (TOOL_SIGNS[name] || TOOL_SIGNS.services) +
+    "</svg>"
+  );
+}

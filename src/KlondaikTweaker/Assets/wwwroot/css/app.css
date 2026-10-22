@@ -1089,25 +1089,13 @@ select option {
 }
 
 .toolgrid {
-  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   border-top: 1px solid var(--hairline);
   border-left: 1px solid var(--hairline);
 }
 
-.toolcanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
 .toolcard {
-  position: relative;
-  z-index: 2;
   display: flex;
   align-items: stretch;
   gap: var(--s-4);
@@ -1132,12 +1120,31 @@ select option {
   cursor: progress;
 }
 
-.toolcard-3d {
-  flex: 0 0 96px;
-  width: 96px;
+.toolcard-sign {
+  flex: 0 0 72px;
+  width: 72px;
   align-self: center;
   aspect-ratio: 1;
-  pointer-events: none;
+  color: var(--text-dim);
+}
+
+.sign-lg .o {
+  stroke-width: 2;
+}
+
+.sign-lg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.sign-lg path.on {
+  stroke: var(--accent);
+  fill: none;
+}
+
+.toolcard:hover .toolcard-sign {
+  color: var(--text);
 }
 
 .toolcard-body {
@@ -1181,9 +1188,9 @@ select option {
   .toolgrid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .toolcard-3d {
-    flex-basis: 72px;
-    width: 72px;
+  .toolcard-sign {
+    flex-basis: 56px;
+    width: 56px;
   }
 }
 
