@@ -6,7 +6,6 @@ import { mountToolCards, unmountToolCards } from "../toolcards.js";
 const TOOLS = [
   {
     id: "services",
-    shape: "gear",
     ru: ["Вернуть службы по умолчанию", "232 службы Windows возвращаются к штатным значениям запуска. Помогает, когда другой твикер отключил лишнее и перестали работать звук, сеть или магазин."],
     en: ["Restore default services", "232 Windows services go back to their stock start values. Use it when another tweaker disabled too much and sound, network or the Store stopped working."],
     confirm: true,
@@ -14,21 +13,18 @@ const TOOLS = [
   },
   {
     id: "defender",
-    shape: "shield",
     ru: ["Вернуть Защитник", "Снимает политики отключения антивируса и брандмауэра и включает обратно их службы."],
     en: ["Restore Defender", "Removes the policies that disable the antivirus and firewall and re-enables their services."],
     confirm: false
   },
   {
     id: "updates",
-    shape: "refresh",
     ru: ["Вернуть обновления", "Убирает все политики Центра обновления и включает службы обновления, доставки и восстановления."],
     en: ["Restore updates", "Clears every Windows Update policy and re-enables the update, delivery and medic services."],
     confirm: false
   },
   {
     id: "store",
-    shape: "box",
     ru: ["Починить Microsoft Store", "Сбрасывает кэш магазина, включает его службы и перерегистрирует пакет. Лечит бесконечную загрузку и ошибки установки."],
     en: ["Repair Microsoft Store", "Resets the Store cache, re-enables its services and re-registers the package."],
     confirm: false,
@@ -36,14 +32,12 @@ const TOOLS = [
   },
   {
     id: "search",
-    shape: "search",
     ru: ["Перестроить поиск", "Сбрасывает индекс Windows Search и запускает индексацию заново. Лечит поиск, который ничего не находит."],
     en: ["Rebuild search index", "Resets the Windows Search index and starts indexing again."],
     confirm: false
   },
   {
     id: "network",
-    shape: "globe",
     ru: ["Сбросить сеть", "Winsock, IP, DNS и ARP возвращаются к исходному состоянию, сетевые службы включаются, блокировка доменов снимается."],
     en: ["Reset network", "Winsock, IP, DNS and ARP go back to defaults, network services are re-enabled and host blocks are lifted."],
     confirm: true,
@@ -51,28 +45,24 @@ const TOOLS = [
   },
   {
     id: "memory",
-    shape: "memory",
     ru: ["Очистить память", "Сбрасывает рабочие наборы процессов и список ожидания. Свободная память возвращается без перезапуска программ."],
     en: ["Trim memory", "Drops process working sets and the standby list. Free memory returns without restarting anything."],
     confirm: false
   },
   {
     id: "dns",
-    shape: "knot",
     ru: ["Очистить кэш DNS", "Сбрасывает сохранённые адреса сайтов. Помогает, когда сайт переехал, а браузер стучится на старый адрес."],
     en: ["Flush DNS cache", "Clears cached site addresses. Helps when a site moved but the browser still hits the old address."],
     confirm: false
   },
   {
     id: "godmode",
-    shape: "god",
     ru: ["GodMode", "Открывает скрытую панель со всеми настройками Windows в одном списке — больше двухсот пунктов."],
     en: ["GodMode", "Opens the hidden panel with every Windows setting in a single list."],
     confirm: false
   },
   {
     id: "ctxti",
-    shape: "cone",
     toggle: true,
     ru: ["Запуск от имени TrustedInstaller", "Добавляет в контекстное меню файлов и папок пункт запуска с правами системной службы — выше, чем у администратора. Тем же механизмом программа пишет в ключи, которые не поддаются обычной записи."],
     en: ["Run as TrustedInstaller", "Adds a context menu entry for files and folders that runs them with the system service's rights, which are above an administrator's. The program writes to locked keys through the same mechanism."],
@@ -80,7 +70,6 @@ const TOOLS = [
   },
   {
     id: "ctxown",
-    shape: "box",
     toggle: true,
     ru: ["Стать владельцем", "Добавляет в контекстное меню пункт, который забирает владение файлом или папкой и выдаёт администраторам полный доступ. Нужен, когда система не даёт удалить или изменить свой файл."],
     en: ["Take ownership", "Adds a context menu entry that takes ownership of a file or folder and grants Administrators full control. Needed when the system refuses to let you delete or change its own file."],
@@ -88,7 +77,6 @@ const TOOLS = [
   },
   {
     id: "explorer",
-    shape: "spark",
     ru: ["Перезапустить проводник", "Перезапускает explorer.exe. Применяет твики интерфейса без перезахода в систему."],
     en: ["Restart Explorer", "Restarts explorer.exe so interface tweaks apply without signing out."],
     confirm: false
@@ -117,7 +105,7 @@ export default {
       grid.appendChild(
         h(
           '<button class="toolcard" data-tool="' + esc(tool.id) + '">' +
-            '<div class="toolcard-3d" data-shape="' + esc(tool.shape) + '"></div>' +
+            '<div class="toolcard-3d" data-shape="' + esc(tool.id) + '"></div>' +
             '<div class="toolcard-body">' +
             "<h3>" + esc(text[0]) + "</h3>" +
             "<p>" + esc(text[1]) + "</p>" +
