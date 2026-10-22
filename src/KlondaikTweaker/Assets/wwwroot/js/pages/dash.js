@@ -79,6 +79,7 @@ export default {
           '<div class="list">' +
             '<div class="item"><div class="grow"><div class="name lc">' +
             esc(t("dash.applied")) +
+            (app.drift > 0 ? ' <span class="tag extreme">' + esc(t("jr.verifyDrift")) + ": " + app.drift + "</span>" : "") +
             '</div></div><div class="mono">' + app.info.journal + "</div></div>" +
             '<div class="item"><div class="grow"><div class="name lc">' +
             esc(t("dash.restorePoint")) +

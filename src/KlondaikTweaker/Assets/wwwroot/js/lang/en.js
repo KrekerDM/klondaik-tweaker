@@ -438,6 +438,8 @@ export default {
   "upd.found": "Version available",
   "set.autoUpdate": "Check for updates automatically",
   "set.autoUpdateHint": "Once a day the program asks GitHub whether a newer version exists. Nothing is downloaded without you.",
+  "set.autoVerify": "Check tweaks at startup",
+  "set.autoVerifyHint": "Compares what was applied against the system and shows in the menu how many drifted. It changes nothing.",
   "upd.install": "Download and install",
   "upd.downloading": "Downloading",
   "upd.installing": "Installing, the app will restart",

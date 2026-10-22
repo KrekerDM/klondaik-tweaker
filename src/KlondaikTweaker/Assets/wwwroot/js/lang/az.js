@@ -438,6 +438,8 @@ export default {
   "upd.found": "Mövcud versiya",
   "set.autoUpdate": "Yeniləmələri özü yoxlasın",
   "set.autoUpdateHint": "Gündə bir dəfə proqram GitHub-dan daha yeni versiyanın çıxıb-çıxmadığını soruşur. Sizsiz heç nə yüklənmir.",
+  "set.autoVerify": "Başlayanda tvakları yoxla",
+  "set.autoVerifyHint": "Tətbiq olunanı sistemlə tutuşdurur və menyuda neçəsinin geri qayıtdığını göstərir. Heç nəyi dəyişmir.",
   "upd.install": "Yüklə və quraşdır",
   "upd.downloading": "Yüklənir",
   "upd.installing": "Quraşdırılır, proqram yenidən başlayacaq",

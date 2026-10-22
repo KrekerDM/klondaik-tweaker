@@ -13,6 +13,7 @@ public sealed class SettingsData
     public List<string> Favorites { get; set; } = [];
     public string? LastProfile { get; set; }
     public bool AutoUpdateCheck { get; set; } = true;
+    public bool AutoVerify { get; set; } = true;
     public string? LastUpdateCheck { get; set; }
 }
 

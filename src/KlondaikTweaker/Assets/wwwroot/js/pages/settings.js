@@ -21,6 +21,7 @@ export default {
         row("showExtreme", t("set.extreme"), t("set.extremeHint")) +
         row("autoRestorePoint", t("set.restore"), t("set.restoreHint")) +
         row("autoUpdateCheck", t("set.autoUpdate"), t("set.autoUpdateHint")) +
+        row("autoVerify", t("set.autoVerify"), t("set.autoVerifyHint")) +
         row("liveMonitor", t("set.live"), t("set.liveHint")) +
         row("reduced", t("set.reduced"), t("set.reducedHint")) +
         "</div></div>"
@@ -46,6 +47,7 @@ export default {
       ["showExtreme", s.showExtreme],
       ["autoRestorePoint", s.autoRestorePoint],
       ["autoUpdateCheck", s.autoUpdateCheck !== false],
+      ["autoVerify", s.autoVerify !== false],
       ["liveMonitor", s.liveMonitor],
       ["reduced", s.reduced]
     ];

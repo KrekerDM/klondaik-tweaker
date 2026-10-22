@@ -438,6 +438,8 @@ export default {
   "upd.found": "Versión disponible",
   "set.autoUpdate": "Buscar actualizaciones por su cuenta",
   "set.autoUpdateHint": "Una vez al día el programa pregunta a GitHub si ha salido una versión más nueva. No se descarga nada sin ti.",
+  "set.autoVerify": "Comprobar los ajustes al iniciar",
+  "set.autoVerifyHint": "Compara lo aplicado con el sistema y muestra en el menú cuántos se revirtieron. No cambia nada.",
   "upd.install": "Descargar e instalar",
   "upd.downloading": "Descargando",
   "upd.installing": "Instalando, el programa se reiniciará",

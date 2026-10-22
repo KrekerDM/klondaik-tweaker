@@ -32,12 +32,12 @@
     lang: "ru",
     showExtreme: true,
     autoRestorePoint: true,
-    monitor3d: true,
+    autoUpdateCheck: true,
+    autoVerify: true,
     liveMonitor: true,
     reduced: false,
     wizardDone: true,
     acceptedRisk: false,
-    accent: "ice",
     favorites: []
   };
 
@@ -113,7 +113,7 @@
 
   const handlers = {
     "app.info": () => ({
-      version: "1.3.0",
+      version: "1.3.1",
       settings,
       facts,
       restore: true,
@@ -392,7 +392,7 @@
     "app.quit": () => ({ ok: true }),
     "update.check": () => ({
       available: true,
-      current: "1.3.0",
+      current: "1.3.1",
       latest: "v1.1.0",
       size: 56623104,
       url: "https://github.com/Faliseven/klondaik-tweaker/releases/download/v1.1.0/KlondaikTweaker.exe",

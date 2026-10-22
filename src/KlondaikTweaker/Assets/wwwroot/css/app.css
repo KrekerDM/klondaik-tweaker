@@ -354,6 +354,14 @@ input {
   color: var(--text-dim);
 }
 
+.navitem .badge.bad {
+  color: var(--bad);
+}
+
+.navitem.on .badge.bad {
+  color: var(--on-accent);
+}
+
 .rail-foot {
   margin-top: auto;
   padding: var(--s-4);

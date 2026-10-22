@@ -111,6 +111,7 @@ export default {
           drift.clear();
           (r.drifted || []).forEach((d) => drift.set(d.tweakId, d));
           el.querySelector('[data-a="reapply"]').hidden = !drift.size;
+          app.setDrift(drift.size);
           await load();
           if (!drift.size) toast(t("jr.verifyClean") + ": " + r.held);
           else toast(t("jr.verifyDrift") + ": " + drift.size + "  ·  " + t("jr.verifyHeld") + ": " + r.held, "warn");
@@ -120,6 +121,7 @@ export default {
           await runTweaks(ids, true, null);
           drift.clear();
           btn.hidden = true;
+          app.setDrift(0);
           await app.refresh();
           await load();
         } else if (action === "revertAll") {

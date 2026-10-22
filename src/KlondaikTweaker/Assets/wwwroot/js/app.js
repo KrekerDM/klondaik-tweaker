@@ -35,6 +35,22 @@ const app = {
   current: null,
   active: null,
   seq: 0,
+  drift: 0,
+
+  setDrift(count) {
+    const next = Number(count) || 0;
+    if (next === this.drift) return;
+    this.drift = next;
+    buildNav();
+  },
+
+  async checkDrift() {
+    if (!this.info || this.info.settings.autoVerify === false) return;
+    try {
+      const r = await invoke("journal.verify", {}, 600000);
+      this.setDrift((r.drifted || []).length);
+    } catch {}
+  },
 
   async go(id) {
     const page = PAGES.find((p) => p.id === id) || PAGES[0];
@@ -100,13 +116,22 @@ function buildNav() {
     nav.appendChild(h('<div class="navgroup">' + esc(t("nav." + group)) + "</div>"));
     pages.forEach((p) => {
       let badge = "";
+      let badgeClass = "badge";
+      let badgeTitle = "";
       if (p.id === "tweaks" && app.info) badge = String(app.info.tweakCount);
       if (p.id === "journal" && app.info) badge = String(app.info.journal);
+      if (p.id === "journal" && app.drift > 0) {
+        badge = String(app.drift);
+        badgeClass = "badge bad";
+        badgeTitle = t("jr.verifyDrift") + ": " + app.drift;
+      }
       const item = h(
         '<button class="navitem' + (app.current === p.id ? " on" : "") + '" data-page="' + p.id + '" title="' + esc(t("page." + p.id)) + '">' +
           icon(p.icon) +
           "<span>" + esc(t("page." + p.id)) + "</span>" +
-          (badge && badge !== "0" ? '<span class="badge">' + badge + "</span>" : "") +
+          (badge && badge !== "0"
+            ? '<span class="' + badgeClass + '" title="' + esc(badgeTitle) + '">' + badge + "</span>"
+            : "") +
           "</button>"
       );
       item.addEventListener("click", () => app.go(p.id));
@@ -192,6 +217,7 @@ async function boot() {
 
   wireChrome();
   buildNav();
+  app.checkDrift();
 
   on("window", (data) => {
     document.body.classList.toggle("maximized", !!data.max);

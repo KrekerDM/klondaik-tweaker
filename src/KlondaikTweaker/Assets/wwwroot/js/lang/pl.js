@@ -438,6 +438,8 @@ export default {
   "upd.found": "Dostępna wersja",
   "set.autoUpdate": "Sam sprawdzaj aktualizacje",
   "set.autoUpdateHint": "Raz na dobę program pyta GitHuba, czy wyszła nowsza wersja. Bez ciebie nic nie jest pobierane.",
+  "set.autoVerify": "Sprawdzaj tweaki przy starcie",
+  "set.autoVerifyHint": "Porównuje zastosowane z systemem i pokazuje w menu, ile się cofnęło. Niczego nie zmienia.",
   "upd.install": "Pobierz i zainstaluj",
   "upd.downloading": "Pobieranie",
   "upd.installing": "Instalacja, program uruchomi się ponownie",

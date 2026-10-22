@@ -249,6 +249,7 @@ public static class Api
                 case "wizardDone": s.WizardDone = B(p, "value"); break;
                 case "acceptedRisk": s.AcceptedRisk = B(p, "value"); break;
                 case "autoUpdateCheck": s.AutoUpdateCheck = B(p, "value"); break;
+                case "autoVerify": s.AutoVerify = B(p, "value"); break;
                 case "favorite":
                     {
                         var id = S(p, "value");
