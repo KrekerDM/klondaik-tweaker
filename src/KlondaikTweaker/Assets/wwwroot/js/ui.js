@@ -214,8 +214,6 @@ export function icon(name) {
   return '<svg class="sign" viewBox="0 0 24 24" aria-hidden="true">' + (SIGNS[name] || SIGNS.dash) + "</svg>";
 }
 
-/* Знак инструмента показывает предмет, с которым тот работает: полки служб,
-   щит, лупа. Сетка 48, потому что места здесь вчетверо больше, чем в меню. */
 const TOOL_SIGNS = {
   services:
     '<rect class="on" x="8" y="9" width="32" height="7"/>' +
