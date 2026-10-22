@@ -1,7 +1,6 @@
 import { invoke } from "../bridge.js";
 import { t, textLang } from "../i18n.js";
 import { h, esc, bytes, toast, confirmBox, progress } from "../ui.js";
-import { pulse } from "../scene.js";
 
 export default {
   id: "clean",
@@ -78,7 +77,7 @@ export default {
         const row = h(
           '<div class="item" data-id="' + esc(target.id) + '" data-bytes="' + target.bytes + '">' +
             '<div class="cb' + (target.default && target.bytes > 0 ? " on" : "") + '"></div>' +
-            '<div class="grow"><div class="name">' + esc(title) +
+            '<div class="grow"><div class="name lc">' + esc(title) +
             (target.safe ? "" : ' <span class="tag advanced">' + esc(t("risk.advanced")) + "</span>") +
             '</div><div class="sub">' + esc(desc) + "</div></div>" +
             '<div class="mono" style="text-align:right"><div>' + bytes(target.bytes) + "</div>" +
@@ -110,7 +109,6 @@ export default {
             if (!ok) return;
           }
           progress(10);
-          pulse(3000);
           const r = await invoke("clean.run", { ids });
           progress(100);
           toast(t("clean.freed") + ": " + bytes(r.freed) + " · " + r.files + " " + t("clean.files"));

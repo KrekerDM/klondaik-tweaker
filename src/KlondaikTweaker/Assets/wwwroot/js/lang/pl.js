@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Wyłącz boost",
   "dash.boostPaused": "usług wstrzymano",
   "dash.boostFreed": "zwolniono",
+  "dash.load": "obciążenie",
+  "dash.limit": "próg",
+  "dash.netIn": "odbiór",
+  "dash.netOut": "wysyłka",
   "dash.trim": "Zwolnij pamięć",
   "dash.wizard": "Dobierz tweaki",
   "dash.cleanNow": "Usuń śmieci",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Najgorsza reakcja",
   "bench.boot": "Rozruch systemu",
   "bench.history": "Historia",
+  "bench.vs": "wzgl.",
   "bench.label": "Nazwa pomiaru",
   "bench.before": "Przed tweakami",
   "bench.after": "Po tweakach",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Wyłączanie Defendera, aktualizacji i ochrony procesora",
   "set.restore": "Twórz punkt przywracania",
   "set.restoreHint": "Przed zastosowaniem tweaków średniego i wysokiego ryzyka",
-  "set.3d": "Scena 3D w tle",
-  "set.3dHint": "Wyłącz, jeśli karta graficzna jest obciążona",
   "set.live": "Monitorowanie na żywo",
   "set.liveHint": "Wskaźniki odświeżają się co półtorej sekundy",
   "set.reduced": "Mniej animacji",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Włączona jest ochrona przed manipulacją — część tweaków Defendera się nie zastosuje. Wyłącz ją w Zabezpieczeniach Windows.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

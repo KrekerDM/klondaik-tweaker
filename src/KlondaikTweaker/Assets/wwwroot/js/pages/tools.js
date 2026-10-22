@@ -2,7 +2,6 @@ import { invoke } from "../bridge.js";
 import { t, getLang, textLang } from "../i18n.js";
 import { h, esc, toast, confirmBox, progress } from "../ui.js";
 import { mountToolCards, unmountToolCards } from "../toolcards.js";
-import { pulse } from "../scene.js";
 
 const TOOLS = [
   {
@@ -171,7 +170,6 @@ export default {
         }
         card.classList.toggle("failed", r.ok === false);
         toast(text[0] + ": " + (r.message || t("act.finish")), r.ok === false ? "err" : "");
-        if (r.ok !== false) pulse(2200);
         if (tool.restart) toast(t("msg.restartNeeded"), "warn");
       } catch (err) {
         state.textContent = String(err.message || err);

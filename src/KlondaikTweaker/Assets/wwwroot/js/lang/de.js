@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Boost abschalten",
   "dash.boostPaused": "Dienste angehalten",
   "dash.boostFreed": "freigegeben",
+  "dash.load": "Last",
+  "dash.limit": "Grenze",
+  "dash.netIn": "Empfang",
+  "dash.netOut": "Senden",
   "dash.trim": "Speicher freigeben",
   "dash.wizard": "Tweaks auswählen",
   "dash.cleanNow": "Müll entfernen",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Schlechteste Reaktion",
   "bench.boot": "Systemstart",
   "bench.history": "Verlauf",
+  "bench.vs": "ggü.",
   "bench.label": "Name der Messung",
   "bench.before": "Vor den Tweaks",
   "bench.after": "Nach den Tweaks",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Abschalten von Defender, Updates und Prozessorschutz",
   "set.restore": "Wiederherstellungspunkt anlegen",
   "set.restoreHint": "Vor dem Anwenden von Tweaks mit mittlerem und hohem Risiko",
-  "set.3d": "3D-Szene im Hintergrund",
-  "set.3dHint": "Abschalten, wenn die Grafikkarte ausgelastet ist",
   "set.live": "Live-Überwachung",
   "set.liveHint": "Die Werte werden alle anderthalb Sekunden aktualisiert",
   "set.reduced": "Weniger Animationen",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Der Manipulationsschutz ist aktiv — ein Teil der Defender-Tweaks greift nicht. Schalten Sie ihn in der Windows-Sicherheit ab.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

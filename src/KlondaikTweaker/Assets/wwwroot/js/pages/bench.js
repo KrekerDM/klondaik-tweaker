@@ -1,7 +1,6 @@
 import { invoke, on } from "../bridge.js";
 import { t } from "../i18n.js";
-import { h, esc, num, toast, progress, confirmBox } from "../ui.js";
-import { pulse, setEnergy } from "../scene.js";
+import { h, esc, num, when, toast, progress, confirmBox } from "../ui.js";
 
 const STAGES = {
   "cpu-single": "bench.cpu1",
@@ -43,8 +42,8 @@ export default {
     const latest = h('<div class="grid g4" data-latest></div>');
     el.appendChild(latest);
 
-    const history = h('<div class="pane stack"><div class="row"><h2 class="grow">' + esc(t("bench.history")) + "</h2>" +
-      '<button class="btn btn-ghost btn-sm" data-a="clear">' + esc(t("bench.clear")) + "</button></div>" +
+    const history = h('<div class="pane stack"><h2>' + esc(t("bench.history")) + "</h2>" +
+      '<div class="row"><button class="btn btn-sm" data-a="clear">' + esc(t("bench.clear")) + "</button></div>" +
       '<div class="list" data-hist></div></div>');
     el.appendChild(history);
 
@@ -66,8 +65,9 @@ export default {
       }
       const r = runs[0];
       const prev = runs.find((x) => x.label !== r.label);
-      const delta = (a, b) => (prev && b ? (a > b ? "+" : "") + num(((a - b) / b) * 100, 1) + "%" : "");
-      box.appendChild(h(card(t("bench.score"), num(r.score), "", r.label + " · " + new Date(r.utc).toLocaleString())));
+      const delta = (a, b) =>
+        prev && b ? (a > b ? "+" : "") + num(((a - b) / b) * 100, 1) + "% " + t("bench.vs") + " " + prev.label : "";
+      box.appendChild(h(card(t("bench.score"), num(r.score), "", r.label + "  ·  " + when(r.utc))));
       box.appendChild(h(card(t("bench.cpu1"), num(r.cpuSingle), "", prev ? delta(r.cpuSingle, prev.cpuSingle) : "")));
       box.appendChild(h(card(t("bench.cpuN"), num(r.cpuMulti), "", prev ? delta(r.cpuMulti, prev.cpuMulti) : "")));
       box.appendChild(h(card(t("bench.ram"), num(r.ramGbs, 2), t("unit.gbs"))));
@@ -88,7 +88,7 @@ export default {
         box.appendChild(
           h(
             '<div class="item"><div class="grow"><div class="name">' + esc(r.label) + "</div>" +
-              '<div class="sub mono">' + new Date(r.utc).toLocaleString() + "</div></div>" +
+              '<div class="sub mono">' + when(r.utc) + "</div></div>" +
               '<div class="mono small dim">CPU ' + num(r.cpuSingle) + " / " + num(r.cpuMulti) + "</div>" +
               '<div class="mono small dim">' + num(r.latencyAvg, 2) + " " + esc(t("unit.ms")) + "</div>" +
               '<div class="mono" style="min-width:70px;text-align:right">' + num(r.score) + "</div></div>"
@@ -117,7 +117,6 @@ export default {
       }
       if (btn.dataset.a !== "run") return;
       btn.disabled = true;
-      setEnergy(1);
       try {
         const label = runner.querySelector("[data-label]").value;
         await invoke("bench.run", { label }, 900000);
@@ -125,11 +124,9 @@ export default {
         drawLatest(runs);
         drawHistory(runs);
         toast(t("act.finish"));
-        pulse(2500);
       } catch (err) {
         toast(String(err.message || err), "err");
       } finally {
-        setEnergy(0);
         progress(100);
         runner.querySelector("[data-stage]").textContent = "";
         btn.disabled = false;

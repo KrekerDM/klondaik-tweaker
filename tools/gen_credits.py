@@ -52,13 +52,13 @@ SOURCES = [
         "en": "A collection of registry tweaks and scripts used to cross-check performance and memory values."
     },
     {
-        "id": "frostpane",
-        "name": "Frostpane",
+        "id": "lodd",
+        "name": "Lodd",
         "authors": "krekerdm",
         "license": "MIT",
-        "url": "https://github.com/krekerdm/frostpane",
-        "ru": "Дизайн-система, на которой построен интерфейс: стеклянные панели, прямые углы, один акцентный цвет.",
-        "en": "The design system behind the interface: glass panes, square corners, a single accent colour."
+        "url": "https://github.com/krekerdm/lodd",
+        "ru": "Дизайн-система, на которой построен интерфейс: тема Module — волосяные линейки, прямые углы, два начертания, один акцентный цвет.",
+        "en": "The design system behind the interface: the Module theme — hairline rules, square corners, two weights, a single accent colour."
     },
     {
         "id": "threejs",
@@ -66,8 +66,8 @@ SOURCES = [
         "authors": "three.js authors",
         "license": "MIT",
         "url": "https://threejs.org",
-        "ru": "Библиотека, на которой сделаны трёхмерные объекты на фоне и в карточках инструментов.",
-        "en": "The library behind the 3D objects in the background and inside the tool cards."
+        "ru": "Библиотека, на которой сделаны трёхмерные объекты в карточках инструментов.",
+        "en": "The library behind the 3D objects inside the tool cards."
     },
     {
         "id": "plex",

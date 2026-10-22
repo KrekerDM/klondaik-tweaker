@@ -1,7 +1,6 @@
 import { invoke, send, on, onBusy } from "./bridge.js";
 import { setLang, getLang, loadLang, LANGS, t } from "./i18n.js";
 import { h, esc, toast, icon, progress, modal } from "./ui.js";
-import { initScene, setEnabled } from "./scene.js";
 
 import dash from "./pages/dash.js";
 import wizard from "./pages/wizard.js";
@@ -190,13 +189,6 @@ async function boot() {
   syncLangPicker();
   document.getElementById("verTag").textContent = "v" + app.info.version;
   document.body.classList.toggle("reduced", !!app.info.settings.reduced);
-
-  if (app.info.settings.monitor3d) {
-    const ok = initScene(document.getElementById("bg"));
-    if (!ok) setEnabled(false);
-  } else {
-    setEnabled(false);
-  }
 
   wireChrome();
   buildNav();

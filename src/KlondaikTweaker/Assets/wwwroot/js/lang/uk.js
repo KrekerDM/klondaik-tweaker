@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Вимкнути буст",
   "dash.boostPaused": "служб призупинено",
   "dash.boostFreed": "звільнено",
+  "dash.load": "навантаження",
+  "dash.limit": "поріг",
+  "dash.netIn": "прийом",
+  "dash.netOut": "віддача",
   "dash.trim": "Очистити пам’ять",
   "dash.wizard": "Дібрати твіки",
   "dash.cleanNow": "Очистити сміття",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Найгірший відгук",
   "bench.boot": "Завантаження системи",
   "bench.history": "Історія",
+  "bench.vs": "до",
   "bench.label": "Назва заміру",
   "bench.before": "До твіків",
   "bench.after": "Після твіків",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Вимкнення Defender, оновлень і захисту процесора",
   "set.restore": "Створювати точку відновлення",
   "set.restoreHint": "Перед застосуванням твіків із середнім і високим ризиком",
-  "set.3d": "Фонова 3D-сцена",
-  "set.3dHint": "Вимкніть, якщо відеокарта навантажена",
   "set.live": "Живий моніторинг",
   "set.liveHint": "Оновлення показників кожні півтори секунди",
   "set.reduced": "Менше анімацій",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Увімкнено захист від підробки — частина твіків Захисника не застосується. Вимкніть його в Безпеці Windows.",
 
   "unit.sec": "с",
+
+  "unit.b": "Б",
+
+  "unit.kb": "КБ",
   "unit.ms": "мс",
   "unit.mb": "МБ",
   "unit.gb": "ГБ",

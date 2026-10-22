@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Désactiver le boost",
   "dash.boostPaused": "services en pause",
   "dash.boostFreed": "libéré",
+  "dash.load": "charge",
+  "dash.limit": "seuil",
+  "dash.netIn": "entrée",
+  "dash.netOut": "sortie",
   "dash.trim": "Libérer la mémoire",
   "dash.wizard": "Choisir des réglages",
   "dash.cleanNow": "Nettoyer les déchets",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Pire réponse",
   "bench.boot": "Démarrage du système",
   "bench.history": "Historique",
+  "bench.vs": "par rapport à",
   "bench.label": "Nom de la mesure",
   "bench.before": "Avant les réglages",
   "bench.after": "Après les réglages",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Désactivation de Defender, des mises à jour et de la protection du processeur",
   "set.restore": "Créer un point de restauration",
   "set.restoreHint": "Avant d’appliquer des réglages à risque moyen ou élevé",
-  "set.3d": "Scène 3D en arrière-plan",
-  "set.3dHint": "Désactivez-la si la carte graphique est sollicitée",
   "set.live": "Surveillance en direct",
   "set.liveHint": "Les indicateurs se rafraîchissent toutes les secondes et demie",
   "set.reduced": "Moins d’animations",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "La protection contre les falsifications est active : une partie des réglages Defender ne s’appliquera pas. Désactivez-la dans la Sécurité Windows.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "Mo",
   "unit.gb": "Go",

@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Desactivar el impulso",
   "dash.boostPaused": "servicios pausados",
   "dash.boostFreed": "liberado",
+  "dash.load": "carga",
+  "dash.limit": "límite",
+  "dash.netIn": "entrada",
+  "dash.netOut": "salida",
   "dash.trim": "Liberar memoria",
   "dash.wizard": "Elegir ajustes",
   "dash.cleanNow": "Limpiar la basura",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Peor respuesta",
   "bench.boot": "Arranque del sistema",
   "bench.history": "Historial",
+  "bench.vs": "frente a",
   "bench.label": "Nombre de la medición",
   "bench.before": "Antes de los ajustes",
   "bench.after": "Después de los ajustes",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Desactivar Defender, las actualizaciones y la protección del procesador",
   "set.restore": "Crear punto de restauración",
   "set.restoreHint": "Antes de aplicar ajustes de riesgo medio y alto",
-  "set.3d": "Escena 3D de fondo",
-  "set.3dHint": "Desactívala si la tarjeta gráfica está cargada",
   "set.live": "Supervisión en vivo",
   "set.liveHint": "Los indicadores se actualizan cada segundo y medio",
   "set.reduced": "Menos animaciones",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "La protección contra manipulaciones está activa: parte de los ajustes de Defender no se aplicará. Desactívala en Seguridad de Windows.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Bustni oʻchirish",
   "dash.boostPaused": "xizmat toʻxtatildi",
   "dash.boostFreed": "boʻshatildi",
+  "dash.load": "yuklama",
+  "dash.limit": "chegara",
+  "dash.netIn": "qabul",
+  "dash.netOut": "uzatish",
   "dash.trim": "Xotirani tozalash",
   "dash.wizard": "Tvaklarni tanlash",
   "dash.cleanNow": "Keraksizni tozalash",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Eng yomon javob",
   "bench.boot": "Tizim yuklanishi",
   "bench.history": "Tarix",
+  "bench.vs": "ga nisbatan",
   "bench.label": "Oʻlchov nomi",
   "bench.before": "Tvaklardan oldin",
   "bench.after": "Tvaklardan keyin",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Defender, yangilanishlar va protsessor himoyasini oʻchirish",
   "set.restore": "Tiklash nuqtasini yaratish",
   "set.restoreHint": "Oʻrtacha va yuqori xavfli tvaklarni qoʻllashdan oldin",
-  "set.3d": "Fon 3D-sahnasi",
-  "set.3dHint": "Videokarta yuklangan boʻlsa oʻchiring",
   "set.live": "Jonli monitoring",
   "set.liveHint": "Koʻrsatkichlar har bir yarim soniyada yangilanadi",
   "set.reduced": "Animatsiya kamroq",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Soxtalashtirishdan himoya yoqilgan — Defender tvaklarining bir qismi qoʻllanmaydi. Uni Windows xavfsizligida oʻchiring.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

@@ -243,7 +243,6 @@ public static class Api
                 case "lang": s.Lang = Languages.Contains(S(p, "value", "ru")) ? S(p, "value", "ru") : "ru"; break;
                 case "showExtreme": s.ShowExtreme = B(p, "value"); break;
                 case "autoRestorePoint": s.AutoRestorePoint = B(p, "value"); break;
-                case "monitor3d": s.Monitor3d = B(p, "value"); break;
                 case "liveMonitor": s.LiveMonitor = B(p, "value"); break;
                 case "reduced": s.Reduced = B(p, "value"); break;
                 case "wizardDone": s.WizardDone = B(p, "value"); break;

@@ -5,7 +5,6 @@ public sealed class SettingsData
     public string Lang { get; set; } = "ru";
     public bool ShowExtreme { get; set; } = true;
     public bool AutoRestorePoint { get; set; } = true;
-    public bool Monitor3d { get; set; } = true;
     public bool LiveMonitor { get; set; } = true;
     public bool Reduced { get; set; }
     public bool WizardDone { get; set; }

@@ -49,6 +49,9 @@ public static class SelfTest
         foreach (var code in Api.Languages.OrderBy(x => x, StringComparer.Ordinal))
             required.Add(("web/js/lang/" + code + ".js", 5000));
 
+        foreach (var subset in Fonts)
+            required.Add(("web/fonts/" + subset + ".woff2", 5000));
+
         var missing = new List<string>();
         foreach (var (name, min) in required)
         {
@@ -64,7 +67,13 @@ public static class SelfTest
         return missing;
     }
 
-    public static int RequiredAssetCount => 14 + Api.Languages.Count;
+    private static readonly string[] Fonts =
+    [
+        "plex-latin", "plex-latin-ext", "plex-cyrillic", "plex-cyrillic-ext",
+        "plex-mono-latin", "plex-mono-latin-ext", "plex-mono-cyrillic"
+    ];
+
+    public static int RequiredAssetCount => 14 + Fonts.Length + Api.Languages.Count;
 
     public static void Run(string outPath)
     {

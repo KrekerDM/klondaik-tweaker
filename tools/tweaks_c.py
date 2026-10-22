@@ -312,10 +312,10 @@ ITEMS = [
     T("svc.netdata-off", "services", "advanced",
       ("Отключить учёт сетевого трафика",
        "DusmSvc считает потраченный трафик для лимитных подключений. Служба сидит в сетевом стеке и на части конфигураций добавляет задержку.",
-       "Не будет работать: счётчик трафика в «Параметрах» → «Сеть», лимитные подключения и предупреждение о расходе трафика."),
+       "Не будет работать: счётчик трафика в «Параметрах» / «Сеть», лимитные подключения и предупреждение о расходе трафика."),
       ("Disable network data usage",
        "DusmSvc counts traffic for metered connections. It sits in the network stack and adds latency on some setups.",
-       "Will stop working: the traffic counter in Settings → Network, metered connections and the data usage warning."),
+       "Will stop working: the traffic counter in Settings / Network, metered connections and the data usage warning."),
       [SV("DusmSvc", "disabled", "auto")],
       tags=["network", "latency"], src="atlas"),
 

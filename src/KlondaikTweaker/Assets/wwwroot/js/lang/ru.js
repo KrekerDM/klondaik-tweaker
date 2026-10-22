@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Выключить буст",
   "dash.boostPaused": "служб приостановлено",
   "dash.boostFreed": "освобождено",
+  "dash.load": "нагрузка",
+  "dash.limit": "порог",
+  "dash.netIn": "приём",
+  "dash.netOut": "отдача",
   "dash.trim": "Очистить память",
   "dash.wizard": "Подобрать твики",
   "dash.cleanNow": "Очистить мусор",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Худший отклик",
   "bench.boot": "Загрузка системы",
   "bench.history": "История",
+  "bench.vs": "к",
   "bench.label": "Название замера",
   "bench.before": "До твиков",
   "bench.after": "После твиков",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Отключение Defender, обновлений и защиты процессора",
   "set.restore": "Создавать точку восстановления",
   "set.restoreHint": "Перед применением твиков со средним и высоким риском",
-  "set.3d": "Фоновая 3D-сцена",
-  "set.3dHint": "Отключите, если видеокарта нагружена",
   "set.live": "Живой мониторинг",
   "set.liveHint": "Обновление показателей каждые полторы секунды",
   "set.reduced": "Меньше анимаций",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Включена защита от подделки — часть твиков Защитника не применится. Отключите её в Безопасности Windows.",
 
   "unit.sec": "с",
+
+  "unit.b": "Б",
+
+  "unit.kb": "КБ",
   "unit.ms": "мс",
   "unit.mb": "МБ",
   "unit.gb": "ГБ",

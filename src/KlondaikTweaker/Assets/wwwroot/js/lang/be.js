@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Выключыць буст",
   "dash.boostPaused": "службаў прыпынена",
   "dash.boostFreed": "вызвалена",
+  "dash.load": "нагрузка",
+  "dash.limit": "парог",
+  "dash.netIn": "прыём",
+  "dash.netOut": "аддача",
   "dash.trim": "Ачысціць памяць",
   "dash.wizard": "Падабраць твікі",
   "dash.cleanNow": "Ачысціць смецце",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Горшы водгук",
   "bench.boot": "Загрузка сістэмы",
   "bench.history": "Гісторыя",
+  "bench.vs": "да",
   "bench.label": "Назва замеру",
   "bench.before": "Да твікаў",
   "bench.after": "Пасля твікаў",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Адключэнне Defender, абнаўленняў і абароны працэсара",
   "set.restore": "Ствараць кропку аднаўлення",
   "set.restoreHint": "Перад ужываннем твікаў з сярэднім і высокім рызыкам",
-  "set.3d": "Фонавая 3D-сцэна",
-  "set.3dHint": "Адключыце, калі відэакарта нагружана",
   "set.live": "Жывы маніторынг",
   "set.liveHint": "Абнаўленне паказчыкаў кожныя паўтары секунды",
   "set.reduced": "Менш анімацый",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Уключана абарона ад падробкі — частка твікаў Абаронцы не ўжывецца. Адключыце яе ў Бяспецы Windows.",
 
   "unit.sec": "с",
+
+  "unit.b": "Б",
+
+  "unit.kb": "КБ",
   "unit.ms": "мс",
   "unit.mb": "МБ",
   "unit.gb": "ГБ",

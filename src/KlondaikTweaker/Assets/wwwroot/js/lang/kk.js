@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Бусты өшіру",
   "dash.boostPaused": "қызмет тоқтатылды",
   "dash.boostFreed": "босатылды",
+  "dash.load": "жүктеме",
+  "dash.limit": "шек",
+  "dash.netIn": "қабылдау",
+  "dash.netOut": "жіберу",
   "dash.trim": "Жадты тазалау",
   "dash.wizard": "Твиктерді таңдау",
   "dash.cleanNow": "Қоқысты тазалау",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Ең нашар жауап",
   "bench.boot": "Жүйенің жүктелуі",
   "bench.history": "Тарих",
+  "bench.vs": "салыстыру",
   "bench.label": "Өлшем атауы",
   "bench.before": "Твиктерге дейін",
   "bench.after": "Твиктерден кейін",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Defender, жаңартулар және процессор қорғанысын өшіру",
   "set.restore": "Қалпына келтіру нүктесін жасау",
   "set.restoreHint": "Орташа және жоғары тәуекелді твиктерді қолданар алдында",
-  "set.3d": "Фондық 3D-көрініс",
-  "set.3dHint": "Бейнекарта жүктелген болса өшіріңіз",
   "set.live": "Тірі мониторинг",
   "set.liveHint": "Көрсеткіштер әр жарты секунд сайын жаңарады",
   "set.reduced": "Анимация азырақ",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Бұрмалаудан қорғау қосулы — Қорғаушы твиктерінің бір бөлігі қолданылмайды. Оны Windows қауіпсіздігінде өшіріңіз.",
 
   "unit.sec": "с",
+
+  "unit.b": "Б",
+
+  "unit.kb": "КБ",
   "unit.ms": "мс",
   "unit.mb": "МБ",
   "unit.gb": "ГБ",

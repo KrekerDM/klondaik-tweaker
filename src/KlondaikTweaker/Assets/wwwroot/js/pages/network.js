@@ -21,9 +21,9 @@ export default {
     el.appendChild(adapters);
 
     const dnsBox = h(
-      '<div class="pane stack"><div class="row"><h2 class="grow">' + esc(t("net.dns")) + "</h2>" +
-        '<button class="btn btn-ghost btn-sm" data-a="testdns">' + esc(t("net.testDns")) + "</button></div>" +
-        '<div class="grid g3" data-dns></div>' +
+      '<div class="pane stack"><h2>' + esc(t("net.dns")) + "</h2>" +
+        '<div class="row"><button class="btn btn-sm" data-a="testdns">' + esc(t("net.testDns")) + "</button></div>" +
+        '<div class="grid g-fit" data-dns></div>' +
         '<div class="row"><select data-target style="min-width:220px"></select>' +
         '<button class="btn btn-primary btn-sm" data-a="applydns">' + esc(t("net.apply")) + "</button>" +
         '<button class="btn btn-ghost btn-sm" data-a="autodns">' + esc(t("net.auto")) + "</button></div></div>"
@@ -32,8 +32,8 @@ export default {
 
     const tools = h(
       '<div class="grid g2">' +
-        '<div class="pane stack"><div class="row"><h2 class="grow">' + esc(t("net.ping")) + "</h2>" +
-        '<button class="btn btn-ghost btn-sm" data-a="ping">' + esc(t("net.testPing")) + "</button></div>" +
+        '<div class="pane stack"><h2>' + esc(t("net.ping")) + "</h2>" +
+        '<div class="row"><button class="btn btn-sm" data-a="ping">' + esc(t("net.testPing")) + "</button></div>" +
         '<div class="list" data-ping><div class="empty small">-</div></div></div>' +
         '<div class="pane stack"><h2>' + esc(t("page.tweaks")) + "</h2>" +
         '<div class="list">' +

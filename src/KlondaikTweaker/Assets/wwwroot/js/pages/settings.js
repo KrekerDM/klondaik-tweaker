@@ -1,7 +1,6 @@
 import { invoke, on } from "../bridge.js";
 import { t, textLang, LANGS } from "../i18n.js";
 import { h, esc, toast, switchEl, progress, bytes } from "../ui.js";
-import { setEnabled } from "../scene.js";
 import { restartExplorer } from "../actions.js";
 
 export default {
@@ -22,7 +21,6 @@ export default {
         row("showExtreme", t("set.extreme"), t("set.extremeHint")) +
         row("autoRestorePoint", t("set.restore"), t("set.restoreHint")) +
         row("autoUpdateCheck", t("set.autoUpdate"), t("set.autoUpdateHint")) +
-        row("monitor3d", t("set.3d"), t("set.3dHint")) +
         row("liveMonitor", t("set.live"), t("set.liveHint")) +
         row("reduced", t("set.reduced"), t("set.reducedHint")) +
         "</div></div>"
@@ -48,7 +46,6 @@ export default {
       ["showExtreme", s.showExtreme],
       ["autoRestorePoint", s.autoRestorePoint],
       ["autoUpdateCheck", s.autoUpdateCheck !== false],
-      ["monitor3d", s.monitor3d],
       ["liveMonitor", s.liveMonitor],
       ["reduced", s.reduced]
     ];
@@ -58,7 +55,6 @@ export default {
         switchEl(value, async (next) => {
           const updated = await invoke("app.setSetting", { key, value: next });
           app.info.settings = updated;
-          if (key === "monitor3d") setEnabled(next);
           if (key === "reduced") document.body.classList.toggle("reduced", next);
           return true;
         })
@@ -80,7 +76,7 @@ export default {
     const upd = h(
       '<div class="pane stack"><h2>' + esc(t("upd.title")) + "</h2>" +
         '<div class="stack-sm">' +
-        '<div class="name" data-state>' + esc(t("upd.current")) + " " + esc(app.info.version) + "</div>" +
+        '<div class="name lc" data-state>' + esc(t("upd.current")) + " " + esc(app.info.version) + "</div>" +
         '<div class="sub" data-sub>' + esc(t("upd.hint")) + "</div></div>" +
         '<div class="small dim" data-notes hidden style="white-space:pre-wrap;max-height:220px;overflow:auto"></div>' +
         '<div class="row">' +
@@ -234,7 +230,7 @@ export default {
 function row(key, title, hint, select) {
   return (
     '<div class="item" data-row="' + esc(key) + '">' +
-    '<div class="grow"><div class="name">' + esc(title) + "</div>" +
+    '<div class="grow"><div class="name lc">' + esc(title) + "</div>" +
     (hint ? '<div class="sub">' + esc(hint) + "</div>" : "") +
     "</div>" +
     '<div data-ctl></div></div>'

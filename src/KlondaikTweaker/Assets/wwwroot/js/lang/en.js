@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Stop boost",
   "dash.boostPaused": "services paused",
   "dash.boostFreed": "freed",
+  "dash.load": "load",
+  "dash.limit": "limit",
+  "dash.netIn": "in",
+  "dash.netOut": "out",
   "dash.trim": "Trim memory",
   "dash.wizard": "Pick my tweaks",
   "dash.cleanNow": "Clean junk",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Worst response",
   "bench.boot": "Boot time",
   "bench.history": "History",
+  "bench.vs": "vs",
   "bench.label": "Run label",
   "bench.before": "Before tweaks",
   "bench.after": "After tweaks",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Disabling Defender, updates and CPU mitigations",
   "set.restore": "Create a restore point",
   "set.restoreHint": "Before applying moderate and high-risk tweaks",
-  "set.3d": "Background 3D scene",
-  "set.3dHint": "Turn off if the GPU is busy",
   "set.live": "Live monitoring",
   "set.liveHint": "Refresh metrics every 1.5 seconds",
   "set.reduced": "Reduce animations",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Tamper Protection is on, so some Defender tweaks will not apply. Turn it off in Windows Security.",
 
   "unit.sec": "s",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

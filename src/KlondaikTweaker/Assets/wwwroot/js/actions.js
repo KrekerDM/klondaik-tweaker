@@ -1,7 +1,6 @@
 import { invoke, on } from "./bridge.js";
 import { t } from "./i18n.js";
 import { toast, progress, modal, confirmBox, esc, h } from "./ui.js";
-import { pulse } from "./scene.js";
 
 let progressOff = null;
 
@@ -55,7 +54,10 @@ function runPanel(title) {
     if (p.phase === "start") {
       now.textContent = name + (p.total ? "  ·  " + (p.done + 1) + " / " + p.total : "");
     } else if (p.phase === "done") {
-      line((p.ok === false ? "✗ " : "✓ ") + name + (p.ok === false && p.error ? " — " + p.error : ""), p.ok === false ? "bad" : "");
+      line(
+        (p.ok === false ? t("msg.failed") + ": " : "") + name + (p.ok === false && p.error ? " — " + p.error : ""),
+        p.ok === false ? "bad" : ""
+      );
     }
   });
 
@@ -97,7 +99,6 @@ export async function runTweaks(ids, apply, catalog) {
 
   watchProgress();
   progress(2);
-  pulse(4000);
 
   const panel = runPanel(apply ? t("run.applying") : t("run.reverting"));
 

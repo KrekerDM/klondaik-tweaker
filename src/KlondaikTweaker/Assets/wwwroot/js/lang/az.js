@@ -182,6 +182,10 @@ export default {
   "dash.boostOff": "Bustu söndür",
   "dash.boostPaused": "xidmət dayandırıldı",
   "dash.boostFreed": "boşaldıldı",
+  "dash.load": "yüklənmə",
+  "dash.limit": "hədd",
+  "dash.netIn": "qəbul",
+  "dash.netOut": "ötürmə",
   "dash.trim": "Yaddaşı təmizlə",
   "dash.wizard": "Tvakları seç",
   "dash.cleanNow": "Zibili təmizlə",
@@ -378,6 +382,7 @@ export default {
   "bench.latMax": "Ən pis cavab",
   "bench.boot": "Sistemin yüklənməsi",
   "bench.history": "Tarixçə",
+  "bench.vs": "ilə",
   "bench.label": "Ölçmənin adı",
   "bench.before": "Tvaklardan əvvəl",
   "bench.after": "Tvaklardan sonra",
@@ -407,8 +412,6 @@ export default {
   "set.extremeHint": "Defender-in, yeniləmələrin və prosessor müdafiəsinin söndürülməsi",
   "set.restore": "Bərpa nöqtəsi yarat",
   "set.restoreHint": "Orta və yüksək riskli tvakları tətbiq etməzdən əvvəl",
-  "set.3d": "Fon 3D-səhnəsi",
-  "set.3dHint": "Videokart yüklüdürsə söndürün",
   "set.live": "Canlı monitorinq",
   "set.liveHint": "Göstəricilər hər yarım saniyədən bir yenilənir",
   "set.reduced": "Animasiya daha az",
@@ -465,6 +468,10 @@ export default {
   "msg.tamper": "Saxtakarlıqdan müdafiə aktivdir — Defender tvaklarının bir hissəsi tətbiq edilməyəcək. Onu Windows Təhlükəsizliyində söndürün.",
 
   "unit.sec": "san",
+
+  "unit.b": "B",
+
+  "unit.kb": "KB",
   "unit.ms": "ms",
   "unit.mb": "MB",
   "unit.gb": "GB",

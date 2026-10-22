@@ -18,9 +18,9 @@ export default {
       )
     );
 
-    const restore = h('<div class="pane stack"><div class="row"><h2 class="grow">' + esc(t("jr.restore")) + "</h2>" +
-      '<button class="btn btn-ghost btn-sm" data-a="point">' + esc(t("dash.createPoint")) + "</button>" +
-      '<button class="btn btn-ghost btn-sm" data-a="rstrui">' + esc(t("set.systemRestore")) + "</button></div>" +
+    const restore = h('<div class="pane stack"><h2>' + esc(t("jr.restore")) + "</h2>" +
+      '<div class="row"><button class="btn btn-sm" data-a="point">' + esc(t("dash.createPoint")) + "</button>" +
+      '<button class="btn btn-sm" data-a="rstrui">' + esc(t("set.systemRestore")) + "</button></div>" +
       '<div class="list" data-points></div></div>');
     el.appendChild(restore);
 
@@ -65,7 +65,7 @@ export default {
         list.appendChild(
           h(
             '<div class="item" data-id="' + esc(e.id) + '">' +
-              '<div class="grow" style="min-width:0"><div class="name">' + esc(e.title || e.tweakId) +
+              '<div class="grow" style="min-width:0"><div class="name lc">' + esc(e.title || e.tweakId) +
               ' <span class="tag ' + esc(e.risk) + '">' + esc(t("risk." + e.risk)) + "</span>" +
               (e.reverted ? ' <span class="tag plain">' + esc(t("jr.reverted")) + "</span>" : "") +
               '</div><div class="sub mono">' + esc(e.tweakId) + " · " + esc(e.time) + " · " + e.items + "</div></div>" +

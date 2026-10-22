@@ -19,7 +19,7 @@ export default {
 
     const drop = h(
       '<div class="pane drop-zone"><div class="stack" style="gap:8px;align-items:center;text-align:center">' +
-        '<div class="name">' + esc(t("start.dropTitle")) + "</div>" +
+        '<div class="name lc">' + esc(t("start.dropTitle")) + "</div>" +
         '<p class="small dim">' + esc(t("start.dropHint")) + "</p>" +
         '<button class="btn btn-ghost btn-sm" data-a="pick">' + esc(t("start.pick")) + "</button>" +
         "</div></div>"
