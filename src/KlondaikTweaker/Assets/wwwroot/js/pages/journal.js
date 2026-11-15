@@ -5,7 +5,6 @@ import { runTweaks } from "../actions.js";
 
 export default {
   id: "journal",
-  icon: "journal",
   group: "extra",
 
   async render(app) {

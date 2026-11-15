@@ -50,7 +50,7 @@ public static class SelfTest
             required.Add(("web/js/lang/" + code + ".js", 5000));
 
         foreach (var subset in Fonts)
-            required.Add(("web/fonts/" + subset + ".woff2", 5000));
+            required.Add(("web/fonts/" + subset + ".ttf", 5000));
 
         var missing = new List<string>();
         foreach (var (name, min) in required)
@@ -69,8 +69,7 @@ public static class SelfTest
 
     private static readonly string[] Fonts =
     [
-        "plex-latin", "plex-latin-ext", "plex-cyrillic", "plex-cyrillic-ext",
-        "plex-mono-latin", "plex-mono-latin-ext", "plex-mono-cyrillic"
+        "GolosText-Regular", "PTMono-Regular"
     ];
 
     public static int RequiredAssetCount => 14 + Fonts.Length + Api.Languages.Count;

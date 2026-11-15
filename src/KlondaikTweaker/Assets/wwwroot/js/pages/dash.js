@@ -22,7 +22,6 @@ function band(word, body) {
 
 export default {
   id: "dash",
-  icon: "dash",
   group: "main",
 
   async render(app) {

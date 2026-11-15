@@ -5,7 +5,6 @@ import { restartExplorer } from "../actions.js";
 
 export default {
   id: "settings",
-  icon: "settings",
   group: "extra",
 
   async render(app) {

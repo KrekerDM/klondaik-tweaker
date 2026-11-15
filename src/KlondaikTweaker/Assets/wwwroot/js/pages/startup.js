@@ -4,7 +4,6 @@ import { h, esc, toast, switchEl, confirmBox } from "../ui.js";
 
 export default {
   id: "startup",
-  icon: "startup",
   group: "system",
 
   async render() {

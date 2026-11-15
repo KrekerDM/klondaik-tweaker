@@ -6,7 +6,6 @@ import { runTweaks } from "../actions.js";
 
 export default {
   id: "wizard",
-  icon: "wizard",
   group: "main",
 
   async render(app) {

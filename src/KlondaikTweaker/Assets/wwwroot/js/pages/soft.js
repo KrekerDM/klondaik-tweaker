@@ -4,7 +4,6 @@ import { h, esc, toast, progress } from "../ui.js";
 
 export default {
   id: "soft",
-  icon: "soft",
   group: "extra",
 
   async render() {

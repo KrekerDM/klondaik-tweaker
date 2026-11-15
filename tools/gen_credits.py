@@ -52,13 +52,22 @@ SOURCES = [
         "en": "A collection of registry tweaks and scripts used to cross-check performance and memory values."
     },
     {
-        "id": "plex",
-        "name": "IBM Plex",
-        "authors": "IBM",
+        "id": "golos",
+        "name": "Golos Text",
+        "authors": "The Golos Text Project Authors",
         "license": "SIL OFL 1.1",
-        "url": "https://www.ibm.com/plex/",
-        "ru": "Шрифты интерфейса, вшитые в программу для работы без интернета.",
-        "en": "The interface typefaces, embedded so the app works offline."
+        "url": "https://github.com/googlefonts/golos-text",
+        "ru": "Шрифт интерфейса, вшитый в программу для работы без интернета.",
+        "en": "The interface typeface, embedded so the app works offline."
+    },
+    {
+        "id": "ptmono",
+        "name": "PT Mono",
+        "authors": "ParaType",
+        "license": "SIL OFL 1.1",
+        "url": "https://fonts.google.com/specimen/PT+Mono",
+        "ru": "Моноширинный шрифт для чисел, путей и журнала.",
+        "en": "The monospaced face for numbers, paths and the log."
     }
 ]
 

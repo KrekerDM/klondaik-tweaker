@@ -11,7 +11,6 @@ const ORDER = [
 
 export default {
   id: "tweaks",
-  icon: "tweaks",
   group: "main",
 
   async render(app) {

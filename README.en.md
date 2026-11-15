@@ -373,11 +373,13 @@ All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
 ios1ph optimization,
-[IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
+[Golos Text](https://github.com/googlefonts/golos-text) and
+[PT Mono](https://fonts.google.com/specimen/PT+Mono) (SIL OFL 1.1).
 
 ## License
 
 MIT — see [LICENSE](LICENSE), including a separate disclaimer for the
 consequences of changing the system.
 
-Fonts are IBM Plex (SIL OFL 1.1).
+Fonts are Golos Text and PT Mono (SIL OFL 1.1); their licence texts sit
+next to them in `Assets/wwwroot/fonts`.

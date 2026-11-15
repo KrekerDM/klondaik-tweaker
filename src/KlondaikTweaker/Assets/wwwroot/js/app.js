@@ -1,6 +1,6 @@
 import { invoke, send, on, onBusy } from "./bridge.js";
 import { setLang, getLang, loadLang, LANGS, t } from "./i18n.js";
-import { h, esc, toast, icon, progress, modal } from "./ui.js";
+import { h, esc, toast, progress, modal } from "./ui.js";
 
 import dash from "./pages/dash.js";
 import wizard from "./pages/wizard.js";
@@ -127,7 +127,6 @@ function buildNav() {
       }
       const item = h(
         '<button class="navitem' + (app.current === p.id ? " on" : "") + '" data-page="' + p.id + '" title="' + esc(t("page." + p.id)) + '">' +
-          icon(p.icon) +
           "<span>" + esc(t("page." + p.id)) + "</span>" +
           (badge && badge !== "0"
             ? '<span class="' + badgeClass + '" title="' + esc(badgeTitle) + '">' + badge + "</span>"

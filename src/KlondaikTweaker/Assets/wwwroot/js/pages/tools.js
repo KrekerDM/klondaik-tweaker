@@ -1,6 +1,6 @@
 import { invoke } from "../bridge.js";
 import { t, getLang, textLang } from "../i18n.js";
-import { h, esc, toast, confirmBox, progress, toolSign } from "../ui.js";
+import { h, esc, toast, confirmBox, progress } from "../ui.js";
 
 const TOOLS = [
   {
@@ -84,7 +84,6 @@ const TOOLS = [
 
 export default {
   id: "tools",
-  icon: "tools",
   group: "main",
 
   async render() {
@@ -104,7 +103,6 @@ export default {
       grid.appendChild(
         h(
           '<button class="toolcard" data-tool="' + esc(tool.id) + '">' +
-            '<div class="toolcard-sign">' + toolSign(tool.id) + "</div>" +
             '<div class="toolcard-body">' +
             "<h3>" + esc(text[0]) + "</h3>" +
             "<p>" + esc(text[1]) + "</p>" +

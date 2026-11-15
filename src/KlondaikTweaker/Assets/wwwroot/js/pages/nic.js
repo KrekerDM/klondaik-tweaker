@@ -4,7 +4,6 @@ import { h, esc, toast, confirmBox } from "../ui.js";
 
 export default {
   id: "nic",
-  icon: "nic",
   group: "system",
 
   async render() {

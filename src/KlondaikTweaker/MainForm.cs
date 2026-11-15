@@ -257,6 +257,7 @@ public sealed class MainForm : Form
         [".jpg"] = "image/jpeg",
         [".svg"] = "image/svg+xml; charset=utf-8",
         [".woff2"] = "font/woff2",
+        [".ttf"] = "font/ttf",
         [".ico"] = "image/x-icon"
     };
 

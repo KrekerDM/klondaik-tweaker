@@ -4,7 +4,6 @@ import { h, esc, toast, switchEl } from "../ui.js";
 
 export default {
   id: "tasks",
-  icon: "tasks",
   group: "system",
 
   async render() {

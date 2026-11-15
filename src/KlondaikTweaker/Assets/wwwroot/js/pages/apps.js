@@ -6,7 +6,6 @@ const GROUPS = ["xbox", "bing", "ai", "social", "media", "microsoft", "other", "
 
 export default {
   id: "apps",
-  icon: "apps",
   group: "system",
 
   async render() {

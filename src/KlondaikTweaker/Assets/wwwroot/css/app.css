@@ -1,98 +1,47 @@
 @font-face {
-  font-family: "IBM Plex Sans";
+  font-family: "Golos Text";
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 400;
   font-display: swap;
-  src: url("../fonts/plex-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url("../fonts/GolosText-Regular.ttf") format("truetype");
 }
 @font-face {
-  font-family: "IBM Plex Sans";
+  font-family: "PT Mono";
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 400;
   font-display: swap;
-  src: url("../fonts/plex-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url("../fonts/plex-cyrillic.woff2") format("woff2");
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url("../fonts/plex-cyrillic-ext.woff2") format("woff2");
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url("../fonts/plex-mono-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url("../fonts/plex-mono-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url("../fonts/plex-mono-cyrillic.woff2") format("woff2");
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  src: url("../fonts/PTMono-Regular.ttf") format("truetype");
 }
 
 :root {
-  --ground: #0b0b0b;
-  --ground-2: #0b0b0b;
-  --pane: #141414;
-  --raised: #1d1d1d;
-  --hover: #242424;
-  --hairline: #323232;
-  --hairline-bright: #454545;
+  --ground: #14171b;
+  --pane: #1b1f24;
+  --raised: #232830;
+  --hover: #2b313a;
+  --hairline: #2e343c;
 
-  --accent: #6fc3e8;
-  --accent-bright: #8ed2ef;
-  --accent-text: #6fc3e8;
-  --accent-soft: #10242c;
-  --accent-line: #2f5e71;
-  --on-accent: #04121b;
+  --text: #e6e9ec;
+  --text-soft: #a8b0b8;
+  --text-dim: #8d96a0;
 
-  --text: #f2f2f2;
-  --text-soft: #b8b8b8;
-  --text-dim: #8a8a8a;
+  /* The one colour, and it means a deviation: high risk, an error, a
+     failed step. Medium risk is the brightest grey, not a second hue. */
+  --accent: #ff6b4a;
+  --on-accent: #130603;
+  --bad: var(--accent);
+  --warn: var(--text);
 
-  --warn: #e8a33d;
-  --bad: #ff5a2b;
-  --danger: var(--bad);
+  /* Hover on the light primary button; pure white jumps next to --text. */
+  --lift: #f4f6f8;
+  --shade: rgb(20 23 27 / 70%);
 
-  --surface: var(--pane);
-  --card: var(--pane);
-  --card-hover: var(--hover);
-  --card-edge: var(--hairline);
-  --field: var(--raised);
-  --field-edge: var(--hairline);
+  --font: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  --mono: "PT Mono", "Cascadia Mono", Consolas, monospace;
 
-  --font: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
-
-  --t-h1: 28px;
-  --t-h2: 19px;
-  --t-body: 14px;
-  --t-small: 12px;
+  --t-h1: 38px;
+  --t-h2: 24px;
+  --t-body: 15px;
+  --t-small: 13px;
 
   --s-1: 4px;
   --s-2: 8px;
@@ -100,7 +49,7 @@
   --s-4: 16px;
   --s-6: 24px;
   --s-8: 32px;
-  --s-10: 40px;
+  --s-12: 48px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --rail: 232px;
@@ -134,8 +83,8 @@ body {
 body {
   font-family: var(--font);
   font-size: var(--t-body);
-  font-weight: 300;
-  line-height: 1.5;
+  font-weight: 400;
+  line-height: 1.45;
   color: var(--text-soft);
   background: var(--ground);
   -webkit-font-smoothing: antialiased;
@@ -144,40 +93,13 @@ body {
 }
 
 :focus-visible {
-  outline: 1px solid var(--accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 ::selection {
   background: var(--accent);
   color: var(--on-accent);
-}
-
-.brand,
-.navgroup,
-.navitem,
-.btn,
-.chip,
-.tag,
-.label,
-.lead,
-.empty,
-.toast,
-.lc,
-h1,
-h2,
-h3 {
-  text-transform: lowercase;
-}
-
-.mono,
-.num,
-.item .name:not(.lc),
-.spec dd,
-.runline,
-select,
-input {
-  text-transform: none;
 }
 
 .frame {
@@ -209,25 +131,25 @@ input {
   display: flex;
   align-items: baseline;
   gap: var(--s-2);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
 }
 
 .brand b {
   color: var(--text);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .brand span {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
 .brand i {
   width: 6px;
   height: 6px;
-  background: var(--accent);
+  background: var(--text-dim);
   display: inline-block;
   vertical-align: 2px;
 }
@@ -278,7 +200,7 @@ input {
 .navgroup {
   padding: var(--s-4) var(--s-4) var(--s-2);
   font-size: var(--t-body);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
@@ -292,7 +214,7 @@ input {
   border: 0;
   color: var(--text-soft);
   font: inherit;
-  font-weight: 300;
+  font-weight: 400;
   text-align: left;
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease;
@@ -304,46 +226,8 @@ input {
 }
 
 .navitem.on {
-  background: var(--accent);
-  color: var(--on-accent);
-}
-
-.navitem.on .badge {
-  color: var(--on-accent);
-}
-
-.navitem.on .sign .on {
-  fill: var(--on-accent);
-}
-
-.navitem.on .sign .on.o {
-  stroke: var(--on-accent);
-}
-
-.navitem svg {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-}
-
-.sign * {
-  fill: currentColor;
-  stroke: none;
-}
-
-.sign .o {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-}
-
-.sign .on {
-  fill: var(--accent);
-}
-
-.sign .on.o {
-  fill: none;
-  stroke: var(--accent);
+  background: var(--raised);
+  color: var(--text);
 }
 
 .navitem .badge {
@@ -356,10 +240,6 @@ input {
 
 .navitem .badge.bad {
   color: var(--bad);
-}
-
-.navitem.on .badge.bad {
-  color: var(--on-accent);
 }
 
 .rail-foot {
@@ -375,7 +255,7 @@ input {
   min-width: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--s-8) var(--s-10) var(--s-10);
+  padding: var(--s-8);
 }
 
 .content::-webkit-scrollbar,
@@ -393,7 +273,7 @@ input {
 
 .content::-webkit-scrollbar-thumb:hover,
 .scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--hairline-bright);
+  background: var(--text-dim);
 }
 
 .content::-webkit-scrollbar-track,
@@ -404,27 +284,29 @@ input {
 
 h1 {
   font-size: var(--t-h1);
-  font-weight: 200;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   color: var(--text);
 }
 
 h2 {
   font-size: var(--t-h2);
-  font-weight: 200;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--text);
 }
 
 h3 {
   font-size: var(--t-body);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
 }
 
 .lead {
   color: var(--text-soft);
-  font-weight: 200;
+  font-weight: 400;
   max-width: 68ch;
 }
 
@@ -434,12 +316,12 @@ h3 {
 
 .small {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
 }
 
 .label {
   font-size: var(--t-body);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
@@ -460,6 +342,10 @@ h3 {
   gap: var(--s-6);
   margin-bottom: var(--s-6);
   flex-wrap: wrap;
+}
+
+.page-head h1 + .lead {
+  margin-top: var(--s-2);
 }
 
 .stack {
@@ -506,9 +392,8 @@ h3 {
   grid-column: 1;
   grid-row: 1 / -1;
   font-size: var(--t-body);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
-  text-transform: lowercase;
 }
 
 .pane:not(:has(> h2)),
@@ -551,7 +436,7 @@ h3 {
 
 .num-threshold {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
@@ -575,7 +460,7 @@ h3 {
 }
 
 .g3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* tells: ok — columns for a list of programs, not three cards */
 }
 
 .g4 {
@@ -598,31 +483,13 @@ h3 {
   }
 }
 
+/* Narrow windows keep the words in the rail: there are no icons to
+   fall back to, and nineteen bare squares would mean nothing. */
 @media (max-width: 1100px) {
   :root {
-    --rail: 60px;
+    --rail: 184px;
   }
-  .navitem span:not(.badge) {
-    display: none;
-  }
-  .navitem {
-    justify-content: center;
-    padding: var(--s-3) 0;
-  }
-  .navitem .badge {
-    display: none;
-  }
-  .navgroup {
-    font-size: 0;
-    padding: 0;
-    height: 0;
-    border-top: 1px solid var(--hairline);
-    margin: var(--s-3);
-  }
-  .navgroup:first-child {
-    border-top: 0;
-    margin-top: 0;
-  }
+  .navitem .badge,
   .rail-foot {
     display: none;
   }
@@ -679,15 +546,14 @@ h3 {
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-weight: 300;
+  font-weight: 400;
   cursor: pointer;
   white-space: nowrap;
   transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
 
 .btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--text);
 }
 
 .btn:disabled {
@@ -696,15 +562,15 @@ h3 {
 }
 
 .btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ground);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-bright);
-  border-color: var(--accent-bright);
-  color: var(--on-accent);
+  background: var(--lift);
+  border-color: var(--lift);
+  color: var(--ground);
 }
 
 .btn-ghost {
@@ -737,7 +603,7 @@ h3 {
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   background: transparent;
   border: 1px solid var(--hairline);
   color: var(--text-soft);
@@ -746,32 +612,33 @@ h3 {
 }
 
 .chip:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--text);
+  color: var(--text);
 }
 
 .chip.on {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ground);
 }
 
 .chip b {
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
 .chip.on b {
-  color: var(--on-accent);
+  color: inherit;
+  opacity: 0.7;
 }
 
 .tag {
   display: inline-block;
   padding: 0 var(--s-2);
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   border: 1px solid var(--hairline);
   color: var(--text-dim);
 }
@@ -792,8 +659,9 @@ h3 {
 }
 
 .tag.applied {
-  color: var(--accent);
-  border-color: var(--accent);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ground);
 }
 
 .tag.plain {
@@ -810,7 +678,7 @@ input[type="text"],
 input[type="search"],
 select {
   font: inherit;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
   background: var(--raised);
   border: 1px solid var(--hairline);
@@ -821,7 +689,7 @@ select {
 
 input:focus,
 select:focus {
-  border-color: var(--accent);
+  border-color: var(--text);
 }
 
 select option {
@@ -851,12 +719,12 @@ select option {
 }
 
 .sw.on {
-  border-color: var(--accent);
+  border-color: var(--text);
 }
 
 .sw.on::after {
   transform: translateX(16px);
-  background: var(--accent);
+  background: var(--text);
 }
 
 .sw.busy {
@@ -876,16 +744,16 @@ select option {
 }
 
 .cb.on {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--text);
+  border-color: var(--text);
 }
 
 .cb.on::after {
   content: "";
   width: 8px;
   height: 4px;
-  border-left: 2px solid var(--on-accent);
-  border-bottom: 2px solid var(--on-accent);
+  border-left: 2px solid var(--ground); /* tells: ok — the tick of a checkbox */
+  border-bottom: 2px solid var(--ground);
   transform: rotate(-45deg) translate(1px, -1px);
 }
 
@@ -900,10 +768,6 @@ select option {
 
 .tw:hover {
   background: var(--pane);
-}
-
-.tw.applied h3 {
-  color: var(--accent);
 }
 
 .tw.unavail {
@@ -929,12 +793,11 @@ select option {
   gap: var(--s-2);
   flex-wrap: wrap;
   margin-bottom: var(--s-1);
-  text-transform: lowercase;
 }
 
 .tw p {
   color: var(--text-dim);
-  font-weight: 200;
+  font-weight: 400;
 }
 
 .tw .warn {
@@ -968,14 +831,13 @@ select option {
 
 .metric .label {
   font-size: var(--t-body);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
-  text-transform: lowercase;
 }
 
 .metric .value {
   font-size: var(--t-h2);
-  font-weight: 200;
+  font-weight: 400;
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
@@ -984,7 +846,7 @@ select option {
 
 .metric .value small {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
   margin-left: var(--s-1);
 }
@@ -998,12 +860,12 @@ select option {
 .bar > i {
   display: block;
   height: 100%;
-  background: var(--accent);
+  background: var(--text-soft);
   transition: width 0.4s var(--ease), background 0.3s ease;
 }
 
 .bar.hot > i {
-  background: var(--warn);
+  background: var(--text);
 }
 
 .bar.crit > i {
@@ -1024,10 +886,9 @@ select option {
 
 .spec dt {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
   margin-bottom: var(--s-1);
-  text-transform: lowercase;
 }
 
 .spec dd {
@@ -1067,7 +928,7 @@ select option {
 }
 
 .item .name {
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1076,7 +937,7 @@ select option {
 
 .item .sub {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1087,7 +948,7 @@ select option {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   border-top: 1px solid var(--hairline);
-  border-left: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline); /* tells: ok — outer edge of the tool grid */
 }
 
 .toolcard {
@@ -1115,33 +976,6 @@ select option {
   cursor: progress;
 }
 
-.toolcard-sign {
-  flex: 0 0 72px;
-  width: 72px;
-  align-self: center;
-  aspect-ratio: 1;
-  color: var(--text-dim);
-}
-
-.sign-lg .o {
-  stroke-width: 2;
-}
-
-.sign-lg path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-}
-
-.sign-lg path.on {
-  stroke: var(--accent);
-  fill: none;
-}
-
-.toolcard:hover .toolcard-sign {
-  color: var(--text);
-}
-
 .toolcard-body {
   flex: 1;
   min-width: 0;
@@ -1152,13 +986,12 @@ select option {
 
 .toolcard-body h3 {
   font-size: var(--t-body);
-  font-weight: 300;
-  text-transform: lowercase;
+  font-weight: 400;
 }
 
 .toolcard-body p {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
 }
 
@@ -1167,7 +1000,7 @@ select option {
   padding-top: var(--s-2);
   font-family: var(--mono);
   font-size: var(--t-small);
-  color: var(--accent);
+  color: var(--text-soft);
   min-height: 14px;
 }
 
@@ -1182,10 +1015,6 @@ select option {
 @media (max-width: 900px) {
   .toolgrid {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .toolcard-sign {
-    flex-basis: 56px;
-    width: 56px;
   }
 }
 
@@ -1205,7 +1034,7 @@ select option {
   background: var(--raised);
   border: 1px solid var(--hairline);
   color: var(--text);
-  animation: fadein 0.2s ease;
+  animation: fadein 0.2s ease; /* tells: ok — a toast appears */
 }
 
 .toast.err {
@@ -1230,7 +1059,7 @@ select option {
   z-index: 70;
   display: grid;
   place-items: center;
-  background: rgb(0 0 0 / 80%);
+  background: var(--shade);
   padding: var(--s-6);
 }
 
@@ -1240,7 +1069,7 @@ select option {
   overflow-y: auto;
   background: var(--pane);
   border: 1px solid var(--hairline);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 70%);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 70%); /* tells: ok — the dialog lies on top of the page */
   padding: var(--s-6);
   animation: pop 0.2s ease;
 }
@@ -1266,7 +1095,7 @@ select option {
   display: block;
   height: 100%;
   width: 0;
-  background: var(--accent);
+  background: var(--text);
   transition: width 0.25s var(--ease);
 }
 
@@ -1281,7 +1110,7 @@ body.busy .progress::after {
   left: 0;
   height: 100%;
   width: 30%;
-  background: var(--accent);
+  background: var(--text);
   animation: sweep 1.1s var(--ease) infinite;
 }
 
@@ -1356,18 +1185,18 @@ body.busy {
 .opt.on,
 .opt.on .t,
 .opt.on .h {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  color: var(--ground);
 }
 
 .opt .t {
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
 }
 
 .opt .h {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   color: var(--text-dim);
   margin-top: var(--s-1);
 }
@@ -1385,11 +1214,11 @@ body.busy {
 }
 
 .steps > i.done {
-  background: var(--accent-line);
+  background: var(--text-dim);
 }
 
 .steps > i.now {
-  background: var(--accent);
+  background: var(--text);
 }
 
 .scroll {
@@ -1414,8 +1243,8 @@ body.busy {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(var(--s-10) * -1);
-  right: calc(var(--s-10) * -1);
+  left: calc(var(--s-8) * -1);
+  right: calc(var(--s-8) * -1);
   z-index: -1;
   background: var(--ground);
   pointer-events: none;
@@ -1426,16 +1255,21 @@ body.busy {
 }
 
 a {
-  color: var(--accent);
+  color: var(--text);
   text-decoration: underline;
-  text-underline-offset: 0.2em;
+  text-decoration-color: var(--text-dim);
+  text-underline-offset: 4px;
+}
+
+a:hover {
+  text-decoration-color: var(--text);
 }
 
 .irqgrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
   border-top: 1px solid var(--hairline);
-  border-left: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline); /* tells: ok — outer edge of the interrupt grid */
 }
 
 .irqcell {
@@ -1471,38 +1305,37 @@ a {
 .irqcell.on b,
 .irqcell.on i,
 .irqcell.on u {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  color: var(--ground);
 }
 
 .irqcell b {
   font-size: var(--t-body);
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text);
 }
 
 .irqcell i {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   font-style: normal;
   color: var(--text-dim);
 }
 
 .irqcell u {
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   text-decoration: none;
   color: var(--text-dim);
-  text-transform: lowercase;
 }
 
 .item.on,
 .item.on .name,
 .item.on .sub {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  color: var(--ground);
 }
 
 .drop-zone {
@@ -1540,7 +1373,7 @@ a {
   height: 24px;
   padding: 0 var(--s-1);
   font-size: var(--t-small);
-  font-weight: 200;
+  font-weight: 400;
   background: var(--raised);
   border: 1px solid var(--hairline);
   color: var(--text-soft);

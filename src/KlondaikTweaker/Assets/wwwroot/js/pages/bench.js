@@ -14,7 +14,6 @@ const STAGES = {
 
 export default {
   id: "bench",
-  icon: "bench",
   group: "extra",
 
   async render() {

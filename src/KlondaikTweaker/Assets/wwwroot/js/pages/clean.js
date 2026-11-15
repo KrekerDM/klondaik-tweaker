@@ -4,7 +4,6 @@ import { h, esc, bytes, toast, confirmBox, progress } from "../ui.js";
 
 export default {
   id: "clean",
-  icon: "clean",
   group: "main",
 
   async render() {

@@ -361,11 +361,13 @@ Xyueta), All Tweaker (MIT, Nikita Solomon),
 [LeanAndMean](https://github.com/AveYo/LeanAndMean) (MIT, AveYo),
 [TimerResolution](https://github.com/amitxv/TimerResolution) (amitxv),
 ios1ph optimization,
-[IBM Plex](https://github.com/IBM/plex) (SIL OFL 1.1).
+[Golos Text](https://github.com/googlefonts/golos-text) и
+[PT Mono](https://fonts.google.com/specimen/PT+Mono) (SIL OFL 1.1).
 
 ## Лицензия
 
 MIT — см. [LICENSE](LICENSE), включая отдельный отказ от ответственности за
 последствия изменения системы.
 
-Шрифты IBM Plex (SIL OFL 1.1).
+Шрифты Golos Text и PT Mono (SIL OFL 1.1), тексты лицензий лежат рядом с
+ними в `Assets/wwwroot/fonts`.

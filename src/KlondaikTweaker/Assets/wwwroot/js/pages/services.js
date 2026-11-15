@@ -6,7 +6,6 @@ const MODES = ["auto", "delayed", "manual", "disabled"];
 
 export default {
   id: "services",
-  icon: "services",
   group: "system",
 
   async render() {

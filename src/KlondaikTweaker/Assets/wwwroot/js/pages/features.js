@@ -6,7 +6,6 @@ const GROUPS = ["legacy", "print", "media", "corp", "server", "virt", "runtime",
 
 export default {
   id: "features",
-  icon: "features",
   group: "system",
 
   async render() {
