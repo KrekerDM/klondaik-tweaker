@@ -190,7 +190,7 @@ export default {
 
       if (free.length) {
         const act = h('<div class="row" style="margin-top:12px">' +
-          '<button class="btn btn-primary btn-sm" data-gh="remove">' + esc(t("gh.remove")) + "</button></div>");
+          '<button class="btn btn-danger btn-sm" data-gh="remove">' + esc(t("gh.remove")) + "</button></div>");
         act.addEventListener("click", async () => {
           const ids = [...list2.querySelectorAll("[data-g].on")].map((x) => x.dataset.g);
           if (!ids.length) return void toast(t("msg.nothingSelected"), "warn");

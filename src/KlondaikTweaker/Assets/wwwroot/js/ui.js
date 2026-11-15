@@ -8,6 +8,11 @@ export function esc(value) {
     .replace(/"/g, "&quot;");
 }
 
+export function cap(value) {
+  const text = String(value == null ? "" : value);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function h(html) {
   const tpl = document.createElement("template");
   tpl.innerHTML = html.trim();

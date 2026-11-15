@@ -1,6 +1,6 @@
 import { invoke } from "../bridge.js";
 import { t } from "../i18n.js";
-import { h, esc, toast } from "../ui.js";
+import { h, esc, cap, toast } from "../ui.js";
 import { tweakCard, setCardState } from "../tweakcard.js";
 import { runTweaks } from "../actions.js";
 
@@ -254,6 +254,6 @@ export default {
 
 function chip(id, label, count, on) {
   return h(
-    '<button class="chip' + (on ? " on" : "") + '" data-chip="' + esc(id) + '">' + esc(label) + " <b>" + count + "</b></button>"
+    '<button class="chip' + (on ? " on" : "") + '" data-chip="' + esc(id) + '">' + esc(cap(label)) + " <b>" + count + "</b></button>"
   );
 }

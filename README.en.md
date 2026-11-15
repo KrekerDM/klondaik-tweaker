@@ -243,10 +243,10 @@ build.ps1              data generation and exe publishing
 `https://app.klondaik/`, and navigation outside that address is blocked. No npm
 and no bundler, just plain ES modules.
 
-**Signs.** Thirty-one signs — nineteen in the menu and twelve on the Tools
-cards — are drawn from circles, arcs and rectangles. There is no icon library
-and no 3D library either — that one weighed 704 kB and drew shapes that spent
-half their time turned edge-on and unreadable.
+**No icons.** The menu and the Tools cards are labelled in words: the drawn
+signs added nothing to the labels next to them. There is no icon library and no
+3D library either — that one weighed 704 kB and drew shapes that spent half
+their time turned edge-on and unreadable.
 
 **Data.** Tweaks are written in Python rather than JSON by hand. The generator
 collects 172 records and checks identifier uniqueness, registry hives, value

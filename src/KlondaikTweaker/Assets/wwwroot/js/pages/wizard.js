@@ -50,7 +50,7 @@ export default {
       body.appendChild(
         h(
           '<div class="pane stack">' +
-            '<div class="label small dim" style="letter-spacing:.09em;text-transform:uppercase">' +
+            '<div class="label small dim">' +
             esc(t("wiz.detected")) +
             "</div>" +
             '<div class="row">' +

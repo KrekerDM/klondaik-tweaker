@@ -303,7 +303,7 @@ export default {
   "svc.sub": "Vollständige Liste der Dienste mit Beschreibungen. Schalten Sie nur ab, was Sie nicht nutzen.",
   "svc.search": "Dienste durchsuchen",
   "svc.onlyRunning": "Nur laufende",
-  "svc.recommended": "Kann abgeschaltet werden",
+  "svc.recommended": "kann abgeschaltet werden",
   "svc.changedOnly": "Nur geänderte",
   "svc.withDrivers": "Treiber anzeigen",
   "svc.changed": "nicht wie bei Windows",

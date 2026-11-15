@@ -36,13 +36,13 @@ public sealed class MainForm : Form
         Size = new Size(
             Math.Max(MinimumSize.Width, Math.Min(PreferredWidth, work.Width - 60)),
             Math.Max(MinimumSize.Height, Math.Min(PreferredHeight, work.Height - 60)));
-        BackColor = Color.FromArgb(11, 15, 20);
+        BackColor = Color.FromArgb(20, 23, 27);
         DoubleBuffered = true;
         KeyPreview = true;
         try { Icon = new Icon(typeof(MainForm).Assembly.GetManifestResourceStream("KlondaikTweaker.Assets.app.ico") ?? Stream.Null); } catch { }
 
         _web.Dock = DockStyle.Fill;
-        _web.DefaultBackgroundColor = Color.FromArgb(11, 15, 20);
+        _web.DefaultBackgroundColor = Color.FromArgb(20, 23, 27);
         Controls.Add(_web);
 
         Load += OnLoad;

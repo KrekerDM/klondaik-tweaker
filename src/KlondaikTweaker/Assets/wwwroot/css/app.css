@@ -14,6 +14,8 @@
 }
 
 :root {
+  color-scheme: dark;
+
   --ground: #14171b;
   --pane: #1b1f24;
   --raised: #232830;
@@ -242,6 +244,11 @@ body {
   color: var(--bad);
 }
 
+/* The dim count on the --hover fill is 4.37:1. */
+.navitem:hover .badge:not(.bad) {
+  color: var(--text-soft);
+}
+
 .rail-foot {
   margin-top: auto;
   padding: var(--s-4);
@@ -260,25 +267,33 @@ body {
 
 .content::-webkit-scrollbar,
 .sidebar::-webkit-scrollbar,
-.scroll::-webkit-scrollbar {
+.scroll::-webkit-scrollbar,
+.modal::-webkit-scrollbar,
+.runlog::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 .content::-webkit-scrollbar-thumb,
 .sidebar::-webkit-scrollbar-thumb,
-.scroll::-webkit-scrollbar-thumb {
+.scroll::-webkit-scrollbar-thumb,
+.modal::-webkit-scrollbar-thumb,
+.runlog::-webkit-scrollbar-thumb {
   background: var(--hairline);
 }
 
 .content::-webkit-scrollbar-thumb:hover,
-.scroll::-webkit-scrollbar-thumb:hover {
+.scroll::-webkit-scrollbar-thumb:hover,
+.modal::-webkit-scrollbar-thumb:hover,
+.runlog::-webkit-scrollbar-thumb:hover {
   background: var(--text-dim);
 }
 
 .content::-webkit-scrollbar-track,
 .sidebar::-webkit-scrollbar-track,
-.scroll::-webkit-scrollbar-track {
+.scroll::-webkit-scrollbar-track,
+.modal::-webkit-scrollbar-track,
+.runlog::-webkit-scrollbar-track {
   background: transparent;
 }
 
@@ -344,7 +359,7 @@ h3 {
   flex-wrap: wrap;
 }
 
-.page-head h1 + .lead {
+h1 + .lead {
   margin-top: var(--s-2);
 }
 
@@ -393,6 +408,7 @@ h3 {
   grid-row: 1 / -1;
   font-size: var(--t-body);
   font-weight: 400;
+  line-height: 1.45;
   color: var(--text-dim);
 }
 
@@ -478,6 +494,7 @@ h3 {
     padding: var(--s-6);
   }
   .sticky-actions::before {
+    bottom: calc(var(--s-6) * -1);
     left: calc(var(--s-6) * -1);
     right: calc(var(--s-6) * -1);
   }
@@ -508,6 +525,7 @@ h3 {
     padding: var(--s-4);
   }
   .sticky-actions::before {
+    bottom: calc(var(--s-4) * -1);
     left: calc(var(--s-4) * -1);
     right: calc(var(--s-4) * -1);
   }
@@ -546,6 +564,7 @@ h3 {
   background: transparent;
   color: var(--text);
   font: inherit;
+  font-family: var(--mono);
   font-weight: 400;
   cursor: pointer;
   white-space: nowrap;
@@ -616,10 +635,12 @@ h3 {
   color: var(--text);
 }
 
+/* Selected is a raised fill in a light frame; the light fill itself is
+   kept for the one main action on a screen. */
 .chip.on {
-  background: var(--text);
+  background: var(--raised);
   border-color: var(--text);
-  color: var(--ground);
+  color: var(--text);
 }
 
 .chip b {
@@ -627,11 +648,6 @@ h3 {
   font-variant-numeric: tabular-nums;
   font-weight: 400;
   color: var(--text-dim);
-}
-
-.chip.on b {
-  color: inherit;
-  opacity: 0.7;
 }
 
 .tag {
@@ -659,9 +675,9 @@ h3 {
 }
 
 .tag.applied {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--ground);
+  background: var(--raised);
+  border-color: var(--text-dim);
+  color: var(--text);
 }
 
 .tag.plain {
@@ -702,7 +718,7 @@ select option {
   height: 20px;
   flex: 0 0 36px;
   background: transparent;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--text-dim);
   cursor: pointer;
   transition: border-color 0.15s ease;
 }
@@ -716,6 +732,10 @@ select option {
   height: 12px;
   background: var(--text-dim);
   transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.sw:hover {
+  border-color: var(--text-soft);
 }
 
 .sw.on {
@@ -732,23 +752,32 @@ select option {
   pointer-events: none;
 }
 
-.cb {
+.cb,
+input[type="checkbox"] {
+  appearance: none;
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--text-dim);
   background: transparent;
   display: grid;
   place-items: center;
   cursor: pointer;
 }
 
-.cb.on {
+.cb:hover,
+input[type="checkbox"]:hover {
+  border-color: var(--text-soft);
+}
+
+.cb.on,
+input[type="checkbox"]:checked {
   background: var(--text);
   border-color: var(--text);
 }
 
-.cb.on::after {
+.cb.on::after,
+input[type="checkbox"]:checked::after {
   content: "";
   width: 8px;
   height: 4px;
@@ -770,16 +799,16 @@ select option {
   background: var(--pane);
 }
 
-.tw.unavail {
-  opacity: 0.55;
-}
-
 .tw.unavail:hover {
   background: transparent;
 }
 
 .tw.unavail h3 {
   color: var(--text-dim);
+}
+
+.tw.unavail .warn.plain {
+  color: var(--text-soft);
 }
 
 .tw .tw-main {
@@ -925,6 +954,37 @@ select option {
 
 .list > .item:hover {
   background: var(--pane);
+}
+
+/* The pane already draws the line above its first block. */
+.pane > .list,
+.pane > .spec,
+.pane .metric {
+  border-top: 0;
+}
+
+.pane > .list > .item:first-child,
+.pane .metric {
+  padding-top: 0;
+}
+
+.list > .item > select {
+  width: 13rem;
+  padding: var(--s-1) var(--s-3);
+  font-size: var(--t-small);
+}
+
+.list > .item > .btn-sm,
+.tag.status {
+  min-width: 7rem;
+}
+
+.tag.status {
+  text-align: center;
+}
+
+.tag.run {
+  color: var(--text);
 }
 
 .item .name {
@@ -1154,6 +1214,23 @@ body.busy {
   animation: qin 0.25s ease;
 }
 
+/* A question is the subject of its pane, not a side label. */
+.pane.wizard-q {
+  grid-template-columns: 1fr;
+}
+
+.pane.wizard-q > *,
+.pane.wizard-q > h2 {
+  grid-column: 1;
+  grid-row: auto;
+}
+
+.pane.wizard-q > h2 {
+  font-size: var(--t-h2);
+  line-height: 1.2;
+  color: var(--text);
+}
+
 @keyframes qin {
   from {
     opacity: 0;
@@ -1182,11 +1259,10 @@ body.busy {
   background: var(--pane);
 }
 
-.opt.on,
-.opt.on .t,
-.opt.on .h {
-  background: var(--text);
-  color: var(--ground);
+.opt.on {
+  background: var(--raised);
+  outline: 1px solid var(--text);
+  outline-offset: -1px;
 }
 
 .opt .t {
@@ -1209,7 +1285,7 @@ body.busy {
 
 .steps > i {
   flex: 1;
-  height: 1px;
+  height: 2px;
   background: var(--hairline);
 }
 
@@ -1242,7 +1318,7 @@ body.busy {
   content: "";
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: calc(var(--s-8) * -1);
   left: calc(var(--s-8) * -1);
   right: calc(var(--s-8) * -1);
   z-index: -1;
@@ -1301,12 +1377,10 @@ a:hover {
   color: var(--text-dim);
 }
 
-.irqcell.on,
-.irqcell.on b,
-.irqcell.on i,
-.irqcell.on u {
-  background: var(--text);
-  color: var(--ground);
+.irqcell.on {
+  background: var(--raised);
+  outline: 1px solid var(--text);
+  outline-offset: -1px;
 }
 
 .irqcell b {
@@ -1332,10 +1406,10 @@ a:hover {
 }
 
 .item.on,
-.item.on .name,
-.item.on .sub {
-  background: var(--text);
-  color: var(--ground);
+.list > .item.on {
+  background: var(--raised);
+  outline: 1px solid var(--text);
+  outline-offset: -1px;
 }
 
 .drop-zone {

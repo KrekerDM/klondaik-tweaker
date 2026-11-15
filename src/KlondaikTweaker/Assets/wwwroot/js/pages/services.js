@@ -1,6 +1,6 @@
 import { invoke } from "../bridge.js";
 import { t } from "../i18n.js";
-import { h, esc, toast } from "../ui.js";
+import { h, esc, cap, toast } from "../ui.js";
 
 const MODES = ["auto", "delayed", "manual", "disabled"];
 
@@ -25,7 +25,7 @@ export default {
     const filters = h(
       '<div class="row">' +
         '<button class="chip" data-f="running">' + esc(t("svc.onlyRunning")) + "</button>" +
-        '<button class="chip" data-f="recommended">' + esc(t("svc.recommended")) + "</button>" +
+        '<button class="chip" data-f="recommended">' + esc(cap(t("svc.recommended"))) + "</button>" +
         '<button class="chip" data-f="changed">' + esc(t("svc.changedOnly")) + "</button>" +
         '<button class="chip" data-f="drivers">' + esc(t("svc.withDrivers")) + "</button>" +
         '<select data-group style="max-width:260px"></select>' +
@@ -88,7 +88,7 @@ export default {
             '</div><div class="sub">' +
             (s.group !== "other" && !state.group ? '<span class="tag plain">' + esc(t("svcg." + s.group)) + "</span> " : "") +
             esc(s.desc || s.name) + "</div></div>" +
-            '<span class="tag ' + (s.status === "running" ? "safe" : "plain") + '">' +
+            '<span class="tag status ' + (s.status === "running" ? "run" : "plain") + '">' +
             esc(s.status === "running" ? t("svc.running") : t("svc.stopped")) + "</span>" +
             '<select data-mode>' +
             MODES.map((m) => '<option value="' + m + '"' + (s.start === m ? " selected" : "") + ">" + esc(t("svc.mode." + m)) + "</option>").join("") +
